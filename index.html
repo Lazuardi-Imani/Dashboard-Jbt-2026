@@ -30,6 +30,117 @@
     <style>
 
 
+
+        /* =========================================
+        TOMBOL REKAP
+        ========================================= */
+
+        .rekap-download-wrapper {
+            position: absolute;
+            right: 20px;
+            bottom: 3px;
+            z-index: 1000;
+        }
+
+
+        /* Tombol utama */
+
+        .rekap-download-button {
+            width: 36px;
+            height: 36px;
+
+            border: 1px solid #d5dce5;
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            color: #24527d;
+
+            font-size: 15px;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: all 0.2s ease;
+        }
+
+
+        .rekap-download-button:hover {
+            background: #eef4f9;
+            border-color: #24527d;
+        }
+
+
+        /* =========================================
+        MENU REKAP
+        ========================================= */
+
+        .rekap-download-menu {
+
+            display: none;
+
+            position: absolute;
+
+            right: 0;
+            top: 42px;
+
+            width: 200px;
+
+            background: #ffffff;
+
+            border: 1px solid #d9e0e7;
+
+            border-radius: 8px;
+
+            box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+
+            overflow: hidden;
+        }
+
+
+        /* Saat aktif */
+
+        .rekap-download-menu.show {
+            display: block;
+        }
+
+
+        /* Item menu */
+
+        .rekap-download-item {
+
+            display: block;
+
+            padding: 9px 12px;
+
+            color: #333;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            border-bottom: 1px solid #edf0f3;
+
+            background: #ffffff;
+
+            transition: background 0.2s ease;
+        }
+
+
+        .rekap-download-item:last-child {
+            border-bottom: none;
+        }
+
+
+        .rekap-download-item:hover {
+            background: #eef4f9;
+
+            color: #24527d;
+        }
+
         /* ===================================== */
         /* HEADER PROVINSI STICKY               */
         /* ===================================== */
@@ -1471,6 +1582,57 @@
                 Status : 14 Agustus 2026
             </div>
 
+            <!-- =========================================
+            TOMBOL REKAP
+            ========================================= -->
+
+        <div class="rekap-download-wrapper">
+
+            <button
+                class="rekap-download-button"
+                onclick="toggleRekapMenu()"
+                title="Download Rekap"
+                aria-label="Download Rekap"
+            >
+                📥
+            </button>
+
+
+            <div
+                class="rekap-download-menu"
+                id="rekapDownloadMenu"
+            >
+
+                <a
+                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/lazuardi_imani_pugoid_onmicrosoft_com/IQDfuPYCsUVFQqynNZNjKctLAVApqCMKTXOoQDenDTXQTm0?e=99w3ca"
+                    target="_blank"
+                    class="rekap-download-item"
+                >
+                    📄 Rekap Data Pokok
+                </a>
+
+
+                <a
+                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/lazuardi_imani_pugoid_onmicrosoft_com/IQDPc9F9uBpdSIX6Fa0CFp1RAY08yZo9MlsvKIxuyWl7RqI?e=c3gxwd"
+                    target="_blank"
+                    class="rekap-download-item"
+                >
+                    📊 Rekap Kemantapan
+                </a>
+
+
+                <a
+                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/lazuardi_imani_pugoid_onmicrosoft_com/IQDPc9F9uBpdSIX6Fa0CFp1RAY08yZo9MlsvKIxuyWl7RqI?e=c3gxwd"
+                    target="_blank"
+                    class="rekap-download-item"
+                >
+                    🔧 Rekap Kondisi Jembatan
+                </a>
+
+            </div>
+
+        </div>
+
 
         </div>
 
@@ -2468,7 +2630,7 @@
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
@@ -5198,6 +5360,22 @@
             }, 400);
 
         }
+
+
+            // =========================================
+            // TOGGLE MENU REKAP
+            // =========================================
+
+            function toggleRekapMenu() {
+
+                const menu =
+                    document.getElementById(
+                        'rekapDownloadMenu'
+                    );
+
+                menu.classList.toggle('show');
+
+            }
 
 
 
