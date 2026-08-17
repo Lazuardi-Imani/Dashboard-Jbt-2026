@@ -31,18 +31,198 @@
 
 
         /* ===================================== */
+        /* HEADER PROVINSI STICKY               */
+        /* ===================================== */
+
+        .province-summary-header {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 50;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin: -14px -14px 14px -14px;
+
+            padding: 10px 14px;
+
+            background: #f7f9fb;
+
+            border-bottom: 1px solid #e1e6eb;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #1f4e79;
+
+        }
+
+
+        /* TITIK PROVINSI */
+
+        .province-summary-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #1f4e79;
+
+            flex-shrink: 0;
+
+        }
+
+
+        /* NAMA PROVINSI */
+
+        .province-summary-name {
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        /* ===================================== */
+        /* KOTAK PENCARIAN JEMBATAN              */
+        /* ===================================== */
+
+        .bridge-search-box {
+
+            display: none;
+
+            margin-top: 8px;
+
+            position: relative;
+
+        }
+
+
+        /* INPUT */
+
+        .bridge-search-input {
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 8px 10px;
+
+            border: 1px solid #d5dce2;
+
+            border-radius: 5px;
+
+            font-size: 11px;
+
+            outline: none;
+
+        }
+
+
+        .bridge-search-input:focus {
+
+            border-color: #1f4e79;
+
+        }
+
+
+        /* HASIL PENCARIAN */
+
+        .bridge-search-results {
+
+            margin-top: 4px;
+
+            max-height: 150px;
+
+            overflow-y: auto;
+
+            background: white;
+
+            border: 1px solid #e1e6eb;
+
+            border-radius: 5px;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+        }
+
+
+        /* ITEM HASIL */
+
+        .bridge-search-result {
+
+            padding: 8px 10px;
+
+            font-size: 11px;
+
+            cursor: pointer;
+
+            border-bottom: 1px solid #eee;
+
+        }
+
+
+        .bridge-search-result:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .bridge-search-result:hover {
+
+            background: #f0f4f8;
+
+        }
+
+
+        /* NAMA JEMBATAN */
+
+        .bridge-search-result-name {
+
+            font-weight: bold;
+
+            color: #1f4e79;
+
+        }
+
+
+        /* NOMOR JEMBATAN */
+
+        .bridge-search-result-number {
+
+            margin-top: 2px;
+
+            color: #777;
+
+            font-size: 10px;
+
+        }
+
+        /* ===================================== */
         /* BARIS AKSI KARTU                      */
         /* ===================================== */
 
         .summary-action-row {
 
             display: flex;
-
-            gap: 6px;
-
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            box-sizing: border-box;
             margin-top: 12px;
-
-            margin-bottom: 10px;
 
         }
 
@@ -53,7 +233,13 @@
 
         .summary-action-row .mantap-toggle {
 
-            flex: 1;
+            flex: 0 0 150px;
+
+            width: 130px;
+
+            height: 30px;
+
+            box-sizing: border-box;
 
             border: 1px solid #d5dce2;
 
@@ -61,11 +247,11 @@
 
             color: #666;
 
-            padding: 7px 5px;
+            padding: 6px 4px;
 
             border-radius: 5px;
 
-            font-size: 10px;
+            font-size: 9px;
 
             font-weight: bold;
 
@@ -80,27 +266,67 @@
 
         .summary-action-row .download-xlsx-button {
 
-            flex: 1;
+            flex: 0 0 15px;
+                width: 15px;
+                height: 15px;
 
-            width: auto;
+                margin-top: 0;
+                padding: 0;
 
-            margin-top: 0;
+                border: none;
+                border-radius: 6px;
+                box-sizing: border-box;
 
-            padding: 7px 5px;
+                background: #1f4e79;
+                color: white;
 
-            border: none;
+                font-size: 20px;
+                font-weight: bold;
 
+                cursor: pointer;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                transition: all 0.2s ease;
+
+        }
+
+
+        /* ===================================== */
+        /* TOMBOL PENCARIAN JEMBATAN             */
+        /* ===================================== */
+
+        .bridge-search-button {
+
+            width: 30px;
+            height: 30px;
+
+            padding: 0;
+
+            border: 1px solid #d5dce2;
             border-radius: 5px;
 
-            background: #1f4e79;
+            background: #ffffff;
 
-            color: white;
+            color: #1f4e79;
 
-            font-size: 10px;
+            font-size: 15px;
 
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             cursor: pointer;
+
+            flex-shrink: 0;
+
+        }
+
+        .bridge-search-button:hover {
+
+            background: #f0f4f8;
 
         }
 
@@ -110,6 +336,7 @@
         .summary-action-row .download-xlsx-button:hover {
 
             background: #163a5c;
+            transform: translateY(-1px);
 
         }
 
@@ -121,24 +348,18 @@
 
         .download-xlsx-button {
 
-            width: 100%;
-
-            margin-top: 12px;
-
-            padding: 9px 10px;
-
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
             border: none;
-
-            border-radius: 5px;
-
+            border-radius: 7px;
             background: #1f4e79;
-
             color: white;
-
             font-size: 10px;
-
             font-weight: bold;
-
             cursor: pointer;
 
         }
@@ -203,7 +424,7 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 360px;
+            width: 390px;
 
             background: #ffffff;
 
@@ -480,6 +701,180 @@
             box-sizing: border-box;
 
             font-size: 12px;
+
+        }
+
+
+        /* ===================================== */
+        /* AREA PIE CHART + KONDISI              */
+        /* ===================================== */
+
+        .chart-condition-container {
+
+            display: flex;
+
+            gap: 8px;
+
+            margin-top: 12px;
+
+            width: 100%;
+
+        }
+
+
+        /* ===================================== */
+        /* CARD PIE CHART                        */
+        /* ===================================== */
+
+        .chart-card {
+
+            flex: 1;
+
+            min-width: 0;
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6eb;
+
+            border-radius: 7px;
+
+            padding: 8px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ===================================== */
+        /* CARD KONDISI                          */
+        /* ===================================== */
+
+        .condition-card {
+
+            flex: 1;
+
+            min-width: 0;
+
+            background: #ffffff;
+
+            border: 1px solid #e1e6eb;
+
+            border-radius: 7px;
+
+            padding: 10px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ===================================== */
+        /* JUDUL CARD KONDISI                    */
+        /* ===================================== */
+
+        .condition-title {
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            color: #1f4e79;
+
+            margin-bottom: 9px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        /* ===================================== */
+        /* ITEM KONDISI                          */
+        /* ===================================== */
+
+        .condition-item {
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 5px 4px;
+
+            margin-bottom: 3px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            transition: 0.15s;
+
+            font-size: 9px;
+
+        }
+
+
+        /* HOVER */
+
+        .condition-item:hover {
+
+            background: #f0f4f8;
+
+        }
+
+
+        /* KONDISI AKTIF */
+
+        .condition-item.active {
+
+            background: #e8f0f7;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ===================================== */
+        /* DOT KONDISI                           */
+        /* ===================================== */
+
+        .condition-dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            margin-right: 6px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        /* ===================================== */
+        /* NAMA KONDISI                          */
+        /* ===================================== */
+
+        .condition-name {
+
+            flex: 1;
+
+            color: #555;
+
+        }
+
+
+        /* ===================================== */
+        /* JUMLAH KONDISI                        */
+        /* ===================================== */
+
+        .condition-count {
+
+            font-weight: bold;
+
+            color: #1f4e79;
+
+            margin-left: 4px;
 
         }
 
@@ -918,7 +1313,7 @@
 
             max-height: 330px;
 
-            overflow-y: auto;
+            overflow-y: scroll;
 
             padding-right: 5px;
 
@@ -1001,6 +1396,8 @@
 
             color: #222;
 
+            font-size: 12px;
+
             min-width: 0;
 
             overflow-wrap: break-word;
@@ -1080,6 +1477,28 @@
 
             <!-- AREA YANG BISA DI-SCROLL -->
             <div class="sidebar-content">
+
+
+
+                <!-- INDONESIA -->
+
+                <button
+                    class="province-item"
+                    data-province="Indonesia"
+                >
+
+                    <span
+                        class="province-dot">
+                    </span>
+
+                    <span
+                        class="province-name">
+
+                        Indonesia
+
+                    </span>
+
+                </button>
 
 
             <!-- JUDUL -->
@@ -1540,7 +1959,7 @@
 
                 <button
                     class="province-item"
-                    data-province="Nusa Tenggara Barat"
+                    data-province="NTB"
                 >
 
                     <span
@@ -2049,7 +2468,7 @@
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
@@ -2293,7 +2712,7 @@
                                                 class="bridge-label"
                                             >
 
-                                                Nama Jembatan
+                                                Kode Ruas
 
                                             </div>
 
@@ -2301,11 +2720,36 @@
                                                 class="bridge-value"
                                             >
 
-                                                ${feature.properties.Nm_Jbt_26 ?? '-'}
+                                                ${feature.properties.Kd_Ruas_26 ?? '-'}
 
                                             </div>
 
                                         </div>
+
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Nama Ruas
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Nm_Ruas_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
 
 
                                         <div
@@ -2339,7 +2783,7 @@
                                                 class="bridge-label"
                                             >
 
-                                                Nama Ruas
+                                                Nama Jembatan
 
                                             </div>
 
@@ -2347,14 +2791,39 @@
                                                 class="bridge-value"
                                             >
 
-                                                ${feature.properties.Nm_Ruas_26 ?? '-'}
+                                                ${feature.properties.Nm_Jbt_26 ?? '-'}
 
                                             </div>
 
                                         </div>
 
+                                        
 
-                                       <div 
+                                         <div
+                                            class="bridge-row"
+                                        >
+                                                
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lintas
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lintas_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+ 
+
+                                <div 
                                         class="bridge-row"
                                         >
 
@@ -2375,7 +2844,9 @@
                                         >
 
                                             <div class="bridge-label">
+
                                                 PPK
+                                                
                                             </div>
 
                                         <div class="bridge-value">
@@ -2401,6 +2872,28 @@
                                         </div>
 
 
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Status Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Status_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
                                         <div
                                             class="bridge-row"
                                         >
@@ -2418,6 +2911,27 @@
                                             >
 
                                                 ${feature.properties.Pjg_Jbt_26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Bentang Terpanjang
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Btg_Pjg_26 ?? '-'} m
 
                                             </div>
 
@@ -2724,6 +3238,27 @@
                                         </div>
 
 
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jenis Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Jns_Jbt_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
                                         <div
                                             class="bridge-row"
                                         >
@@ -2746,7 +3281,92 @@
 
                                         </div>
 
-                                    </div>
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Tipe Lintasan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Tp_Lnts_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Detail Tipe Lintasan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Dt_Lnts_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jenis Penanganan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Pnangnn_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jenis Pemeriksaan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Pmriksn_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+                            </div>
 
 
                                     <div
@@ -2950,7 +3570,7 @@
 
                                         </div>
 
-                                    </div>
+                            </div>
 
 
                                     <div
@@ -3292,6 +3912,21 @@
 
             summary.innerHTML = `
 
+                
+            <!-- HEADER PROVINSI STICKY -->
+
+            <div class="province-summary-header">
+
+                <span class="province-summary-dot"></span>
+
+                <span class="province-summary-name">
+                    ${province}
+                </span>
+
+            </div>
+            
+            
+        
                 <!-- TOTAL UNIT -->
 
                 <div class="summary-row">
@@ -3341,49 +3976,184 @@
                         KEMANTAPAN UNIT
                     </button>
 
+
                     <button
                         class="download-xlsx-button"
                         onclick="downloadProvinceXLSX(this)"
+                        title="Export Data XLSX"
+                        aria-label="Export Data"
                     >
-                        Export Data
+                        💾
                     </button>
+
+
+                    <button
+                        class="bridge-search-button"
+                        onclick="toggleBridgeSearch(this)"
+                        title="Cari Jembatan"
+                    >
+                        🔍
+                    </button>
+
+
+                    <div class="bridge-search-box">
+
+                        <input
+                            type="text"
+                            class="bridge-search-input"
+                            placeholder="Nama / Nomor Jembatan"
+                            oninput="searchBridge(this)"
+                        >
+
+                        <div class="bridge-search-results"></div>
+
+                    </div>
 
                 </div>
 
 
 
-                <!-- PIE CHART -->
+                <!-- ================================= -->
+                <!-- PIE CHART + KONDISI               -->
+                <!-- ================================= -->
 
-                <div
-                    class="mantap-chart"
-                    data-unit="${persenMantapUnit}"
-                    data-panjang="${persenMantapPanjang}"
-                    data-mode="unit"
+                <div class="chart-condition-container">
 
 
-                    style="
-                        background:
-                        conic-gradient(
-                            #2d820c 0% ${persenMantapUnit}%,
-                            #f58f0a ${persenMantapUnit}% 100%
-                        );
-                    "
-                >
+                    <!-- =============================== -->
+                    <!-- CARD PIE CHART                  -->
+                    <!-- =============================== -->
 
-                    <div class="mantap-chart-center">
+                    <div class="chart-card">
 
                         <div
-                            class="mantap-percent"
+                            class="mantap-chart"
+                            data-unit="${persenMantapUnit}"
+                            data-panjang="${persenMantapPanjang}"
+
+                            style="
+                                background:
+                                conic-gradient(
+                                    #2d820c 0% ${persenMantapUnit}%,
+                                    #f58f0a ${persenMantapUnit}% 100%
+                                );
+                            "
                         >
 
-                            ${persenMantapUnit.toFixed(2)}%
+                            <div class="mantap-chart-center">
+
+                                <div class="mantap-percent">
+
+                                    ${persenMantapUnit.toFixed(2)}%
+
+                                </div>
+
+                                <div class="mantap-text">
+
+                                    MANTAP
+
+                                </div>
+
+                            </div>
+
                         </div>
 
-                        <div
-                            class="mantap-text"
-                        >
+                    </div>
 
-                            MANTAP
+
+                    <!-- =============================== -->
+                    <!-- CARD KONDISI                    -->
+                    <!-- =============================== -->
+
+                    <div class="condition-card">
+
+                        <div class="condition-title">
+
+                            Kondisi Jembatan
+
+                        </div>
+
+
+                        <div class="condition-item">
+
+                            <span
+                                class="condition-dot"
+                                style="background:#66d6ff;">
+                            </span>
+
+                            <span class="condition-name">
+                                Sangat Baik
+                            </span>
+
+                        </div>
+
+
+                        <div class="condition-item">
+
+                            <span
+                                class="condition-dot"
+                                style="background:#054deb;">
+                            </span>
+
+                            <span class="condition-name">
+                                Baik
+                            </span>
+
+                        </div>
+
+
+                        <div class="condition-item">
+
+                            <span
+                                class="condition-dot"
+                                style="background:#2d820c;">
+                            </span>
+
+                            <span class="condition-name">
+                                Sedang
+                            </span>
+
+                        </div>
+
+
+                        <div class="condition-item">
+
+                            <span
+                                class="condition-dot"
+                                style="background:#f58f0a;">
+                            </span>
+
+                            <span class="condition-name">
+                                Rusak
+                            </span>
+
+                        </div>
+
+
+                        <div class="condition-item">
+
+                            <span
+                                class="condition-dot"
+                                style="background:#ff0000;">
+                            </span>
+
+                            <span class="condition-name">
+                                Kritis
+                            </span>
+
+                        </div>
+
+
+                        <div class="condition-item">
+
+                            <span
+                                class="condition-dot"
+                                style="background:#000000;">
+                            </span>
+
+                            <span class="condition-name">
+                                Runtuh
+                            </span>
 
                         </div>
 
@@ -3771,7 +4541,8 @@
                             ${value.toLocaleString(
                                 'id-ID',
                                 {
-                                    maximumFractionDigits: 1
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
                                 }
                             )}
                         </div>
@@ -4179,6 +4950,256 @@
         }
 
 
+        function toggleBridgeSearch(button) {
+
+            const summary =
+                button.closest('.province-summary');
+
+            if (!summary) {
+                return;
+            }
+
+            const searchBox =
+                summary.querySelector('.bridge-search-box');
+
+            if (!searchBox) {
+                return;
+            }
+
+            if (searchBox.style.display === 'block') {
+
+                searchBox.style.display = 'none';
+
+            } else {
+
+                searchBox.style.display = 'block';
+
+                const input =
+                    searchBox.querySelector('.bridge-search-input');
+
+                if (input) {
+
+                    input.focus();
+
+                }
+
+            }
+
+        }
+
+
+        function searchBridge(input) {
+
+            const keyword =
+                input.value.trim().toLowerCase();
+
+            const searchBox =
+                input.closest('.bridge-search-box');
+
+            const results =
+                searchBox.querySelector(
+                    '.bridge-search-results'
+                );
+
+            results.innerHTML = '';
+
+
+            // Jika kosong
+            if (!keyword) {
+
+                return;
+
+            }
+
+
+            // Pastikan layer tersedia
+
+            if (!bridgeLayer) {
+
+                results.innerHTML = `
+                    <div class="bridge-search-result">
+                        Data jembatan belum tersedia.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            const matches = [];
+
+
+            // ================================
+            // LOOP DATA JEMBATAN
+            // ================================
+
+            bridgeLayer.eachLayer(layer => {
+
+                if (!layer.feature) {
+                    return;
+                }
+
+
+                const properties =
+                    layer.feature.properties;
+
+
+                const nama =
+                    String(
+                        properties.Nm_Jbt_26 ?? ''
+                    ).toLowerCase();
+
+
+                const nomor =
+                    String(
+                        properties.No_Jbt_26 ?? ''
+                    ).toLowerCase();
+
+
+                // Cari berdasarkan nama ATAU nomor
+
+                if (
+                    nama.includes(keyword) ||
+                    nomor.includes(keyword)
+                ) {
+
+                    matches.push(layer);
+
+                }
+
+            });
+
+
+            // ================================
+            // TIDAK ADA HASIL
+            // ================================
+
+            if (matches.length === 0) {
+
+                results.innerHTML = `
+                    <div class="bridge-search-result">
+                        Jembatan tidak ditemukan.
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            // ================================
+            // TAMPILKAN HASIL
+            // ================================
+
+            matches.slice(0, 10).forEach(layer => {
+
+                const properties =
+                    layer.feature.properties;
+
+
+                const nama =
+                    properties.Nm_Jbt_26 ?? '-';
+
+
+                const nomor =
+                    properties.No_Jbt_26 ?? '-';
+
+
+                const item =
+                    document.createElement('div');
+
+                item.className =
+                    'bridge-search-result';
+
+
+                item.innerHTML = `
+
+                    <div class="bridge-search-result-name">
+
+                        ${nama}
+
+                    </div>
+
+                    <div class="bridge-search-result-number">
+
+                        No. ${nomor}
+
+                    </div>
+
+                `;
+
+
+                // ================================
+                // KETIKA HASIL DIKLIK
+                // ================================
+
+                item.onclick = function() {
+
+                    zoomToBridge(layer);
+
+                };
+
+
+                results.appendChild(item);
+
+            });
+
+        }
+
+
+        function zoomToBridge(layer) {
+
+            if (!layer) {
+                return;
+            }
+
+
+            // ================================
+            // AMBIL POSISI JEMBATAN
+            // ================================
+
+            const latlng =
+                layer.getLatLng();
+
+
+            if (!latlng) {
+                return;
+            }
+
+
+            // ================================
+            // ZOOM KE JEMBATAN
+            // ================================
+
+            map.setView(
+
+                latlng,
+
+                17,
+
+                {
+
+                    animate: true
+
+                }
+
+            );
+
+
+            // ================================
+            // BUKA POPUP
+            // ================================
+
+            setTimeout(() => {
+
+                layer.openPopup();
+
+            }, 400);
+
+        }
+
+
 
         /* ===================================== */
         /* 6. TOMBOL PROVINSI                   */
@@ -4320,6 +5341,629 @@
             5
         );
 
+
+            /* =========================================================
+                FILTER KONDISI JEMBATAN
+                ========================================================= */
+
+                /* ---------------------------------------------------------
+                KONFIGURASI KONDISI
+                --------------------------------------------------------- */
+
+                const conditionFilterConfig = [
+                    {
+                        code: 0,
+                        label: "Sangat Baik",
+                        color: "#66d6ff"
+                    },
+                    {
+                        code: 1,
+                        label: "Baik",
+                        color: "#054deb"
+                    },
+                    {
+                        code: 2,
+                        label: "Sedang",
+                        color: "#2d820c"
+                    },
+                    {
+                        code: 3,
+                        label: "Rusak",
+                        color: "#f58f0a"
+                    },
+                    {
+                        code: 4,
+                        label: "Kritis",
+                        color: "#ff0000"
+                    },
+                    {
+                        code: 5,
+                        label: "Runtuh",
+                        color: "#000000"
+                    }
+                ];
+
+
+                /* ---------------------------------------------------------
+                MENAMBAHKAN STYLE INTERAKTIF
+                TIDAK MENGUBAH UKURAN CARD
+                --------------------------------------------------------- */
+
+                (function addConditionFilterStyle() {
+
+                    if (document.getElementById(
+                        "condition-filter-style"
+                    )) {
+                        return;
+                    }
+
+                    const style =
+                        document.createElement("style");
+
+                    style.id =
+                        "condition-filter-style";
+
+                    style.textContent = `
+
+                        .condition-item {
+                            cursor: pointer;
+                            user-select: none;
+                            transition:
+                                background 0.15s ease,
+                                transform 0.15s ease;
+                        }
+
+                        .condition-item:hover {
+                            background: #f3f6f9;
+                        }
+
+                        .condition-item.condition-active {
+                            background: #e8f0f7;
+                            border-radius: 6px;
+                            font-weight: 600;
+                        }
+
+                        .condition-item.condition-active
+                        .condition-name {
+                            color: #1f4e79;
+                            font-weight: 600;
+                        }
+
+                        .show-all-button {
+                            width: 100%;
+                            margin-top: 10px;
+                            padding: 0px 10px;
+                            border: 1px solid #b8c4d0;
+                            border-radius: 6px;
+                            background: white;
+                            color: #555;
+                            font-size: 8.5px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition:
+                                background 0.15s ease,
+                                color 0.15s ease;
+                                border-color 0.15s ease;
+                        }
+
+                        .show-all-button:hover {
+                            background: #f0f4f8;
+                            color: #1f4e79;
+                            border-color: #9eafbf;
+                        }
+
+                    `;
+
+                    document.head.appendChild(style);
+
+                })();
+
+
+/* ---------------------------------------------------------
+   SEMBUNYIKAN SEMUA TITIK
+--------------------------------------------------------- */
+
+function hideBridgeLayer(layer) {
+
+    if (!layer) {
+        return;
+    }
+
+    if (
+        typeof layer.setStyle === "function"
+    ) {
+
+        layer.setStyle({
+            opacity: 0,
+            fillOpacity: 0
+        });
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   TAMPILKAN SEMUA TITIK
+--------------------------------------------------------- */
+
+function showAllBridges() {
+
+    if (!bridgeLayer) {
+        return;
+    }
+
+    /* -----------------------------------------
+       KEMBALIKAN SEMUA TITIK
+    ----------------------------------------- */
+
+    bridgeLayer.eachLayer(
+        function(layer) {
+
+            if (
+                typeof layer.setStyle !==
+                "function"
+            ) {
+                return;
+            }
+
+            const kondisi =
+                Number(
+                    layer.feature?.properties?.JBT_26
+                );
+
+            layer.setStyle({
+
+                opacity: 1,
+
+                fillOpacity: 1,
+
+                fillColor:
+                    getBridgeColor(kondisi)
+
+            });
+
+
+            // Semua titik kembali bisa diklik
+            if (layer.getElement()) {
+                layer.getElement().style.pointerEvents = "auto";
+            }
+
+        }
+    );
+
+
+    /* ========================================
+       ZOOM KEMBALI KE SELURUH PROVINSI
+    ======================================== */
+
+            if (
+                bridgeLayer &&
+                bridgeLayer.getBounds().isValid()
+            ) {
+
+                map.fitBounds(
+                    bridgeLayer.getBounds(),
+                    {
+                        padding: [20, 20]
+                    }
+                );
+
+            }
+
+
+    /* -----------------------------------------
+       HILANGKAN STATUS AKTIF
+    ----------------------------------------- */
+
+    document
+        .querySelectorAll(
+            ".condition-item.condition-active"
+        )
+        .forEach(
+            function(item) {
+
+                item.classList.remove(
+                    "condition-active"
+                );
+
+            }
+        );
+
+
+    /* -----------------------------------------
+       UPDATE STATUS TOMBOL
+    ----------------------------------------- */
+
+    const button =
+        document.querySelector(
+            ".show-all-button"
+        );
+
+    if (button) {
+
+        button.innerHTML =
+            "↻ &nbsp; TAMPILKAN SEMUA";
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   FILTER SATU KONDISI
+--------------------------------------------------------- */
+
+function filterBridgeCondition(
+    conditionCode
+) {
+
+    if (!bridgeLayer) {
+
+        console.warn(
+            "bridgeLayer belum tersedia."
+        );
+
+        return;
+
+    }
+
+    map.closePopup();
+
+
+    const selectedCode =
+        Number(conditionCode);
+
+
+    const bounds =
+        L.latLngBounds([]);
+
+
+    let visibleCount = 0;
+
+
+    /* -----------------------------------------
+       FILTER TITIK
+    ----------------------------------------- */
+
+ bridgeLayer.eachLayer(
+    function(layer) {
+
+        if (
+            !layer.feature ||
+            !layer.feature.properties
+        ) {
+            return;
+        }
+
+
+        const kondisi =
+            Number(
+                layer.feature.properties.JBT_26
+            );
+
+
+        if (
+            kondisi === selectedCode
+        ) {
+
+            /* =========================
+               TITIK SESUAI KONDISI
+            ========================= */
+
+            layer.setStyle({
+
+                opacity: 1,
+
+                fillOpacity: 1,
+
+                fillColor:
+                    getBridgeColor(kondisi)
+
+            });
+
+
+            // Titik yang sesuai kondisi tetap bisa diklik
+            if (layer.getElement()) {
+
+                layer.getElement()
+                    .style.pointerEvents = "auto";
+
+            }
+
+
+            /* Tambahkan posisi ke bounds */
+
+            if (
+                layer.getLatLng
+            ) {
+
+                bounds.extend(
+                    layer.getLatLng()
+                );
+
+                visibleCount++;
+
+            }
+
+        }
+
+        else {
+
+            /* =========================
+               TITIK LAIN DISEMBUNYIKAN
+            ========================= */
+
+            layer.setStyle({
+
+                opacity: 0,
+
+                fillOpacity: 0
+
+            });
+
+
+            // Titik yang tidak sesuai kondisi
+            // tidak bisa diklik
+
+            if (layer.getElement()) {
+
+                layer.getElement()
+                    .style.pointerEvents = "none";
+
+            }
+
+        }
+
+    }
+);
+
+
+    /* -----------------------------------------
+       UPDATE STATUS LEGENDA
+    ----------------------------------------- */
+
+    document
+        .querySelectorAll(
+            ".condition-item"
+        )
+        .forEach(
+            function(item) {
+
+                item.classList.remove(
+                    "condition-active"
+                );
+
+            }
+        );
+
+
+    const activeItem =
+        document.querySelector(
+            `.condition-item[data-condition="${selectedCode}"]`
+        );
+
+
+    if (activeItem) {
+
+        activeItem.classList.add(
+            "condition-active"
+        );
+
+    }
+
+
+    /* -----------------------------------------
+       ZOOM KE TITIK
+    ----------------------------------------- */
+
+    if (
+        visibleCount > 0 &&
+        bounds.isValid()
+    ) {
+
+        map.fitBounds(
+            bounds,
+            {
+                padding: [40, 40],
+                maxZoom: 14
+            }
+        );
+
+    }
+
+    else {
+
+        console.log(
+            "Tidak ada jembatan dengan kondisi:",
+            selectedCode
+        );
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   SIAPKAN LEGENDA MENJADI FILTER
+--------------------------------------------------------- */
+
+function setupConditionFilters() {
+
+    const conditionItems =
+        document.querySelectorAll(
+            ".condition-card .condition-item"
+        );
+
+
+    if (
+        conditionItems.length === 0
+    ) {
+        return;
+    }
+
+
+    /* -----------------------------------------
+       PASANG DATA-CONDITION
+    ----------------------------------------- */
+
+    conditionItems.forEach(
+        function(item, index) {
+
+            if (
+                index >=
+                conditionFilterConfig.length
+            ) {
+                return;
+            }
+
+
+            const config =
+                conditionFilterConfig[index];
+
+
+            item.dataset.condition =
+                config.code;
+
+
+            item.title =
+                `Tampilkan jembatan kondisi ${config.label}`;
+
+
+            /* Hindari event listener ganda */
+
+            if (
+                item.dataset.filterReady ===
+                "true"
+            ) {
+                return;
+            }
+
+
+            item.dataset.filterReady =
+                "true";
+
+
+            item.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    filterBridgeCondition(
+                        config.code
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* -----------------------------------------
+       BUAT TOMBOL TAMPILKAN SEMUA
+       JIKA BELUM ADA
+    ----------------------------------------- */
+
+    const conditionCard =
+        document.querySelector(
+            ".condition-card"
+        );
+
+
+    if (!conditionCard) {
+        return;
+    }
+
+
+    let showAllButton =
+        conditionCard.querySelector(
+            ".show-all-button"
+        );
+
+
+    if (!showAllButton) {
+
+        showAllButton =
+            document.createElement(
+                "button"
+            );
+
+
+        showAllButton.className =
+            "show-all-button";
+
+
+        showAllButton.type =
+            "button";
+
+
+        showAllButton.innerHTML =
+            "↻ &nbsp; TAMPILKAN SEMUA";
+
+
+        conditionCard.appendChild(
+            showAllButton
+        );
+
+
+        showAllButton.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                showAllBridges();
+
+            }
+        );
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   PANTAU KARTU PROVINSI
+   Karena kartu dibuat secara dinamis oleh
+   updateProvinceSummary()
+--------------------------------------------------------- */
+
+const conditionFilterObserver =
+    new MutationObserver(
+        function() {
+
+            setupConditionFilters();
+
+        }
+    );
+
+
+conditionFilterObserver.observe(
+    document.body,
+    {
+        childList: true,
+        subtree: true
+    }
+);
+
+
+/* ---------------------------------------------------------
+   SETUP AWAL
+--------------------------------------------------------- */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        setupConditionFilters();
+
+    }
+);
 
     </script>
 
