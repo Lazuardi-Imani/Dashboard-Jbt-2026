@@ -22,6 +22,11 @@
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     >
 
+    <!-- ========================================= -->
+    <!-- CDN untuk Supabase                        -->
+    <!-- ========================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- ========================================= -->
     <!-- CSS                                      -->
@@ -29,6 +34,170 @@
 
     <style>
 
+
+        /* ===================================== */
+        /* LOGIN SCREEN                          */
+        /* ===================================== */
+
+        #login-screen {
+
+            position: fixed;
+
+            inset: 0;
+
+            background: #f4f7fa;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 99999;
+
+        }
+
+
+        /* ===================================== */
+        /* LOGIN CARD                            */
+        /* ===================================== */
+
+        .login-card {
+
+            width: 320px;
+
+            padding: 32px;
+
+            background: #ffffff;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.12);
+
+            box-sizing: border-box;
+
+            text-align: center;
+
+        }
+
+
+        /* ===================================== */
+        /* JUDUL                                 */
+        /* ===================================== */
+
+        .login-title {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            color: #1f4e79;
+
+            letter-spacing: 0.5px;
+
+        }
+
+
+        .login-subtitle {
+
+            margin-top: 5px;
+
+            font-size: 12px;
+
+            color: #6b7280;
+
+        }
+
+
+        /* ===================================== */
+        /* FORM                                  */
+        /* ===================================== */
+
+        .login-form {
+
+            margin-top: 25px;
+
+        }
+
+
+        .login-form input {
+
+            width: 100%;
+
+            height: 40px;
+
+            margin-bottom: 12px;
+
+            padding: 0 12px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #d5dce3;
+
+            border-radius: 6px;
+
+            font-size: 13px;
+
+            outline: none;
+
+        }
+
+
+        .login-form input:focus {
+
+            border-color: #1f4e79;
+
+        }
+
+
+        /* ===================================== */
+        /* LOGIN BUTTON                          */
+        /* ===================================== */
+
+        .login-form button {
+
+            width: 100%;
+
+            height: 40px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #1f4e79;
+
+            color: #ffffff;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        .login-form button:hover {
+
+            background: #163a5c;
+
+        }
+
+
+        /* ===================================== */
+        /* PESAN LOGIN                           */
+        /* ===================================== */
+
+        .login-message {
+
+            margin-top: 12px;
+
+            font-size: 12px;
+
+            color: #d32f2f;
+
+        }
 
 
         /* =========================================
@@ -40,6 +209,35 @@
             right: 20px;
             bottom: 3px;
             z-index: 1000;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        .logout-button {
+            width: auto;
+            height: 36px;
+            padding: 0 12px;
+
+            border: 1px solid #d5dce5;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: #24527d;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            cursor: pointer;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+
+        .logout-button:hover {
+            background: #eef4f9;
+            border-color: #24527d;
         }
 
 
@@ -48,7 +246,7 @@
         .rekap-download-button {
             width: 36px;
             height: 36px;
-
+            
             border: 1px solid #d5dce5;
             border-radius: 8px;
 
@@ -480,6 +678,20 @@
 
             background: #163a5c;
 
+        }
+
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .header-actions button {
+            position: static;
+            width: auto;
+            white-space: nowrap;
         }
 
         /* ===================================== */
@@ -1543,12 +1755,77 @@
         }
 
 
+        /* ===================================== */
+        /* SEMBUNYIKAN DASHBOARD SAAT AWAL       */
+        /* ===================================== */
+
+        #dashboard {
+            display: none;
+        }
+
+
     </style>
 
 </head>
 
 
 <body>
+
+
+    <!-- ===================================== -->
+    <!-- LOGIN SCREEN                          -->
+    <!-- ===================================== -->
+
+    <div id="login-screen">
+
+        <div class="login-card">
+
+            <div class="login-title">
+                DASHBOARD KEMANTAPAN 
+                JEMBATAN NASIONAL
+            </div>
+
+            <div class="login-subtitle">
+                TA 2026
+            </div>
+
+
+            <div class="login-form">
+
+                <input
+                    type="text"
+                    id="login-username"
+                    placeholder="Username"
+                    autocomplete="username"
+                >
+
+
+                <input
+                    type="password"
+                    id="login-password"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                >
+
+
+                <button
+                    type="button"
+                    onclick="loginDashboard()"
+                >
+                    LOGIN
+                </button>
+
+            </div>
+
+
+            <div
+                id="login-message"
+                class="login-message"
+            ></div>
+
+        </div>
+
+    </div>
 
 
     <!-- ======================================= -->
@@ -1604,11 +1881,11 @@
             >
 
                 <a
-                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/ivani_pugoid_onmicrosoft_com/IQBqKLFNUpF7S5__m-eIoiBFAaUcrbtQt8MZJatDoh8cDA8?e=8h1IpJ"
+                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/ivani_pugoid_onmicrosoft_com/IQAIQV9y0SihSrHmWCukQVDuAdYv5oy8kXtvLK-y_Yd5i2k?e=bycYac"
                     target="_blank"
                     class="rekap-download-item"
                 >
-                    📄 Rekap Kemantapan 1 (dengan NS, WXX dan FXX)
+                    📄 Rekap Kemantapan Jembatan Tanpa NS, FXX dan WXX
                 </a>
 
 
@@ -1617,24 +1894,53 @@
                     target="_blank"
                     class="rekap-download-item"
                 >
-                    📊 Rekap Kemantapan 2 (dengan NS tanpa WXX dan FXX)
+                    📄 Rekap Kemantapan Jembatan Dengan NS, Tanpa FXX dan WXX
                 </a>
 
 
                 <a
-                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/ivani_pugoid_onmicrosoft_com/IQAIQV9y0SihSrHmWCukQVDuAdYv5oy8kXtvLK-y_Yd5i2k?e=bycYac"
+                    href="https://pugoid-my.sharepoint.com/:x:/g/personal/ivani_pugoid_onmicrosoft_com/IQBqKLFNUpF7S5__m-eIoiBFAaUcrbtQt8MZJatDoh8cDA8?e=8h1IpJ"
                     target="_blank"
                     class="rekap-download-item"
                 >
-                    🔧 Rekap Kemantapan 3 (tanpa NS, WXX dan FXX)
+                    📄 Rekap Kemantapan Jembatan Dengan NS, FXX dan WXX
                 </a>
 
             </div>
 
-        </div>
+
+        <!-- =========================================
+        TOMBOL KELOLA USER — KHUSUS ADMIN
+        ========================================= -->
+
+        <button
+            type="button"
+            class="admin-only"
+            onclick="openUserManagement()"
+            title="Kelola User"
+        >
+            👤 Kelola User
+        </button>
+
+
+        <!-- =========================================
+        TOMBOL LOGOUT
+        ========================================= -->
+
+        <button
+            type="button"
+            class="logout-button"
+            onclick="logoutDashboard()"
+            title="Logout"
+        >
+            Logout
+        </button>
 
 
         </div>
+
+
+    </div>
 
 
             <!-- AREA YANG BISA DI-SCROLL -->
@@ -2476,17 +2782,418 @@
     <script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
     </script>
+
     <script 
         src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js">
     </script>
 
 
-    <!-- ======================================= -->
-    <!-- JAVASCRIPT UTAMA                      -->
-    <!-- ======================================= -->
-
     <script>
 
+
+
+        /* ===================================== */
+        /* SUPABASE CONFIGURATION                */
+        /* ===================================== */
+
+        const SUPABASE_URL = "https://ozbbtlpendwudnsdvygj.supabase.co";
+
+        const SUPABASE_PUBLISHABLE_KEY =
+            "sb_publishable_ORqijyXIwXWeT5-U2OyNYQ_dKhXuavz";
+
+        const supabaseClient = supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
+
+        /* ===================================== */
+        /* USER PROFILE                          */
+        /* ===================================== */
+
+        let currentUserProfile = null;
+
+        /* ===================================== */
+        /* TEST KONEKSI SUPABASE                 */
+        /* ===================================== */
+
+        async function testSupabaseConnection() {
+
+            const { data, error } = await supabaseClient.auth.getSession();
+
+            if (error) {
+
+                console.error(
+                    "❌ Koneksi Supabase gagal:",
+                    error
+                );
+
+                return;
+            }
+
+            console.log(
+                "✅ Supabase berhasil terhubung!"
+            );
+
+            console.log(
+                "Session saat ini:",
+                data.session
+            );
+        }
+
+        testSupabaseConnection();
+
+        /* ===================================== */
+        /* LOAD USER PROFILE                     */
+        /* ===================================== */
+
+        async function loadUserProfile() {
+
+            // ====================================
+            // AMBIL SESSION SUPABASE
+            // ====================================
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.getSession();
+
+
+            // ====================================
+            // CEK ERROR
+            // ====================================
+
+            if (error) {
+
+                console.error(
+                    'Gagal mengambil session:',
+                    error
+                );
+
+                return null;
+
+            }
+
+
+            // ====================================
+            // CEK USER
+            // ====================================
+
+            if (!data.session) {
+
+                console.log(
+                    'ℹ️ Tidak ada user yang sedang login'
+                );
+
+                return null;
+
+            }
+
+
+            const userId =
+                data.session.user.id;
+
+
+            // ====================================
+            // AMBIL PROFILE DARI DATABASE
+            // ====================================
+
+            const {
+                data: profile,
+                error: profileError
+            } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
+
+
+            // ====================================
+            // CEK ERROR PROFILE
+            // ====================================
+
+            if (profileError) {
+
+                console.error(
+                    '❌ Gagal mengambil profile:',
+                    profileError
+                );
+
+                return null;
+
+            }
+
+
+            // ====================================
+            // SIMPAN PROFILE
+            // ====================================
+
+            currentUserProfile = profile;
+
+
+            console.log(
+                '✅ Profile user berhasil dimuat:',
+                currentUserProfile
+            );
+
+
+            return currentUserProfile;
+
+        }
+
+        /* ===================================== */
+        /* CEK ROLE USER                         */
+        /* ===================================== */
+
+        function getUserRole() {
+
+            if (!currentUserProfile) {
+
+                return null;
+
+            }
+
+            return currentUserProfile.role;
+
+        }
+
+        /* ===================================== */
+        /* CEK ADMIN                             */
+        /* ===================================== */
+
+        function isAdmin() {
+
+            return (
+                currentUserProfile &&
+                currentUserProfile.role === 'admin'
+            );
+
+        }
+
+        /* ===================================== */
+        /* CEK OPERATOR                          */
+        /* ===================================== */
+
+        function isOperator() {
+
+            return (
+                currentUserProfile &&
+                currentUserProfile.role === 'operator'
+            );
+
+        }
+
+
+        /* ===================================== */
+        /* CEK AKSES SELURUH PROVINSI            */
+        /* ===================================== */
+
+        function hasAllProvinceAccess() {
+
+            return (
+                currentUserProfile &&
+                currentUserProfile.access_scope === 'all'
+            );
+
+        }
+
+
+        /* ===================================== */
+        /* CEK AKSES PROVINSI                    */
+        /* ===================================== */
+
+        function hasProvinceAccess() {
+
+            return (
+                currentUserProfile &&
+                currentUserProfile.access_scope === 'province'
+            );
+
+        }
+
+
+        /* ===================================== */
+        /* PROVINSI USER                         */
+        /* ===================================== */
+
+        function getUserProvince() {
+
+            if (!currentUserProfile) {
+
+                return null;
+
+            }
+
+            return currentUserProfile.province;
+
+        }
+
+
+        /* ===================================== */
+        /* CEK AKSES PROVINSI                    */
+        /* ===================================== */
+
+        function canAccessProvince(province) {
+
+            // Tidak ada profile
+            if (!currentUserProfile) {
+
+                return false;
+
+            }
+
+
+            // Admin / Operator Pusat
+            if (hasAllProvinceAccess()) {
+
+                return true;
+
+            }
+
+
+            // Operator Balai
+            if (hasProvinceAccess()) {
+
+                return (
+                    currentUserProfile.province === province
+                );
+
+            }
+
+
+            // Selain itu tidak boleh
+            return false;
+
+        }
+
+
+        /* ===================================== */
+        /* TERAPKAN AKSES PROVINSI               */
+        /* ===================================== */
+
+        function applyProvinceAccess() {
+
+            if (!currentUserProfile) {
+
+                return;
+
+            }
+
+
+            // ====================================
+            // AMBIL SEMUA ITEM PROVINSI
+            // ====================================
+
+            const provinceItems =
+                document.querySelectorAll(
+                    '.province-item'
+                );
+
+
+            // ====================================
+            // CEK SATU PER SATU
+            // ====================================
+
+            provinceItems.forEach(
+                function (item) {
+
+                    const province =
+                        item.dataset.province;
+
+
+                    // =================================
+                    // JIKA TIDAK BOLEH DIAKSES
+                    // =================================
+
+                    if (
+                        !canAccessProvince(province)
+                    ) {
+
+                        item.style.display = 'none';
+
+                    }
+
+
+                    // =================================
+                    // JIKA BOLEH DIAKSES
+                    // =================================
+
+                    else {
+
+                        item.style.display = '';
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* ===================================== */
+        /* TERAPKAN HAK AKSES BERDASARKAN ROLE   */
+        /* ===================================== */
+
+        function applyRoleAccess() {
+
+            // ====================================
+            // CEK PROFILE
+            // ====================================
+
+            if (!currentUserProfile) {
+
+                console.warn(
+                    'Profile user belum tersedia.'
+                );
+
+                return;
+
+            }
+
+
+            // ====================================
+            // AMBIL ELEMEN ADMIN
+            // ====================================
+
+            const adminElements =
+                document.querySelectorAll(
+                    '.admin-only'
+                );
+
+
+            // ====================================
+            // ADMIN
+            // ====================================
+
+            if (isAdmin()) {
+
+                adminElements.forEach(
+                    function (element) {
+
+                        element.style.display = '';
+
+                    }
+                );
+
+            }
+
+
+            // ====================================
+            // OPERATOR
+            // ====================================
+
+            else {
+
+                adminElements.forEach(
+                    function (element) {
+
+                        element.style.display = 'none';
+
+                    }
+                );
+
+            }
+
+        }
 
         /* ===================================== */
         /* 1. MEMBUAT PETA                      */
@@ -2604,6 +3311,22 @@
 
         function loadProvince(province) {
 
+
+                // ====================================
+                // CEK HAK AKSES PROVINSI
+                // ====================================
+
+                if (!canAccessProvince(province)) {
+
+                    console.warn(
+                        '⛔ Akses ditolak untuk provinsi:',
+                        province
+                    );
+
+                    return;
+
+                }
+
             console.log('Memuat provinsi:', province);
 
             // ========================================
@@ -2630,7 +3353,7 @@
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
@@ -4924,21 +5647,12 @@
 
                     "ID Jembatan":
                         properties.ID_Jbt_26 ?? '',
-
-                    "Kode Ruas":
-                        properties.Kd_Ruas_26 ?? '',
                     
-                    "Nama Ruas":
-                        properties.Nm_Ruas_26 ?? '',
-                    
-                    "Nomor Jembatan":
-                        properties.No_Jbt_26 ?? '',
-
                     "Nama Jembatan":
                         properties.Nm_Jbt_26 ?? '',
 
-                    "Lintas":
-                        properties.Lintas_26 ?? '',
+                    "Nomor Jembatan":
+                        properties.No_Jbt_26 ?? '',
 
                     "Nama Ruas":
                         properties.Nm_Ruas_26 ?? '',
@@ -4949,15 +5663,9 @@
                     "PPK":
                         properties.PPK_Name26 ?? '',
 
-                    "Status":
-                        properties.Status_26 ?? '',
-
                     "Panjang Jembatan (m)":
                         properties.Pjg_Jbt_26 ?? '',
 
-                    "Bentang Terpanjang (m)":
-                        properties.Btg_Pjg_26 ?? '',
-                    
                     "Jumlah Bentang":
                         properties.Jml_Btg_26 ?? '',
 
@@ -4997,23 +5705,8 @@
                     "Tipe Bangunan Atas":
                         properties.Bgn_Ats_26 ?? '',
 
-                    "Jenis Jembatan":
-                        properties.Jns_Jbt_26 ?? '',
-
                     "Tahun Bangun":
                         properties.Thn_Bgn_26 ?? '',
-
-                    "Tipe Lintasan":
-                        properties.Tp_Lnts_26 ?? '',
-
-                    "Detail Tipe Lintasan":
-                        properties.Dt_Lnts_26 ?? '',
-
-                    "Jenis Penanganan":
-                        properties.Pnangnn_26 ?? '',
-
-                    "Jenis Pemeriksaan":
-                        properties.Pmriksn_26 ?? '',
 
                     "BA":
                         properties.BA_26 ?? '',
@@ -5042,17 +5735,17 @@
                     "JBT":
                         properties.JBT_26 ?? '',
 
-                    "Latitude":
-                        properties.Lat_26 ?? '',
-
-                    "Longitude":
-                        properties.Long_26 ?? '',
-
                     "STA From":
                         properties.F_STA_26 ?? '',
 
                     "Tanggal Inspeksi":
-                        properties.Tgl_Ins_26 ?? ''
+                        properties.Tgl_Ins_26 ?? '',
+
+                    "Latitude":
+                        properties.Lat_26 ?? '',
+
+                    "Longitude":
+                        properties.Long_26 ?? ''
 
                 });
 
@@ -6173,7 +6866,624 @@ document.addEventListener(
     }
 );
 
-    </script>
+    // ========================================
+    // LOGIN DASHBOARD MENGGUNAKAN USERNAME
+    // ========================================
+
+async function loginDashboard() {
+
+    const username =
+        document.getElementById(
+            'login-username'
+        ).value.trim().toLowerCase();
+
+
+    const password =
+        document.getElementById(
+            'login-password'
+        ).value;
+
+
+    const message =
+        document.getElementById(
+            'login-message'
+        );
+
+
+    // ====================================
+    // CEK INPUT KOSONG
+    // ====================================
+
+    if (
+        username === '' ||
+        password === ''
+    ) {
+
+        message.textContent =
+            'Username dan password wajib diisi.';
+
+        return;
+
+    }
+
+
+    // ====================================
+    // PROSES LOGIN
+    // ====================================
+
+    message.textContent =
+        'Memproses login...';
+
+
+    try {
+
+        // ====================================
+        // CARI USERNAME DI PROFILE
+        // ====================================
+
+        const {
+            data: profileData,
+            error: profileError
+        } = await supabaseClient
+            .from('profiles')
+            .select('email, username, is_active')
+            .eq('username', username)
+            .maybeSingle();
+
+
+        // ====================================
+        // USERNAME TIDAK DITEMUKAN
+        // ====================================
+
+        if (
+            profileError ||
+            !profileData
+        ) {
+
+            console.error(
+                'Username tidak ditemukan:',
+                profileError
+            );
+
+            message.textContent =
+                'Username atau password salah.';
+
+            return;
+
+        }
+
+
+        // ====================================
+        // CEK USER AKTIF
+        // ====================================
+
+        if (
+            profileData.is_active === false
+        ) {
+
+            message.textContent =
+                'Akun Anda tidak aktif.';
+
+            return;
+
+        }
+
+
+        console.log(
+            '✅ Username ditemukan:',
+            profileData.username
+        );
+
+
+        // ====================================
+        // LOGIN SUPABASE AUTH
+        // ====================================
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.signInWithPassword({
+
+                email: profileData.email,
+
+                password: password
+
+            });
+
+
+        // ====================================
+        // CEK HASIL LOGIN
+        // ====================================
+
+        if (error) {
+
+            console.error(
+                'Login Supabase gagal:',
+                error
+            );
+
+            message.textContent =
+                'Username atau password salah.';
+
+            return;
+
+        }
+
+
+        // ====================================
+        // LOGIN BERHASIL
+        // ====================================
+
+        console.log(
+            '✅ Login Supabase berhasil:',
+            data.user
+        );
+
+
+        // ====================================
+        // LOAD PROFILE USER
+        // ====================================
+
+        const profile =
+            await loadUserProfile();
+
+
+        if (!profile) {
+
+            await supabaseClient.auth.signOut();
+
+            message.textContent =
+                'Profile user tidak ditemukan.';
+
+            return;
+
+        }
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES EXPORT
+        // ====================================
+
+        applyExportPermission();
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES USER
+        // ====================================
+
+        applyRoleAccess();
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES PROVINSI
+        // ====================================
+
+        applyProvinceAccess();
+
+
+        // ====================================
+        // SEMBUNYIKAN LOGIN
+        // ====================================
+
+        document.getElementById(
+            'login-screen'
+        ).style.display = 'none';
+
+
+        // ====================================
+        // TAMPILKAN DASHBOARD
+        // ====================================
+
+        document.getElementById(
+            'dashboard'
+        ).style.display = 'flex';
+
+
+        // ====================================
+        // TERAPKAN ULANG HAK AKSES EXPORT
+        // ====================================
+
+        setTimeout(function () {
+
+            applyExportPermission();
+
+        }, 300);
+
+
+        // ====================================
+        // UPDATE UKURAN MAP
+        // ====================================
+
+        setTimeout(function () {
+
+            map.invalidateSize();
+
+        }, 200);
+
+
+        // ====================================
+        // HAPUS PESAN LOGIN
+        // ====================================
+
+        message.textContent = '';
+
+
+    } catch (error) {
+
+        console.error(
+            '❌ Terjadi kesalahan login:',
+            error
+        );
+
+        message.textContent =
+            'Terjadi kesalahan saat login.';
+
+    }
+
+}
+
+
+    // ========================================
+    // HAK AKSES TOMBOL DOWNLOAD REKAP
+    // ========================================
+
+function applyExportPermission() {
+
+    const exportButton =
+        document.querySelector('.rekap-download-button');
+
+    // Jika tombol belum ditemukan
+    if (!exportButton) {
+
+        console.warn(
+            '⚠️ Tombol download rekap belum ditemukan'
+        );
+
+        return;
+
+    }
+
+
+    // ====================================
+    // CEK PROFILE USER
+    // ====================================
+
+    if (!currentUserProfile) {
+
+        console.warn(
+            '⚠️ Profile user belum tersedia'
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        '🔐 Cek hak akses download rekap:',
+        currentUserProfile.role,
+        currentUserProfile.access_scope
+    );
+
+
+    // ====================================
+    // ROLE YANG BOLEH DOWNLOAD REKAP
+    // ====================================
+
+    const allowed =
+        currentUserProfile.role === 'admin' ||
+        (
+            currentUserProfile.role === 'operator' &&
+            currentUserProfile.access_scope === 'all'
+        );
+
+
+    // ====================================
+    // TAMPILKAN / SEMBUNYIKAN
+    // ====================================
+
+    if (allowed) {
+
+        exportButton.style.display = '';
+
+        console.log(
+            '✅ Download rekap DIIZINKAN'
+        );
+
+    } else {
+
+        exportButton.style.display = 'none';
+
+        console.log(
+            '🚫 Download rekap DISEMBUNYIKAN'
+        );
+
+    }
+
+}
+
+
+   // ========================================
+    // CEK STATUS LOGIN SUPABASE SAAT HALAMAN DIBUKA
+    // ========================================
+
+    async function checkLoginStatus() {
+
+        console.log('🟡 checkLoginStatus() DIJALANKAN');
+
+        const {
+            data,
+            error
+        } = await supabaseClient.auth.getSession();
+
+
+        // ====================================
+        // CEK ERROR
+        // ====================================
+
+        if (error) {
+
+            console.error(
+                'Gagal mengecek session Supabase:',
+                error
+            );
+
+            return;
+
+        }
+
+
+        // ====================================
+        // USER SUDAH LOGIN
+        // ====================================
+
+        if (data.session) {
+
+            console.log(
+                '✅ Session Supabase ditemukan'
+            );
+
+            console.log(
+                '🔍 Mulai mengambil profile user...'
+            );
+
+
+            // ====================================
+            // LOAD PROFILE USER
+            // ====================================
+
+            const profile =
+                await loadUserProfile();
+
+                console.log(
+                 '🔍 Hasil loadUserProfile:',
+                    profile
+                );
+
+            
+
+            // ====================================
+            // PROFILE TIDAK DITEMUKAN
+            // ====================================
+
+            if (!profile) {
+
+                console.warn(
+                    '⚠️ Session ada tetapi profile user tidak ditemukan.'
+                );
+
+
+                // Logout untuk keamanan
+
+                await supabaseClient.auth.signOut();
+
+
+                // Tampilkan login
+
+                document.getElementById(
+                    'login-screen'
+                ).style.display = 'flex';
+
+
+                // Sembunyikan dashboard
+
+                document.getElementById(
+                    'dashboard'
+                ).style.display = 'none';
+
+
+                return;
+
+            }
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES EXPORT
+        // ====================================
+
+        applyExportPermission();
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES ROLE
+        // ====================================
+
+        applyRoleAccess();
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES PROVINSI
+        // ====================================
+
+        applyProvinceAccess();
+
+
+
+
+        // ====================================
+        // SEMBUNYIKAN HALAMAN LOGIN
+        // ====================================
+
+        document.getElementById(
+            'login-screen'
+        ).style.display = 'none';
+
+
+        // ====================================
+        // TAMPILKAN DASHBOARD
+        // ====================================
+
+        document.getElementById(
+            'dashboard'
+        ).style.display = 'flex';
+
+
+        // ====================================
+        // TERAPKAN HAK AKSES EXPORT
+        // SETELAH DASHBOARD TAMPIL
+        // ====================================
+
+        setTimeout(function () {
+
+            applyExportPermission();
+
+        }, 300);
+
+
+        // ====================================
+        // BERITAHU LEAFLET
+        // UKURAN MAP BERUBAH
+        // ====================================
+
+        setTimeout(function () {
+
+            map.invalidateSize();
+
+        }, 200);
+
+    }
+
+
+    // ====================================
+    // USER BELUM LOGIN
+    // ====================================
+
+    else {
+
+        console.log(
+            'ℹ️ Tidak ada session Supabase'
+        );
+
+
+        // ====================================
+        // TAMPILKAN HALAMAN LOGIN
+        // ====================================
+
+        document.getElementById(
+            'login-screen'
+        ).style.display = 'flex';
+
+
+        // ====================================
+        // SEMBUNYIKAN DASHBOARD
+        // ====================================
+
+        document.getElementById(
+            'dashboard'
+        ).style.display = 'none';
+
+    }
+
+}
+
+console.log('🔵 SEBELUM checkLoginStatus');
+
+checkLoginStatus();
+
+console.log('🟢 SESUDAH checkLoginStatus');
+
+
+
+
+// ========================================
+// LOGOUT DASHBOARD
+// ========================================
+
+async function logoutDashboard() {
+
+    // ====================================
+    // LOGOUT DARI SUPABASE
+    // ====================================
+
+    const { error } =
+        await supabaseClient.auth.signOut();
+
+
+    // ====================================
+    // CEK HASIL LOGOUT
+    // ====================================
+
+    if (error) {
+
+        console.error(
+            'Logout Supabase gagal:',
+            error
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        '✅ Logout Supabase berhasil'
+    );
+
+
+    // Hapus status login dashboard
+    sessionStorage.removeItem('dashboardLoggedIn');
+
+    // ====================================
+    // SEMBUNYIKAN DASHBOARD
+    // ====================================
+
+    document.getElementById(
+        'dashboard'
+    ).style.display = 'none';
+
+
+    // ====================================
+    // TAMPILKAN HALAMAN LOGIN
+    // ====================================
+
+    document.getElementById(
+        'login-screen'
+    ).style.display = 'flex';
+
+
+    // ====================================
+    // KOSONGKAN FORM LOGIN
+    // ====================================
+
+    document.getElementById(
+        'login-username'
+    ).value = '';
+
+
+    document.getElementById(
+        'login-password'
+    ).value = '';
+
+
+    document.getElementById(
+        'login-message'
+    ).textContent = '';
+
+}
+ 
+
+</script>
 
 
 </body>
