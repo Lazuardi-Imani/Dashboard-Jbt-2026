@@ -2924,11 +2924,54 @@
 
 
             // ====================================
+            // AMBIL DAFTAR PROVINSI USER
+            // ====================================
+
+            const {
+                data: userProvinces,
+                error: provinceError
+            } = await supabaseClient
+                .from('user_provinces')
+                .select('province')
+                .eq('user_id', userId);
+
+
+            // ====================================
+            // CEK ERROR PROVINSI
+            // ====================================
+
+            if (provinceError) {
+
+                console.error(
+                    '❌ Gagal mengambil daftar provinsi user:',
+                    provinceError
+                );
+
+                return null;
+
+            }
+
+
+            // ====================================
             // SIMPAN PROFILE
             // ====================================
 
             currentUserProfile = profile;
 
+
+            // ====================================
+            // SIMPAN DAFTAR PROVINSI
+            // ====================================
+
+            currentUserProfile.provinces =
+                userProvinces.map(
+                    item => item.province
+                );
+
+
+            // ====================================
+            // DEBUG
+            // ====================================
 
             console.log(
                 '✅ Profile user berhasil dimuat:',
@@ -2936,9 +2979,16 @@
             );
 
 
+            console.log(
+                '🌎 Provinsi yang dapat diakses:',
+                currentUserProfile.provinces
+            );
+
+
             return currentUserProfile;
 
         }
+        
 
         /* ===================================== */
         /* CEK ROLE USER                         */
@@ -3028,42 +3078,58 @@
         }
 
 
-        /* ===================================== */
-        /* CEK AKSES PROVINSI                    */
-        /* ===================================== */
+       /* ===================================== */
+/* CEK AKSES PROVINSI                    */
+/* ===================================== */
 
-        function canAccessProvince(province) {
+function canAccessProvince(province) {
 
-            // Tidak ada profile
-            if (!currentUserProfile) {
+    // Tidak ada profile
+    if (!currentUserProfile) {
 
-                return false;
+        return false;
 
-            }
-
-
-            // Admin / Operator Pusat
-            if (hasAllProvinceAccess()) {
-
-                return true;
-
-            }
+    }
 
 
-            // Operator Balai
-            if (hasProvinceAccess()) {
+    // ====================================
+    // ADMIN / OPERATOR PUSAT
+    // ====================================
 
-                return (
-                    currentUserProfile.province === province
-                );
+    if (hasAllProvinceAccess()) {
 
-            }
+        return true;
+
+    }
 
 
-            // Selain itu tidak boleh
-            return false;
+    // ====================================
+    // OPERATOR BALAI
+    // ====================================
 
-        }
+    if (
+        currentUserProfile.access_scope === 'province'
+    ) {
+
+        return (
+            Array.isArray(
+                currentUserProfile.provinces
+            ) &&
+            currentUserProfile.provinces.includes(
+                province
+            )
+        );
+
+    }
+
+
+    // ====================================
+    // SELAIN ITU TIDAK BOLEH
+    // ====================================
+
+    return false;
+
+}
 
 
         /* ===================================== */
@@ -3353,7 +3419,7 @@
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
