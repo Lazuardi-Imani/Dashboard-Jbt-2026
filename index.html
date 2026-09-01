@@ -1555,9 +1555,110 @@
         }
 
 
-        /* ===================================== */
-        /* MAP                                   */
-        /* ===================================== */
+        /* ======================================== */
+        /* TOMBOL FILTER NS / FXX / WXX             */
+        /* ======================================== */
+
+        .bridge-filter-buttons {
+
+            display: flex;
+
+            width: 100%;
+
+            gap: 6px;
+
+            margin-top: 20px;
+
+            padding: 0 4px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ======================================== */
+        /* TOMBOL FILTER                            */
+        /* ======================================== */
+
+        .bridge-filter-button {
+
+            flex: 1;
+
+            height: 26px;
+
+            border: 1px solid #1f4e79;
+
+            border-radius: 5px;
+
+            background: #ffffff;
+
+            color: #1f4e79;
+
+            font-family: inherit;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+
+        /* ======================================== */
+        /* KONDISI AKTIF                            */
+        /* ======================================== */
+
+        .bridge-filter-button.active {
+
+            background: #1f4e79;
+
+            color: #ffffff;
+
+            border-color: #1f4e79;
+
+        }
+
+
+        /* ======================================== */
+        /* HOVER                                    */
+        /* ======================================== */
+
+        .bridge-filter-button:hover {
+
+            background: #e8f0f7;
+
+            color: #1f4e79;
+
+        }
+
+
+        /* ======================================== */
+        /* HOVER TOMBOL AKTIF                       */
+        /* ======================================== */
+
+        .bridge-filter-button.active:hover {
+
+            background: #163a5c;
+
+            color: #ffffff;
+
+        }
+
+
+        /* ======================================== */
+        /* SAAT DIKLIK                              */
+        /* ======================================== */
+
+        .bridge-filter-button:active {
+
+            transform: scale(0.98);
+
+        }
 
 
 
@@ -3394,6 +3495,8 @@ function canAccessProvince(province) {
                 }
 
             console.log('Memuat provinsi:', province);
+            
+            activeProvince = province;
 
             // ========================================
             // CEK CACHE
@@ -3419,7 +3522,7 @@ function canAccessProvince(province) {
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
@@ -3450,6 +3553,7 @@ function canAccessProvince(province) {
 
 
                 .then(bridgeData => {
+
 
                     console.log(
                         'GeoJSON berhasil dibaca:',
@@ -4720,32 +4824,99 @@ function canAccessProvince(province) {
             }
 
 
-            // ================================
-            // HITUNG TOTAL UNIT
-            // ================================
+        // ================================
+        // DATA JEMBATAN SESUAI FILTER
+        // NS / FXX / WXX
+        // ================================
 
-            const totalUnit =
-                bridgeData.features.length;
+        const filteredFeatures =
+            bridgeData.features.filter(feature => {
+
+                const statusNS =
+                    String(feature.properties.Status_26 || '')
+                        .trim()
+                        .toUpperCase();
+
+                const tipeBA =
+                    String(feature.properties.Bgn_Ats_26 || '')
+                        .trim()
+                        .toUpperCase();
 
 
-            // ================================
-            // HITUNG TOTAL PANJANG
-            // ================================
+                // ================================
+                // NS OFF
+                // ================================
 
-            let totalPanjang = 0;
-
-            bridgeData.features.forEach(feature => {
-
-                const panjang =
-                    Number(feature.properties.Pjg_Jbt_26);
-
-                if (!isNaN(panjang)) {
-
-                    totalPanjang += panjang;
-
+                if (
+                    !bridgeFilterState.NS &&
+                    statusNS === 'NS'
+                ) {
+                    return false;
                 }
 
+
+                // ================================
+                // FXX OFF
+                // ================================
+
+                if (
+                    !bridgeFilterState.FXX &&
+                    tipeBA === 'FXX'
+                ) {
+                    return false;
+                }
+
+
+                // ================================
+                // WXX OFF
+                // ================================
+
+                if (
+                    !bridgeFilterState.WXX &&
+                    tipeBA === 'WXX'
+                ) {
+                    return false;
+                }
+
+
+                return true;
+
             });
+
+
+        // ================================
+        // HITUNG TOTAL UNIT
+        // ================================
+
+        const totalUnit =
+            filteredFeatures.length;
+
+
+        console.log(
+            '📊 Total unit setelah filter:',
+            totalUnit
+        );
+
+
+    // ================================
+    // HITUNG TOTAL PANJANG
+    // SESUAI FILTER
+    // ================================
+
+    let totalPanjang = 0;
+
+    filteredFeatures.forEach(feature => {
+
+        const panjang =
+            Number(feature.properties.Pjg_Jbt_26);
+
+        if (!isNaN(panjang)) {
+
+            totalPanjang += panjang;
+
+        }
+
+    });
 
 
             // ================================
@@ -4754,7 +4925,7 @@ function canAccessProvince(province) {
 
             let jumlahMantap = 0;
             
-            bridgeData.features.forEach(feature => {
+            filteredFeatures.forEach(feature => {
 
                 const kondisi =
                     Number(feature.properties.JBT_26);
@@ -4805,7 +4976,7 @@ function canAccessProvince(province) {
 
             let panjangMantap = 0;
 
-            bridgeData.features.forEach(feature => {
+            filteredFeatures.forEach(feature => {
 
                 const kondisi =
                     Number(feature.properties.JBT_26);
@@ -5009,7 +5180,45 @@ function canAccessProvince(province) {
 
                         </div>
 
+
+                        <!-- =============================== -->
+                        <!-- FILTER STATUS / TIPE BA          -->
+                        <!-- =============================== -->
+
+                      <div class="bridge-filter-buttons">
+
+                        <button
+                            type="button"
+                            class="bridge-filter-button ${bridgeFilterState.NS ? 'active' : ''}"
+                            data-filter="NS"
+                            onclick="toggleBridgeFilter('NS', this)"
+                        >
+                            NS
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="bridge-filter-button ${bridgeFilterState.FXX ? 'active' : ''}"
+                            data-filter="FXX"
+                            onclick="toggleBridgeFilter('FXX', this)"
+                        >
+                            FXX
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="bridge-filter-button ${bridgeFilterState.WXX ? 'active' : ''}"
+                            data-filter="WXX"
+                            onclick="toggleBridgeFilter('WXX', this)"
+                        >
+                            WXX
+                        </button>
+
                     </div>
+
+                </div>
 
 
                     <!-- =============================== -->
@@ -5248,48 +5457,118 @@ function canAccessProvince(province) {
             };
 
 
-            /* ================================= */
-            /* LOOP DATA                         */
-            /* ================================= */
+        /* ================================= */
+        /* DATA SESUAI FILTER NS / FXX / WXX */
+        /* ================================= */
 
-            bridgeData.features.forEach(
+        const filteredFeatures =
+            bridgeData.features.filter(feature => {
 
-                feature => {
-
-                    const kondisi =
-                        Number(
-                            feature.properties.JBT_26
-                        );
-
-
-                    const panjang =
-                        Number(
-                            feature.properties.Pjg_Jbt_26
-                        );
+                const statusNS =
+                    String(
+                        feature.properties.Status_26 || ''
+                    )
+                    .trim()
+                    .toUpperCase();
 
 
-                    if (
-                        Object.prototype.hasOwnProperty.call(
-                            unitCounts,
-                            kondisi
-                        )
-                    ) {
-
-                        unitCounts[kondisi]++;
+                const tipeBA =
+                    String(
+                        feature.properties.Bgn_Ats_26 || ''
+                    )
+                    .trim()
+                    .toUpperCase();
 
 
-                        if (!isNaN(panjang)) {
+                // ================================
+                // NS OFF
+                // ================================
 
-                            lengthCounts[kondisi] +=
-                                panjang;
+                if (
+                    !bridgeFilterState.NS &&
+                    statusNS === 'NS'
+                ) {
 
-                        }
+                    return false;
+
+                }
+
+
+                // ================================
+                // FXX OFF
+                // ================================
+
+                if (
+                    !bridgeFilterState.FXX &&
+                    tipeBA === 'FXX'
+                ) {
+
+                    return false;
+
+                }
+
+
+                // ================================
+                // WXX OFF
+                // ================================
+
+                if (
+                    !bridgeFilterState.WXX &&
+                    tipeBA === 'WXX'
+                ) {
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            });
+
+
+        /* ================================= */
+        /* LOOP DATA HASIL FILTER            */
+        /* ================================= */
+
+        filteredFeatures.forEach(
+
+            feature => {
+
+                const kondisi =
+                    Number(
+                        feature.properties.JBT_26
+                    );
+
+
+                const panjang =
+                    Number(
+                        feature.properties.Pjg_Jbt_26
+                    );
+
+
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        unitCounts,
+                        kondisi
+                    )
+                ) {
+
+                    unitCounts[kondisi]++;
+
+
+                    if (!isNaN(panjang)) {
+
+                        lengthCounts[kondisi] +=
+                            panjang;
 
                     }
 
                 }
 
-            );
+            }
+
+        );
 
 
             /* ================================= */
@@ -5297,7 +5576,7 @@ function canAccessProvince(province) {
             /* ================================= */
 
             const totalUnit =
-                bridgeData.features.length;
+                filteredFeatures.length;
 
 
             /* ================================= */
@@ -5656,6 +5935,85 @@ function canAccessProvince(province) {
 
         }
 
+
+        // ========================================
+        // STATUS FILTER JEMBATAN
+        // ========================================
+
+        let bridgeFilterState = {
+
+            NS: true,
+            FXX: true,
+            WXX: true
+
+        };
+
+
+
+    // ========================================
+    // TOGGLE FILTER JEMBATAN NS, FXX DAN WXX
+    // ========================================
+
+    function toggleBridgeFilter(filterType, button) {
+
+        // ========================================
+        // TOGGLE STATUS TOMBOL
+        // ========================================
+
+        button.classList.toggle('active');
+
+
+        // ========================================
+        // CEK STATUS SETELAH DIKLIK
+        // ========================================
+
+        const isActive =
+            button.classList.contains('active');
+
+
+        console.log(
+            `🔘 Filter ${filterType}:`,
+            isActive ? 'ON' : 'OFF'
+        );
+
+
+        // ========================================
+        // SIMPAN STATUS FILTER
+        // ========================================
+
+        bridgeFilterState[filterType] =
+            isActive;
+
+
+        console.log(
+            '🔎 Nilai filter yang disimpan:',
+            filterType,
+            bridgeFilterState[filterType]
+        );
+
+
+        console.log(
+            '🔎 Status semua filter:',
+            bridgeFilterState
+        );
+
+
+        // ========================================
+        // HITUNG ULANG PROVINSI AKTIF
+        // ========================================
+
+        if (activeProvince) {
+
+            console.log(
+                '🔄 Menghitung ulang provinsi:',
+                activeProvince
+            );
+
+            loadProvince(activeProvince);
+
+        }
+
+    }
 
 
         function downloadProvinceXLSX(button) {
