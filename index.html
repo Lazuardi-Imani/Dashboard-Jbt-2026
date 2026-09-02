@@ -3522,7 +3522,7 @@ function canAccessProvince(province) {
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
@@ -5110,6 +5110,16 @@ function canAccessProvince(province) {
 
 
                     <button
+                        class="berita-acara-button"
+                        onclick="openBeritaAcara(this)"
+                        title="Berita Acara"
+                        aria-label="Berita Acara"
+                    >
+                        📊
+                    </button>
+
+
+                    <button
                         class="bridge-search-button"
                         onclick="toggleBridgeSearch(this)"
                         title="Cari Jembatan"
@@ -6257,6 +6267,74 @@ function canAccessProvince(province) {
             );
 
         }
+
+
+        // ========================================
+        // BUKA BERITA ACARA
+        // ========================================
+
+        function openBeritaAcara(button) {
+
+            const summary =
+                button.closest('.province-summary');
+
+            if (!summary) {
+
+                console.error(
+                    '❌ Kartu provinsi tidak ditemukan'
+                );
+
+                return;
+            }
+
+            const province =
+                summary.dataset.province;
+
+            console.log(
+                '📊 Berita Acara provinsi:',
+                province
+            );
+
+
+            // Ambil link berdasarkan provinsi
+            const url =
+                beritaAcaraLinks[province];
+
+
+            // Jika link belum tersedia
+            if (!url) {
+
+                console.warn(
+                    '⚠️ Link Berita Acara belum tersedia untuk:',
+                    province
+                );
+
+                alert(
+                    `Link Berita Acara untuk ${province} belum tersedia.`
+                );
+
+                return;
+            }
+
+
+            // Buka dokumen di tab baru
+            window.open(
+                url,
+                '_blank'
+            );
+
+        }
+
+        // ========================================
+        // LINK BERITA ACARA PER PROVINSI
+        // ========================================
+
+        const beritaAcaraLinks = {
+
+            "Aceh": "https://pugoid-my.sharepoint.com/:b:/g/personal/lazuardi_imani_pugoid_onmicrosoft_com/IQCqrL2cUZsiR7IXTrHAHEBcAb0RAyK7T3rRK5Tn9k-K3J0?e=AAmVrf"
+
+
+        };
 
 
         function toggleBridgeSearch(button) {
