@@ -3522,7 +3522,7 @@ function canAccessProvince(province) {
             // ========================================
 
             const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                `output/${province}_2026_Q.geojson`;
 
 
             console.log(
@@ -5960,70 +5960,175 @@ function canAccessProvince(province) {
 
 
 
-    // ========================================
-    // TOGGLE FILTER JEMBATAN NS, FXX DAN WXX
-    // ========================================
-
-    function toggleBridgeFilter(filterType, button) {
-
         // ========================================
-        // TOGGLE STATUS TOMBOL
+        // TOGGLE FILTER JEMBATAN NS, FXX DAN WXX
         // ========================================
 
-        button.classList.toggle('active');
+        function toggleBridgeFilter(filterType, button) {
+
+            // ========================================
+            // CEK DATA PROVINSI AKTIF
+            // ========================================
+
+            if (!activeProvince) {
+
+                console.warn(
+                    '⚠️ Belum ada provinsi aktif'
+                );
+
+                return;
+            }
 
 
-        // ========================================
-        // CEK STATUS SETELAH DIKLIK
-        // ========================================
-
-        const isActive =
-            button.classList.contains('active');
+            const bridgeData =
+                provinceCache[activeProvince];
 
 
-        console.log(
-            `🔘 Filter ${filterType}:`,
-            isActive ? 'ON' : 'OFF'
-        );
+            if (!bridgeData) {
+
+                console.warn(
+                    '⚠️ Data provinsi belum tersedia:',
+                    activeProvince
+                );
+
+                return;
+            }
 
 
-        // ========================================
-        // SIMPAN STATUS FILTER
-        // ========================================
+            // ========================================
+            // CEK APAKAH FILTER MEMILIKI DATA
+            // ========================================
 
-        bridgeFilterState[filterType] =
-            isActive;
-
-
-        console.log(
-            '🔎 Nilai filter yang disimpan:',
-            filterType,
-            bridgeFilterState[filterType]
-        );
+            let ditemukan = false;
 
 
-        console.log(
-            '🔎 Status semua filter:',
-            bridgeFilterState
-        );
+            bridgeData.features.forEach(feature => {
+
+                const properties =
+                    feature.properties;
 
 
-        // ========================================
-        // HITUNG ULANG PROVINSI AKTIF
-        // ========================================
+                // ------------------------------------
+                // FILTER NS
+                // ------------------------------------
 
-        if (activeProvince) {
+                if (
+                    filterType === 'NS' &&
+                    properties.Status_26 === 'NS'
+                ) {
+
+                    ditemukan = true;
+
+                }
+
+
+                // ------------------------------------
+                // FILTER FXX
+                // ------------------------------------
+
+                else if (
+                    filterType === 'FXX' &&
+                    properties.Bgn_Ats_26 === 'FXX'
+                ) {
+
+                    ditemukan = true;
+
+                }
+
+
+                // ------------------------------------
+                // FILTER WXX
+                // ------------------------------------
+
+                else if (
+                    filterType === 'WXX' &&
+                    properties.Bgn_Ats_26 === 'WXX'
+                ) {
+
+                    ditemukan = true;
+
+                }
+
+            });
+
+
+            // ========================================
+            // JIKA DATA TIDAK DITEMUKAN
+            // ========================================
+
+            if (!ditemukan) {
+
+                alert(
+                    `Tidak ditemukan jembatan ${filterType} pada provinsi ini`
+                );
+
+                console.warn(
+                    `⚠️ Tidak ditemukan jembatan ${filterType} di ${activeProvince}`
+                );
+
+                return;
+            }
+
+
+            // ========================================
+            // TOGGLE STATUS TOMBOL
+            // ========================================
+
+            button.classList.toggle('active');
+
+
+            // ========================================
+            // CEK STATUS SETELAH DIKLIK
+            // ========================================
+
+            const isActive =
+                button.classList.contains('active');
+
 
             console.log(
-                '🔄 Menghitung ulang provinsi:',
-                activeProvince
+                `🔘 Filter ${filterType}:`,
+                isActive ? 'ON' : 'OFF'
             );
 
-            loadProvince(activeProvince);
+
+            // ========================================
+            // SIMPAN STATUS FILTER
+            // ========================================
+
+            bridgeFilterState[filterType] =
+                isActive;
+
+
+            console.log(
+                '🔎 Nilai filter yang disimpan:',
+                filterType,
+                bridgeFilterState[filterType]
+            );
+
+
+            console.log(
+                '🔎 Status semua filter:',
+                bridgeFilterState
+            );
+
+
+            // ========================================
+            // HITUNG ULANG PROVINSI AKTIF
+            // ========================================
+
+            if (activeProvince) {
+
+                console.log(
+                    '🔄 Menghitung ulang provinsi:',
+                    activeProvince
+                );
+
+                loadProvince(activeProvince);
+
+            }
 
         }
 
-    }
 
 
         function downloadProvinceXLSX(button) {
