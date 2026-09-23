@@ -3628,8 +3628,59 @@ function canAccessProvince(province) {
         let bridgeLayer = null;
 
 
-        // Cache data GeoJSON setiap provinsi
+        // ========================================
+        // DATA GEOJSON INDONESIA
+        // ========================================
+
+
+        // Cache data GeoJSON hasil filter setiap provinsi
         const provinceCache = {};
+
+        
+        // Satu sumber data untuk seluruh provinsi
+        let indonesiaGeoJSON = null;
+
+
+        // ========================================
+        // LOAD GEOJSON INDONESIA
+        // ========================================
+
+        async function loadIndonesiaGeoJSON() {
+
+            // Jika sudah pernah dimuat,
+            // gunakan data yang sudah ada
+            if (indonesiaGeoJSON) {
+                return indonesiaGeoJSON;
+            }
+
+            console.log(
+                '🇮🇩 Memuat Indonesia_2026_Q.geojson...'
+            );
+
+            const response =
+                await fetch(
+                    'output/Indonesia_2026_Q.geojson'
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'Indonesia_2026_Q.geojson tidak ditemukan'
+                );
+
+            }
+
+            indonesiaGeoJSON =
+                await response.json();
+
+            console.log(
+                '✅ Indonesia GeoJSON berhasil dimuat:',
+                indonesiaGeoJSON.features.length,
+                'feature'
+            );
+
+            return indonesiaGeoJSON;
+        }
 
         // Menyimpan provinsi yang sedang aktif
         let activeProvince = null;
@@ -3640,6 +3691,1283 @@ function canAccessProvince(province) {
         // ========================================
 
         let activeOrganization = null;
+
+
+        let activeIndonesia = false;
+
+
+        // ========================================
+        // TAMPILKAN SELURUH DATA INDONESIA
+        // ========================================
+
+        async function loadIndonesiaForMap() {
+
+            try {
+
+                console.log(
+                    '🇮🇩 Memuat seluruh data Indonesia...'
+                );
+
+                const indonesiaData =
+                    await loadIndonesiaGeoJSON();
+
+                console.log(
+                    '📊 Total feature Indonesia:',
+                    indonesiaData.features.length
+                );
+
+
+                 // ========================================
+                // FILTER DATA
+                // MENGGUNAKAN FILTER YANG SAMA
+                // DENGAN PROVINSI DAN ORGANISASI
+                // ========================================
+
+                const filteredFeatures =
+                    indonesiaData.features.filter(
+                        feature => {
+
+                            const properties =
+                                feature.properties || {};
+
+                            const statusNS =
+                                String(
+                                    properties.Status_26 || ''
+                                )
+                                .trim()
+                                .toUpperCase();
+
+                            const tipeBA =
+                                String(
+                                    properties.Bgn_Ats_26 || ''
+                                )
+                                .trim()
+                                .toUpperCase();
+
+
+                            // ----------------------------
+                            // FILTER NS
+                            // ----------------------------
+
+                            if (
+                                !bridgeFilterState.NS &&
+                                statusNS === 'NS'
+                            ) {
+                                return false;
+                            }
+
+
+                            // ----------------------------
+                            // FILTER FXX
+                            // ----------------------------
+
+                            if (
+                                !bridgeFilterState.FXX &&
+                                tipeBA === 'FXX'
+                            ) {
+                                return false;
+                            }
+
+
+                            // ----------------------------
+                            // FILTER WXX
+                            // ----------------------------
+
+                            if (
+                                !bridgeFilterState.WXX &&
+                                tipeBA === 'WXX'
+                            ) {
+                                return false;
+                            }
+
+
+                            return true;
+
+                        }
+                    );
+
+
+                console.log(
+                    '📊 Total feature Indonesia SETELAH filter:',
+                    filteredFeatures.length
+                );
+
+
+                console.log(
+                    '🗑️ Feature Indonesia yang dikeluarkan filter:',
+                    indonesiaData.features.length -
+                    filteredFeatures.length
+                );
+
+
+                // ========================================
+                // BUAT FEATURE COLLECTION HASIL FILTER
+                // ========================================
+
+                const filteredIndonesiaData = {
+
+                    type:
+                        'FeatureCollection',
+
+                    features:
+                        filteredFeatures
+
+                };
+
+                // ------------------------------------
+                // RESET STATUS AKTIF
+                // ------------------------------------
+
+                activeProvince =
+                    null;
+
+                activeOrganization =
+                    null;
+
+                activeIndonesia =
+                    true;
+
+                // ------------------------------------
+                // HAPUS LAYER LAMA
+                // ------------------------------------
+
+                if (bridgeLayer) {
+
+                    map.removeLayer(
+                        bridgeLayer
+                    );
+
+                    bridgeLayer = null;
+
+                }
+
+                // ------------------------------------
+                // TAMPILKAN SELURUH DATA INDONESIA
+                // ------------------------------------
+
+                bridgeLayer =
+                    L.geoJSON(
+                        indonesiaData,
+                        {
+
+                            pointToLayer:
+                                function(
+                                    feature,
+                                    latlng
+                                ) {
+
+                                    const kondisi =
+                                        feature.properties.JBT_26;
+
+                                    return L.circleMarker(
+                                        latlng,
+                                        {
+                                            radius: 5,
+                                            color: "white",
+                                            weight: 0.7,
+                                            fillColor:
+                                                getBridgeColor(
+                                                    kondisi
+                                                ),
+                                            fillOpacity: 1
+                                        }
+                                    );
+
+                                },
+
+                            onEachFeature:
+                                function(
+                                    feature,
+                                    layer
+                                ) {
+
+                                    layer.bindPopup(`
+                                        <div
+                                class="bridge-popup"
+                            >
+
+                                <div
+                                    class="bridge-popup-header"
+                                >
+
+                                    <div
+                                        class="bridge-popup-header-title"
+                                    >
+
+                                        INFORMASI JEMBATAN
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="bridge-popup-body"
+                                >
+
+                                    <div
+                                        class="bridge-section"
+                                    >
+
+                                        <div
+                                            class="bridge-section-title"
+                                        >
+
+                                            Identitas
+
+                                        </div>
+
+
+                                      <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                ID Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.ID_Jbt_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Kode Ruas
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Kd_Ruas_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Nama Ruas
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Nm_Ruas_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Nomor Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.No_Jbt_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Nama Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Nm_Jbt_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+                                        
+
+                                         <div
+                                            class="bridge-row"
+                                        >
+                                                
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lintas
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lintas_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+ 
+
+                                <div 
+                                        class="bridge-row"
+                                        >
+
+                                            <div class="bridge-label">
+                                                Pengelola
+                                            </div>
+
+                                        <div class="bridge-value">
+                                            ${feature.properties.Pnglola_26 ?? '-'}
+
+                                        </div>
+
+                                </div> 
+
+
+                                <div 
+                                        class="bridge-row"
+                                        >
+
+                                            <div class="bridge-label">
+
+                                                PPK
+                                                
+                                            </div>
+
+                                        <div class="bridge-value">
+                                            ${feature.properties.PPK_Name26 ?? '-'}
+
+                                        </div>
+
+                                </div> 
+
+                        </div>
+
+
+                                    <div
+                                        class="bridge-section"
+                                    >
+
+                                        <div
+                                            class="bridge-section-title"
+                                        >
+
+                                            Data Teknis
+
+                                        </div>
+
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Status Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Status_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Panjang Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Pjg_Jbt_26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Bentang Terpanjang
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Btg_Pjg_26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jumlah Bentang
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Jml_Btg_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Lajur
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Lalin26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Bahu (Ki)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Bh_Ki26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Bahu (Ka)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Bh_Ka26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Drainase (Ki)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Dr_Ki26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Drainase (Ka)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Dr_Ka26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Trotoar (Ki)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Tr_Ki26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Trotoar (Ka)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Tr_Ka26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Tembok Sandaran (Ki)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_TS_Ki26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Tembok Sandaran (Ka)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_TS_Ka26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Median
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lb_Med_26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+                                        
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Lebar Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lbr_Jbt_26 ?? '-'} m
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                        class="bridge-label"
+                                            >
+
+                                                Tipe Bangunan Atas
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Bgn_Ats_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jenis Jembatan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Jns_Jbt_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Tahun Bangun
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Thn_Bgn_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Tipe Lintasan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Tp_Lnts_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Detail Tipe Lintasan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Dt_Lnts_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jenis Penanganan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Pnangnn_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="bridge-row">
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Jenis Pemeriksaan
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Pmriksn_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+                            </div>
+
+
+                                    <div
+                                        class="bridge-section"
+                                    >
+
+                                        <div
+                                            class="bridge-section-title"
+                                        >
+
+                                            Elemen Jembatan
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                BA
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.BA_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                LNT
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.LNT_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                BB
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.BB_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                DAS
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.DAS_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                OP
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.OP_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                UT
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.UT_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                GR
+                                            </div>
+
+                                                <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.GR_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                LB
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.LB_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+                                                JBT
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.JBT_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+                            </div>
+
+
+                                    <div
+                                        class="bridge-section"
+                                    >
+
+                                        <div
+                                            class="bridge-section-title"
+                                        >
+
+                                            Koordinat
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Latitude
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Lat_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Longitude
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Long_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                STA (From)
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.F_STA_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="bridge-row"
+                                        >
+
+                                            <div
+                                                class="bridge-label"
+                                            >
+
+                                                Tanggal Inspeksi
+
+                                            </div>
+
+                                            <div
+                                                class="bridge-value"
+                                            >
+
+                                                ${feature.properties.Tgl_Ins_26 ?? '-'}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                                    `);
+
+                                }
+
+                        }
+                    )
+                    .addTo(map);
+
+                // ------------------------------------
+                // KEMBALIKAN VIEW INDONESIA
+                // ------------------------------------
+
+                map.setView(
+                    [-2.5, 118.0],
+                    5
+                );
+
+
+                // ========================================
+                // UPDATE KARTU INDONESIA
+                // ========================================
+
+                updateProvinceSummary(
+                    'Indonesia',
+                    filteredIndonesiaData
+                );
+
+
+                console.log(
+                    '✅ Seluruh data Indonesia berhasil ditampilkan'
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    '❌ Gagal menampilkan data Indonesia:',
+                    error
+                );
+
+                alert(
+                    'Data Indonesia tidak dapat dimuat.'
+                );
+
+            }
+
+        }
 
 
 
@@ -3763,7 +5091,7 @@ function canAccessProvince(province) {
                 // NUSA TENGGARA
                 // ================================
 
-                "NTB",
+                "Nusa Tenggara Barat",
                 "Nusa Tenggara Timur",
 
 
@@ -3791,12 +5119,12 @@ function canAccessProvince(province) {
                 // PAPUA
                 // ================================
 
-                "Papua Jayapura",
+                "PAPUA PEGUNUNGAN (JAYAPURA)",
                 "Papua Barat",
                 "Papua Barat Daya",
-                "Papua Pegunungan",
-                "Papua Tengah",
-                "Papua Selatan"
+                "PAPUA PEGUNUNGAN (WAMENA)",
+                "PAPUA TENGAH (NABIRE)",
+                "PAPUA SELATAN (MERAUKE)"
 
             ]
 
@@ -3856,7 +5184,11 @@ function canAccessProvince(province) {
                 organization;
 
 
-            activeProvince = null;
+            activeProvince = 
+                null;
+
+            activeIndonesia =
+                false;
 
 
             console.log(
@@ -3879,7 +5211,21 @@ function canAccessProvince(province) {
 
 
             // ========================================
-            // LOAD DATA SETIAP PROVINSI
+            // LOAD DATA DARI GEOJSON INDONESIA
+            // ========================================
+
+            const indonesiaData =
+                await loadIndonesiaGeoJSON();
+
+            console.log(
+                '🇮🇩 Indonesia GeoJSON tersedia:',
+                indonesiaData.features.length,
+                'feature'
+            );
+
+
+            // ========================================
+            // FILTER PROVINSI SESUAI ORGANISASI
             // ========================================
 
             for (
@@ -3905,85 +5251,100 @@ function canAccessProvince(province) {
                         province
                     );
 
-
                     allFeatures.push(
                         ...provinceCache[province].features
                     );
 
-
                     continue;
-
                 }
 
 
                 // ------------------------------------
-                // NAMA FILE GEOJSON
+                // FILTER DARI GEOJSON INDONESIA
                 // ------------------------------------
 
-                const geojsonFile =
-                    `${province}_2026_Q.geojson`;
+                const provinceUpper =
+                    province.toUpperCase();
+
+                const provinceFeatures =
+                    indonesiaData.features.filter(
+                        feature => {
+
+                            const featureProvince =
+                                feature.properties?.PROVINSI;
+
+                            if (!featureProvince) {
+                                return false;
+                            }
+
+                            return (
+                                featureProvince
+                                    .toUpperCase()
+                                === provinceUpper
+                            );
+
+                        }
+                    );
 
 
                 console.log(
-                    '📥 Mengambil:',
-                    geojsonFile
+                    `📍 ${province}:`,
+                    provinceFeatures.length,
+                    'feature'
                 );
 
 
-                try {
+                // ------------------------------------
+                // CEK JIKA DATA KOSONG
+                // ------------------------------------
 
-                    const response =
-                        await fetch(
-                            geojsonFile
-                        );
+                if (
+                    provinceFeatures.length === 0
+                ) {
 
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            `File tidak ditemukan: ${geojsonFile}`
-                        );
-
-                    }
-
-
-                    const bridgeData =
-                        await response.json();
-
-
-                    // --------------------------------
-                    // SIMPAN CACHE
-                    // --------------------------------
-
-                    provinceCache[province] =
-                        bridgeData;
-
-
-                    console.log(
-                        '💾 Disimpan ke cache:',
+                    console.warn(
+                        '⚠️ Data provinsi tidak ditemukan:',
                         province
                     );
 
-
-                    // --------------------------------
-                    // GABUNGKAN FEATURES
-                    // --------------------------------
-
-                    allFeatures.push(
-                        ...bridgeData.features
-                    );
-
-
+                    continue;
                 }
 
-                catch (error) {
 
-                    console.error(
-                        `❌ Gagal mengambil data ${province}:`,
-                        error
-                    );
+                // ------------------------------------
+                // BUAT FEATURE COLLECTION
+                // ------------------------------------
 
-                }
+                const bridgeData = {
+
+                    type: 'FeatureCollection',
+
+                    features:
+                        provinceFeatures
+
+                };
+
+
+                // ------------------------------------
+                // SIMPAN CACHE
+                // ------------------------------------
+
+                provinceCache[province] =
+                    bridgeData;
+
+                console.log(
+                    '💾 Data provinsi disimpan ke cache:',
+                    province
+                );
+
+
+                // ------------------------------------
+                // GABUNGKAN FEATURES
+                // ------------------------------------
+
+                allFeatures.push(
+                    ...bridgeData.features
+                );
 
             }
 
@@ -5434,79 +6795,142 @@ async function refreshOrganization(organization) {
 
     // ========================================
     // GABUNGKAN DATA SEMUA PROVINSI
+    // DARI GEOJSON INDONESIA
     // ========================================
 
     let allFeatures = [];
 
 
-    for (const province of provinces) {
+    // ========================================
+    // LOAD GEOJSON INDONESIA
+    // ========================================
+
+    const indonesiaData =
+        await loadIndonesiaGeoJSON();
+
+    console.log(
+        '🇮🇩 Indonesia GeoJSON tersedia:',
+        indonesiaData.features.length,
+        'feature'
+    );
+
+
+    // ========================================
+    // AMBIL DATA PROVINSI ORGANISASI
+    // ========================================
+
+    for (
+        const province of provinces
+    ) {
 
         // ------------------------------------
-        // DATA DARI CACHE
+        // CEK CACHE
         // ------------------------------------
 
-        if (provinceCache[province]) {
+        if (
+            provinceCache[province]
+        ) {
+
+            console.log(
+                '✅ Menggunakan cache:',
+                province
+            );
 
             allFeatures.push(
                 ...provinceCache[province].features
             );
 
             continue;
-
         }
 
 
         // ------------------------------------
-        // DATA BELUM ADA → LOAD
+        // FILTER DARI GEOJSON INDONESIA
         // ------------------------------------
 
-        const geojsonFile =
-            `${province}_2026_Q.geojson`;
+        const provinceUpper =
+            province.toUpperCase();
 
+        const provinceFeatures =
+            indonesiaData.features.filter(
+                feature => {
 
-        try {
+                    const featureProvince =
+                        feature.properties?.PROVINSI;
 
-            const response =
-                await fetch(
-                    geojsonFile
-                );
+                    if (!featureProvince) {
+                        return false;
+                    }
 
+                    return (
+                        featureProvince
+                            .toUpperCase()
+                        === provinceUpper
+                    );
 
-            if (!response.ok) {
-
-                throw new Error(
-                    `File tidak ditemukan: ${geojsonFile}`
-                );
-
-            }
-
-
-            const bridgeData =
-                await response.json();
-
-
-            // Simpan cache
-
-            provinceCache[province] =
-                bridgeData;
-
-
-            // Gabungkan
-
-            allFeatures.push(
-                ...bridgeData.features
+                }
             );
 
-        }
 
-        catch (error) {
+        console.log(
+            `📍 ${province}:`,
+            provinceFeatures.length,
+            'feature'
+        );
 
-            console.error(
-                `❌ Gagal mengambil data ${province}:`,
-                error
+
+        // ------------------------------------
+        // JIKA DATA TIDAK DITEMUKAN
+        // ------------------------------------
+
+        if (
+            provinceFeatures.length === 0
+        ) {
+
+            console.warn(
+                '⚠️ Data provinsi tidak ditemukan:',
+                province
             );
 
+            continue;
         }
+
+
+        // ------------------------------------
+        // BUAT FEATURE COLLECTION
+        // ------------------------------------
+
+        const bridgeData = {
+
+            type: 'FeatureCollection',
+
+            features:
+                provinceFeatures
+
+        };
+
+
+        // ------------------------------------
+        // SIMPAN KE CACHE
+        // ------------------------------------
+
+        provinceCache[province] =
+            bridgeData;
+
+
+        console.log(
+            '💾 Data provinsi disimpan ke cache:',
+            province
+        );
+
+
+        // ------------------------------------
+        // GABUNGKAN
+        // ------------------------------------
+
+        allFeatures.push(
+            ...bridgeData.features
+        );
 
     }
 
@@ -5816,23 +7240,24 @@ async function refreshOrganization(organization) {
         /* 5. LOAD PROVINSI                     */
         /* ===================================== */
 
-        function loadProvince(province) {
+        async function loadProvince(province) {
 
 
-                // ====================================
-                // CEK HAK AKSES PROVINSI
-                // ====================================
+            // ====================================
+            // CEK HAK AKSES PROVINSI
+            // ====================================
 
-                if (!canAccessProvince(province)) {
+            if (!canAccessProvince(province)) {
 
-                    console.warn(
-                        '⛔ Akses ditolak untuk provinsi:',
-                        province
-                    );
+                console.warn(
+                    '⛔ Akses ditolak untuk provinsi:',
+                    province
+                );
 
-                    return;
+                return;
 
-                }
+            }
+
 
             console.log(
                 'Memuat provinsi:',
@@ -5850,6 +7275,9 @@ async function refreshOrganization(organization) {
             activeOrganization =
                 null;
 
+            activeIndonesia =
+                false;
+
 
             // ========================================
             // CEK CACHE
@@ -5858,7 +7286,7 @@ async function refreshOrganization(organization) {
             if (provinceCache[province]) {
 
                 console.log(
-                    'Data diambil dari cache:',
+                    '✅ Data provinsi diambil dari cache:',
                     province
                 );
 
@@ -5867,90 +7295,134 @@ async function refreshOrganization(organization) {
                 );
 
                 return;
+
             }
 
 
-            // ========================================
-            // NAMA FILE GEOJSON
-            // ========================================
+            try {
 
-            const geojsonFile =
-                `${province}_2026_Q.geojson`;
+                // ========================================
+                // LOAD SATU GEOJSON INDONESIA
+                // ========================================
 
-
-            console.log(
-                'Mengambil file:',
-                geojsonFile
-            );
+                const indonesiaData =
+                    await loadIndonesiaGeoJSON();
 
 
-            // ========================================
-            // FETCH GEOJSON
-            // ========================================
-
-            fetch(geojsonFile)
-
-                .then(response => {
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            `File tidak ditemukan: ${geojsonFile}`
-                        );
-
-                    }
-
-                    return response.json();
-
-                })
+                console.log(
+                    '🇮🇩 Data Indonesia tersedia:',
+                    indonesiaData.features.length,
+                    'feature'
+                );
 
 
-                .then(bridgeData => {
+                // ========================================
+                // FILTER BERDASARKAN PROVINSI
+                // ========================================
+
+                const provinceUpper =
+                    province.toUpperCase();
 
 
-                    console.log(
-                        'GeoJSON berhasil dibaca:',
+                const provinceFeatures =
+                    indonesiaData.features.filter(
+                        feature => {
+
+                            const featureProvince =
+                                feature.properties?.PROVINSI;
+
+                            if (!featureProvince) {
+                                return false;
+                            }
+
+                            return (
+                                featureProvince
+                                    .toUpperCase()
+                                === provinceUpper
+                            );
+
+                        }
+                    );
+
+
+                console.log(
+                    `📍 ${province}:`,
+                    provinceFeatures.length,
+                    'feature'
+                );
+
+
+                // ========================================
+                // CEK DATA
+                // ========================================
+
+                if (
+                    provinceFeatures.length === 0
+                ) {
+
+                    console.warn(
+                        '⚠️ Data provinsi tidak ditemukan:',
                         province
-                    );
-
-
-                    console.log(
-                        'Jumlah feature:',
-                        bridgeData.features.length
-                    );
-
-
-                    // ====================================
-                    // SIMPAN KE CACHE
-                    // ====================================
-
-                    provinceCache[province] =
-                        bridgeData;
-
-
-                    // ====================================
-                    // TAMPILKAN DATA
-                    // ====================================
-
-                    showProvinceFromCache(
-                        province
-                    );
-
-                })
-
-
-                .catch(error => {
-
-                    console.error(
-                        'Gagal membaca GeoJSON:',
-                        error
                     );
 
                     alert(
-                        `Data ${province} tidak dapat dimuat.`
+                        `Data ${province} tidak ditemukan pada Indonesia_2026_Q.geojson.`
                     );
 
-                });
+                    return;
+
+                }
+
+
+                // ========================================
+                // BUAT GEOJSON PROVINSI
+                // ========================================
+
+                const bridgeData = {
+
+                    type: 'FeatureCollection',
+
+                    features:
+                        provinceFeatures
+
+                };
+
+
+                // ========================================
+                // SIMPAN KE CACHE
+                // ========================================
+
+                provinceCache[province] =
+                    bridgeData;
+
+
+                console.log(
+                    '💾 Data provinsi disimpan ke cache:',
+                    province
+                );
+
+
+                // ========================================
+                // TAMPILKAN DATA
+                // ========================================
+
+                showProvinceFromCache(
+                    province
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Gagal membaca Indonesia_2026_Q.geojson:',
+                    error
+                );
+
+                alert(
+                    `Data ${province} tidak dapat dimuat.`
+                );
+
+            }
 
         }
 
@@ -9394,334 +10866,370 @@ async function refreshOrganization(organization) {
 
 
         // ========================================
-// TOGGLE FILTER JEMBATAN
-// NS / FXX / WXX
-// PROVINSI + UNIT ORGANISASI
-// ========================================
+        // TOGGLE FILTER JEMBATAN
+        // NS / FXX / WXX
+        // PROVINSI + UNIT ORGANISASI
+        // ========================================
 
-async function toggleBridgeFilter(
-    filterType,
-    button
-) {
+        async function toggleBridgeFilter(
+            filterType,
+            button
+        ) {
 
-    // ========================================
-    // CEK MODE AKTIF
-    // ========================================
+            // ========================================
+            // CEK MODE AKTIF
+            // ========================================
 
-    if (
-        !activeProvince &&
-        !activeOrganization
-    ) {
-
-        console.warn(
-            '⚠️ Belum ada provinsi atau organisasi aktif'
-        );
-
-        return;
-
-    }
-
-
-    // ========================================
-    // CEK STATUS TOMBOL SAAT INI
-    // ========================================
-
-    const currentlyActive =
-        button.classList.contains('active');
-
-
-    // ========================================
-    // JIKA TOMBOL AKAN DIMATIKAN
-    // ========================================
-    //
-    // ON → OFF
-    //
-    // CEK DULU APAKAH DATA TERSEBUT ADA
-    //
-    // JIKA TIDAK ADA:
-    // - alert
-    // - tombol tetap ON
-    // - filter tidak berubah
-    //
-    // ========================================
-
-    if (currentlyActive) {
-
-        let bridgeData = null;
-
-
-        // ====================================
-        // MODE ORGANISASI
-        // ====================================
-
-        if (activeOrganization) {
-
-            console.log(
-                '🏢 Memeriksa data filter organisasi:',
-                activeOrganization
-            );
-
-
-            const provinces =
-                organisasiWilayah[
-                    activeOrganization
-                ] || [];
-
-
-            let allFeatures = [];
-
-
-            for (
-                const province of provinces
+            if (
+                    !activeProvince &&
+                    !activeOrganization &&
+                    !activeIndonesia
             ) {
 
-                if (
-                    provinceCache[province]
-                ) {
+                console.warn(
+                    '⚠️ Belum ada provinsi, organisasi, atau Indonesia yang aktif'
+                );
 
-                    allFeatures.push(
-                        ...provinceCache[province].features
+                return;
+
+            }
+
+
+            // ========================================
+            // CEK STATUS TOMBOL SAAT INI
+            // ========================================
+
+            const currentlyActive =
+                button.classList.contains('active');
+
+
+            // ========================================
+            // JIKA TOMBOL AKAN DIMATIKAN
+            // ========================================
+            //
+            // ON → OFF
+            //
+            // CEK DULU APAKAH DATA TERSEBUT ADA
+            //
+            // JIKA TIDAK ADA:
+            // - alert
+            // - tombol tetap ON
+            // - filter tidak berubah
+            //
+            // ========================================
+
+            if (currentlyActive) {
+
+                let bridgeData = null;
+
+
+                // ====================================
+                // MODE ORGANISASI
+                // ====================================
+
+                if (activeOrganization) {
+
+                    console.log(
+                        '🏢 Memeriksa data filter organisasi:',
+                        activeOrganization
                     );
+
+
+                    const provinces =
+                        organisasiWilayah[
+                            activeOrganization
+                        ] || [];
+
+
+                    let allFeatures = [];
+
+
+                    for (
+                        const province of provinces
+                    ) {
+
+                        if (
+                            provinceCache[province]
+                        ) {
+
+                            allFeatures.push(
+                                ...provinceCache[province].features
+                            );
+
+                        }
+
+                    }
+
+
+                    bridgeData = {
+
+                        type: 'FeatureCollection',
+
+                        features: allFeatures
+
+                    };
+
+                }
+
+
+                // ====================================
+                // MODE PROVINSI
+                // ====================================
+
+                else if (activeProvince) {
+
+                    bridgeData =
+                        provinceCache[
+                            activeProvince
+                        ];
+
+                }
+
+
+                // ====================================
+                // MODE INDONESIA
+                // ====================================
+
+                else if (activeIndonesia) {
+
+                    console.log(
+                        '🇮🇩 Memeriksa data filter Indonesia'
+                    );
+
+                    bridgeData =
+                        indonesiaGeoJSON;
+
+                }
+
+
+                // ====================================
+                // CEK DATA
+                // ====================================
+
+                if (bridgeData) {
+
+                    const ditemukan =
+                        bridgeData.features.some(
+                            feature => {
+
+                                const properties =
+                                    feature.properties || {};
+
+
+                                const statusNS =
+                                    String(
+                                        properties.Status_26 || ''
+                                    )
+                                    .trim()
+                                    .toUpperCase();
+
+
+                                const tipeBA =
+                                    String(
+                                        properties.Bgn_Ats_26 || ''
+                                    )
+                                    .trim()
+                                    .toUpperCase();
+
+
+                                // ==========================
+                                // NS
+                                // ==========================
+
+                                if (
+                                    filterType === 'NS'
+                                ) {
+
+                                    return (
+                                        statusNS === 'NS'
+                                    );
+
+                                }
+
+
+                                // ==========================
+                                // FXX
+                                // ==========================
+
+                                if (
+                                    filterType === 'FXX'
+                                ) {
+
+                                    return (
+                                        tipeBA === 'FXX'
+                                    );
+
+                                }
+
+
+                                // ==========================
+                                // WXX
+                                // ==========================
+
+                                if (
+                                    filterType === 'WXX'
+                                ) {
+
+                                    return (
+                                        tipeBA === 'WXX'
+                                    );
+
+                                }
+
+
+                                return false;
+
+                            }
+                        );
+
+
+                    // ====================================
+                    // TIDAK DITEMUKAN
+                    // ====================================
+
+                    if (!ditemukan) {
+
+                        console.warn(
+                            `⚠️ Tidak ditemukan jembatan ${filterType}`
+                        );
+
+
+                        // --------------------------------
+                        // ALERT ORGANISASI
+                        // --------------------------------
+
+                        if (activeOrganization) {
+
+                            alert(
+                                `Tidak ditemukan jembatan ${filterType}`
+                            );
+
+                        }
+
+
+                        // --------------------------------
+                        // ALERT PROVINSI
+                        // --------------------------------
+
+                        else if (activeProvince) {
+
+                            alert(
+                                `Tidak ditemukan jembatan ${filterType} pada provinsi ini`
+                            );
+
+                        }
+
+
+                        // --------------------------------
+                        // PENTING:
+                        // JANGAN UBAH BUTTON
+                        // JANGAN UBAH STATE
+                        // --------------------------------
+
+                        return;
+
+                    }
 
                 }
 
             }
 
 
-            bridgeData = {
+            // ========================================
+            // SAMPAI DI SINI:
+            // DATA AMAN UNTUK DI-TOGGLE
+            // ========================================
 
-                type: 'FeatureCollection',
-
-                features: allFeatures
-
-            };
-
-        }
+            button.classList.toggle('active');
 
 
-        // ====================================
-        // MODE PROVINSI
-        // ====================================
+            const isActive =
+                button.classList.contains('active');
 
-        else if (activeProvince) {
 
-            bridgeData =
-                provinceCache[
+            // ========================================
+            // SIMPAN STATUS FILTER
+            // ========================================
+
+            bridgeFilterState[filterType] =
+                isActive;
+
+
+            console.log(
+                `🔘 Filter ${filterType}:`,
+                isActive ? 'ON' : 'OFF'
+            );
+
+
+            console.log(
+                '🔎 Status semua filter:',
+                bridgeFilterState
+            );
+
+
+            // ========================================
+            // MODE ORGANISASI
+            // ========================================
+
+            if (activeOrganization) {
+
+                console.log(
+                    '🏢 Filter dijalankan untuk organisasi:',
+                    activeOrganization
+                );
+
+
+                await refreshOrganization(
+                    activeOrganization
+                );
+
+
+                return;
+
+            }
+
+
+            // ========================================
+            // MODE PROVINSI
+            // ========================================
+
+            if (activeProvince) {
+
+                console.log(
+                    '🗺️ Filter dijalankan untuk provinsi:',
                     activeProvince
-                ];
-
-        }
-
-
-        // ====================================
-        // CEK DATA
-        // ====================================
-
-        if (bridgeData) {
-
-            const ditemukan =
-                bridgeData.features.some(
-                    feature => {
-
-                        const properties =
-                            feature.properties || {};
-
-
-                        const statusNS =
-                            String(
-                                properties.Status_26 || ''
-                            )
-                            .trim()
-                            .toUpperCase();
-
-
-                        const tipeBA =
-                            String(
-                                properties.Bgn_Ats_26 || ''
-                            )
-                            .trim()
-                            .toUpperCase();
-
-
-                        // ==========================
-                        // NS
-                        // ==========================
-
-                        if (
-                            filterType === 'NS'
-                        ) {
-
-                            return (
-                                statusNS === 'NS'
-                            );
-
-                        }
-
-
-                        // ==========================
-                        // FXX
-                        // ==========================
-
-                        if (
-                            filterType === 'FXX'
-                        ) {
-
-                            return (
-                                tipeBA === 'FXX'
-                            );
-
-                        }
-
-
-                        // ==========================
-                        // WXX
-                        // ==========================
-
-                        if (
-                            filterType === 'WXX'
-                        ) {
-
-                            return (
-                                tipeBA === 'WXX'
-                            );
-
-                        }
-
-
-                        return false;
-
-                    }
                 );
 
 
-            // ====================================
-            // TIDAK DITEMUKAN
-            // ====================================
-
-            if (!ditemukan) {
-
-                console.warn(
-                    `⚠️ Tidak ditemukan jembatan ${filterType}`
+                loadProvince(
+                    activeProvince
                 );
 
 
-                // --------------------------------
-                // ALERT ORGANISASI
-                // --------------------------------
+                return;
 
-                if (activeOrganization) {
-
-                    alert(
-                        `Tidak ditemukan jembatan ${filterType}`
-                    );
-
-                }
+            }
 
 
-                // --------------------------------
-                // ALERT PROVINSI
-                // --------------------------------
+            // ========================================
+            // MODE INDONESIA
+            // ========================================
 
-                else if (activeProvince) {
+            if (activeIndonesia) {
 
-                    alert(
-                        `Tidak ditemukan jembatan ${filterType} pada provinsi ini`
-                    );
-
-                }
+                console.log(
+                    '🇮🇩 Filter dijalankan untuk seluruh Indonesia'
+                );
 
 
-                // --------------------------------
-                // PENTING:
-                // JANGAN UBAH BUTTON
-                // JANGAN UBAH STATE
-                // --------------------------------
+                await loadIndonesiaForMap();
+
 
                 return;
 
             }
 
         }
-
-    }
-
-
-    // ========================================
-    // SAMPAI DI SINI:
-    // DATA AMAN UNTUK DI-TOGGLE
-    // ========================================
-
-    button.classList.toggle('active');
-
-
-    const isActive =
-        button.classList.contains('active');
-
-
-    // ========================================
-    // SIMPAN STATUS FILTER
-    // ========================================
-
-    bridgeFilterState[filterType] =
-        isActive;
-
-
-    console.log(
-        `🔘 Filter ${filterType}:`,
-        isActive ? 'ON' : 'OFF'
-    );
-
-
-    console.log(
-        '🔎 Status semua filter:',
-        bridgeFilterState
-    );
-
-
-    // ========================================
-    // MODE ORGANISASI
-    // ========================================
-
-    if (activeOrganization) {
-
-        console.log(
-            '🏢 Filter dijalankan untuk organisasi:',
-            activeOrganization
-        );
-
-
-        await refreshOrganization(
-            activeOrganization
-        );
-
-
-        return;
-
-    }
-
-
-    // ========================================
-    // MODE PROVINSI
-    // ========================================
-
-    if (activeProvince) {
-
-        console.log(
-            '🗺️ Filter dijalankan untuk provinsi:',
-            activeProvince
-        );
-
-
-        loadProvince(
-            activeProvince
-        );
-
-
-        return;
-
-    }
-
-}
 
 
 
@@ -10326,6 +11834,114 @@ async function toggleBridgeFilter(
 
                         const province =
                             this.dataset.province;
+
+
+                            // ========================================
+                            // KHUSUS TOMBOL INDONESIA
+                            // ========================================
+
+                            if (province === 'Indonesia') {
+
+                                const existingSummary =
+                                    this.nextElementSibling;
+
+
+                                // ========================================
+                                // JIKA KARTU INDONESIA SUDAH TERBUKA
+                                // ========================================
+
+                                if (
+                                    existingSummary &&
+                                    existingSummary.classList.contains(
+                                        'province-summary'
+                                    )
+                                ) {
+
+                                    console.log(
+                                        '📕 Menutup kartu Indonesia'
+                                    );
+
+
+                                    existingSummary.remove();
+
+
+                                    activeProvince =
+                                        null;
+
+                                    activeOrganization =
+                                        null;
+
+                                    activeIndonesia =
+                                        false;
+
+
+                                    this.classList.remove(
+                                        'active'
+                                    );
+
+
+                                    return;
+
+                                }
+
+
+                                // ========================================
+                                // TUTUP KARTU LAIN
+                                // ========================================
+
+                                document
+                                    .querySelectorAll(
+                                        '.province-summary'
+                                    )
+                                    .forEach(
+                                        summary => {
+                                            summary.remove();
+                                        }
+                                    );
+
+
+                                document
+                                    .querySelectorAll(
+                                        '.organization-item'
+                                    )
+                                    .forEach(
+                                        item => {
+                                            item.classList.remove(
+                                                'active'
+                                            );
+                                        }
+                                    );
+
+
+                                document
+                                    .querySelectorAll(
+                                        '.province-item'
+                                    )
+                                    .forEach(
+                                        item => {
+                                            item.classList.remove(
+                                                'active'
+                                            );
+                                        }
+                                    );
+
+
+                                this.classList.add(
+                                    'active'
+                                );
+
+
+                                console.log(
+                                    '🇮🇩 Membuka seluruh data Indonesia'
+                                );
+
+
+                                loadIndonesiaForMap();
+
+
+                                return;
+
+                            }
 
 
                             // =================================
