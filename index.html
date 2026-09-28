@@ -2125,8 +2125,8 @@
                     📄 Rekap Kemantapan Jembatan Tanpa NS, FXX dan WXX
                 </a>
 
-                
-                <a
+
+                 <a
                     href="https://pugoid-my.sharepoint.com/:x:/g/personal/ivani_pugoid_onmicrosoft_com/IQAvRdY4xftvT7RF6U670qJ7AWX_WuUyIUtkyFqgFjVXzQY?e=9Rqvrf"
                     target="_blank"
                     class="rekap-download-item"
@@ -2727,7 +2727,7 @@
 
                 <button
                     class="province-item"
-                    data-province="Nusa Tenggara Barat"
+                    data-province="NTB"
                 >
 
                     <span
@@ -3668,7 +3668,7 @@ function canAccessProvince(province) {
 
             const response =
                 await fetch(
-                    'Indonesia_2026_Q.geojson'
+                    'output/Indonesia_2026_Q.geojson'
                 );
 
             if (!response.ok) {
@@ -5128,12 +5128,12 @@ function canAccessProvince(province) {
                 // PAPUA
                 // ================================
 
-                "PAPUA PEGUNUNGAN (JAYAPURA)",
+                "Papua Jayapura",
                 "Papua Barat",
                 "Papua Barat Daya",
-                "PAPUA PEGUNUNGAN (WAMENA)",
-                "PAPUA TENGAH (NABIRE)",
-                "PAPUA SELATAN (MERAUKE)"
+                "Papua Pegunungan",
+                "Papua Tengah",
+                "Papua Selatan"
 
             ]
 
@@ -11489,68 +11489,160 @@ async function refreshOrganization(organization) {
         // BUKA BERITA ACARA
         // ========================================
 
-        function openBeritaAcara(button) {
+        async function openBeritaAcara(button) {
 
-            const summary =
-                button.closest('.province-summary');
+    console.log(
+        '📄 Membuka Berita Acara...'
+    );
 
-            if (!summary) {
+    try {
 
-                console.error(
-                    '❌ Kartu provinsi tidak ditemukan'
-                );
+        // ========================================
+        // CARI PROVINCE DARI KARTU PROVINSI
+        // ========================================
 
-                return;
-            }
+        const summary =
+            button.closest('.province-summary');
 
-            const province =
-                summary.dataset.province;
+        if (!summary) {
 
-            console.log(
-                '📊 Berita Acara provinsi:',
+            console.error(
+                '❌ Province summary tidak ditemukan'
+            );
+
+            alert(
+                'Data provinsi tidak ditemukan.'
+            );
+
+            return;
+        }
+
+        const province =
+            summary.dataset.province;
+
+        console.log(
+            '📍 Province:',
+            province
+        );
+
+
+        // ========================================
+        // AMBIL METADATA BERITA ACARA
+        // ========================================
+
+        const { data, error } =
+            await supabaseClient
+                .from('berita_acara')
+                .select(
+                    'file_name, file_path'
+                )
+                .eq(
+                    'province',
+                    province
+                )
+                .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                '❌ Gagal mengambil metadata Berita Acara:',
+                error
+            );
+
+            alert(
+                'Gagal mengambil data Berita Acara.'
+            );
+
+            return;
+        }
+
+
+        // ========================================
+        // FILE BELUM TERSEDIA
+        // ========================================
+
+        if (!data) {
+
+            console.warn(
+                '⚠️ Berita Acara belum tersedia:',
                 province
             );
 
-
-            // Ambil link berdasarkan provinsi
-            const url =
-                beritaAcaraLinks[province];
-
-
-            // Jika link belum tersedia
-            if (!url) {
-
-                console.warn(
-                    '⚠️ Link Berita Acara belum tersedia untuk:',
-                    province
-                );
-
-                alert(
-                    `Link Berita Acara untuk ${province} belum tersedia.`
-                );
-
-                return;
-            }
-
-
-            // Buka dokumen di tab baru
-            window.open(
-                url,
-                '_blank'
+            alert(
+                `Berita Acara ${province} belum tersedia.`
             );
 
+            return;
         }
 
+
+        console.log(
+            '📄 File ditemukan:',
+            data.file_path
+        );
+
+
         // ========================================
-        // LINK BERITA ACARA PER PROVINSI
+        // BUAT SIGNED URL
         // ========================================
 
-        const beritaAcaraLinks = {
+        const {
+            data: signedData,
+            error: signedError
+        } = await supabaseClient
+            .storage
+            .from('berita-acara-jembatan-2026')
+            .createSignedUrl(
+                data.file_path,
+                3600
+            );
 
-            "Aceh": ""
+
+        if (signedError) {
+
+            console.error(
+                '❌ Gagal membuat signed URL:',
+                signedError
+            );
+
+            alert(
+                'File Berita Acara tidak dapat dibuka.'
+            );
+
+            return;
+        }
 
 
-        };
+        console.log(
+            '🔗 Signed URL berhasil dibuat'
+        );
+
+
+        
+
+        // ========================================
+        // BUKA PDF
+        // ========================================
+
+        window.open(
+            signedData.signedUrl,
+            '_blank'
+        );
+
+    } catch (error) {
+
+        console.error(
+            '❌ Error Berita Acara:',
+            error
+        );
+
+        alert(
+            'Terjadi kesalahan saat membuka Berita Acara.'
+        );
+    }
+}
+
 
 
         function toggleBridgeSearch(button) {
