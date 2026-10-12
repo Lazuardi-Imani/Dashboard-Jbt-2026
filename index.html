@@ -434,9 +434,10 @@
     
             /* UBAH: paksa area visual mengambil seluruh sisa ruang ke kanan */
             width: 45%;
-            height: 330px;
+            height: 100%;
             display: flex;
-            align-items: center;
+            align-self: stretch;
+            align-items: center
             position: relative;
             z-index: 2;
             margin: 0;
@@ -493,12 +494,14 @@
             position: absolute;
 
             /* Mengunci peta di dalam foto sisi kiri */
-            left: -150px; 
+            left: -42%; 
             top: 50%;
             transform: translateY(-50%);
-            width: 520px;
-            height: 390px;
-            z-index: 4;
+            width: 21vw;
+            min-width: 280px; /* Batas ukuran terkecil agar pulau tidak terlalu kerdil */
+            max-width: 340px; /* Batas ukuran terbesar agar tidak merusak layout teks */
+            height: auto;
+            z-index: 10;
             opacity: 0.95; 
             pointer-events: none;
 
@@ -6007,7 +6010,7 @@
 
             <div class="login-title">
                 DASHBOARD KEMANTAPAN 
-                JEMBATAN NASIONAL
+                JEMBATAN INDONESIA
             </div>
 
             <div class="login-subtitle">
