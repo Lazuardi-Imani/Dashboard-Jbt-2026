@@ -200,6 +200,849 @@
         }
 
 
+        /* ========================================
+            BRIDGE CATEGORY SCREEN
+        ======================================== */
+
+        #bridge-category-screen {
+            display: none;
+            min-height: 100vh;
+            background:
+                linear-gradient(
+                    180deg,
+                 #eef6ff 0%,
+                 #ffffff 48%,
+                 #f7fbff 100%
+                );
+
+            color: #163a63;
+        }
+
+
+        /* ========================================
+        HEADER
+        ======================================== */
+
+        .category-header {
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 42px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                 #0d3b66,
+                 #124f86
+                );
+
+            color: white;
+
+            box-shadow:
+             0 4px 16px
+             rgba(0, 0, 0, 0.12);
+        }
+
+
+        .category-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+
+        .category-logo {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #f4c300;
+
+            color: #12395f;
+
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+
+        .category-subtitle {
+            margin-top: 3px;
+
+            font-size: 12px;
+
+            opacity: 0.78;
+        }
+
+
+        .category-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 14px;
+        }
+
+
+        .category-user-icon {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+             rgba(255, 255, 255, 0.16);
+        }
+
+
+        .category-logout-button {
+            border: none;
+            background: transparent;
+
+            color: white;
+
+            font-size: 24px;
+
+            cursor: pointer;
+
+            opacity: 0.9;
+        }
+
+
+        .category-logout-button:hover {
+            opacity: 1;
+        }
+
+
+        /* ========================================
+        MAIN
+        ======================================== */
+
+        .category-main {
+            max-width: 1450px;
+
+            margin: 0 auto;
+
+            padding: 42px 42px 50px;
+        }
+
+
+        /* ========================================
+        HERO
+        ======================================== */
+
+        .category-hero {
+            min-height: 330px;
+            display: flex;
+            align-items: center;
+
+            /* GANTI: dari space-between menjadi flex-start agar foto menempel rapat */
+            justify-content: flex-start; 
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+
+            /* GANTI: kurangi padding kanan menjadi 0 agar foto bisa mentok ke ujung kanan */
+            padding: 42px 0px 42px 55px; 
+            background: linear-gradient(105deg, #f4f9ff 0%, #ffffff 52%, #dbeeff 100%);
+            box-shadow: 0 12px 35px rgba(21, 69, 111, 0.10);
+        }
+
+
+        .category-hero::after {
+            content: "";
+
+            position: absolute;
+
+            right: -100px;
+            bottom: -130px;
+
+            width: 420px;
+            height: 420px;
+
+            border-radius: 50%;
+
+            background:
+             rgba(30, 115, 190, 0.07);
+        }
+
+
+        .category-hero-content {
+
+            /* UBAH: berikan flex-grow agar teks fleksibel dan beri jarak ke foto */
+            flex: 0 0 50%; 
+            max-width: 610px;
+            position: relative;
+            z-index: 2;
+            padding-right: 20px;
+        }
+
+
+        .category-welcome {
+            margin-bottom: 12px;
+
+            color: #2e6595;
+
+            font-size: 18px;
+
+            font-weight: 600;
+        }
+
+
+        .category-hero h1 {
+            margin: 0;
+
+            font-size: 42px;
+
+            line-height: 1.15;
+
+            color: #123e68;
+        }
+
+
+        .category-hero p {
+            margin-top: 20px;
+
+            max-width: 570px;
+
+            font-size: 17px;
+
+            line-height: 1.7;
+
+            color: #4b6680;
+        }
+
+
+        .category-hero-visual {
+    
+            /* UBAH: paksa area visual mengambil seluruh sisa ruang ke kanan */
+            width: 45%;
+            height: 330px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            margin: 0;
+            padding: 0;
+            /* PENTING: Tambahkan ini agar sisa ruang di sebelah kanan diisi penuh oleh visual */
+            margin-left: auto;
+
+        }
+
+
+        .hero-bridge-background {
+            width: 100%;
+            height: 100%;
+
+            /* PENTING: harus relative agar peta dan motto mengacu pada kotak foto ini */
+            position: relative; 
+            overflow: hidden;
+
+            /* GANTI: buat border-radius hanya tumpul di sebelah kiri, kanan mentok lurus */
+            border-radius: 0; 
+            box-shadow: none;
+
+        }
+
+
+        .hero-bridge-background img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover; /* Memaksa foto jembatan memenuhi ruang tanpa gepeng */
+            object-position: center;
+
+        }
+
+
+        .hero-photo-overlay {
+            position: absolute;
+            inset: 0;
+
+            /* Teknik Fading: Mengaburkan sisi paling kiri foto jembatan agar menyatu dengan background putih teks */
+            background: linear-gradient(
+                90deg,
+             rgba(255, 255, 255, 1) 0%,
+             rgba(255, 255, 255, 0.85) 15%,
+             rgba(255, 255, 255, 0) 55%
+            );
+            z-index: 2;
+            pointer-events: none;
+
+        }
+
+
+        .hero-indonesia-map {
+            position: absolute;
+
+            /* Mengunci peta di dalam foto sisi kiri */
+            left: -150px; 
+            top: 50%;
+            transform: translateY(-50%);
+            width: 520px;
+            height: 390px;
+            z-index: 4;
+            opacity: 0.95; 
+            pointer-events: none;
+
+            /* 
+            EFEK FADING DARI PAPUA (KANAN) KE SUMATERA (KIRI):
+            Arah 90deg berarti gradien berjalan dari kiri ke kanan.
+            - Sisi kiri (Sumatera) dibuat transparan (0%) agar memudar halus menyatu dengan teks.
+            - Sisi kanan (Papua) dibuat solid (100%) agar muncul tajam dan kuat.
+            */
+
+                 -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0) 80%);
+                         mask-image: linear-gradient(90deg, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0) 80%);
+
+        }
+
+
+        .hero-indonesia-map img {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            object-fit: contain;
+
+            filter:
+                drop-shadow(
+                    0 4px 15px
+                  rgba(18, 62, 104, 0.25)
+                );
+        }
+
+
+        .hero-indonesia-map span {
+            font-size: 15px;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+
+            color: #1677d2;
+        }
+
+
+       .hero-motto {
+            position: absolute;
+
+            /* Mengunci motto di dalam foto pojok kanan atas */
+            right: 40px;
+            top: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            z-index: 3;
+            color: white;
+            text-align: right;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.65);
+
+        }
+
+
+        .hero-motto strong {
+            font-size: 19px;
+
+            line-height: 1.15;
+
+            font-weight: 700;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        .hero-bridge-icon {
+            width: 250px;
+            height: 160px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                 #d7ebff,
+                 #ffffff
+                );
+
+            box-shadow:
+                0 20px 50px
+             rgba(18, 78, 127, 0.12);
+
+            font-size: 100px;
+        }
+
+
+        /* ========================================
+        CATEGORY GRID
+        ======================================== */
+
+        .bridge-category-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 22px;
+
+            margin-top: 30px;
+        }
+
+
+        .bridge-category-card {
+            overflow: visible;
+
+            background: white;
+
+            border-radius: 20px;
+
+            border:
+                1px solid
+             rgba(26, 76, 118, 0.10);
+
+            box-shadow:
+                0 10px 28px
+             rgba(26, 76, 118, 0.09);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .bridge-category-card:hover {
+            transform: translateY(-7px);
+
+            box-shadow:
+                0 18px 38px
+             rgba(26, 76, 118, 0.15);
+        }
+
+
+        /* ========================================
+        CARD IMAGE
+        ======================================== */
+
+        .category-image {
+            height: 175px;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            padding: 20px;
+
+            overflow: visible;
+
+            border-radius:
+                20px 20px 0 0;
+        }
+
+
+        .national-image {
+            background-image:
+                url('bridge-national.jpeg');
+
+            background-size: cover;
+
+            background-position: center;
+        }
+
+
+        .special-image {
+            background-image:
+                url('bridge-special.jpeg');
+
+            background-size: cover;
+
+            background-position: center;
+        }
+
+
+        .hanging-image {
+            background-image:
+                url('bridge-hanging.jpeg');
+
+            background-size: cover;
+
+            background-position: center;
+        }
+
+
+        .toll-image {
+            background-image:
+                url('bridge-toll.jpg');
+
+            background-size: cover;
+
+            background-position: center;
+        }
+
+
+        .category-icon {
+            width: 68px;
+            height: 68px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            position:absolute;
+
+            left: 18px;
+            bottom: -34px;
+
+            background: #1677d2;
+
+            color: white;
+
+            border: 4px solid white;
+
+            font-size: 28px;
+
+            box-shadow:
+                0 3px 10px
+             rgba(0, 0, 0, 0.18);
+
+             z-index: 5;
+        }
+
+
+        .category-icon svg {
+            width: 84px;
+            height: 84px;
+
+            display: block;
+            color: white;
+        }
+
+
+        .national-card .category-icon {
+            background: #1677d2;
+        }
+
+        .special-card .category-icon {
+            background: #239653;
+        }
+
+        .hanging-card .category-icon {
+            background: #7950d1;
+        }
+
+        .toll-card .category-icon {
+            background: #ef8b19;
+        }
+
+
+        /* ========================================
+        CARD CONTENT
+        ======================================== */
+
+        .category-card-content {
+            padding: 48px 22px 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .category-card-content::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;  /* Anda bisa ubah angka ini untuk mengatur lebar segitiga */
+            height: 100px; /* Anda bisa ubah angka ini untuk mengatur tinggi segitiga */
+  
+            /* Membuat pola segitiga siku-siku menggunakan gradien */
+            background: linear-gradient(135deg, transparent 50%, var(--warna-pola, #000) 50%);
+  
+            /* Mengatur transparansi agar selembut di gambar contoh */
+            opacity: 0.12; 
+  
+            /* Memastikan pola tidak mengganggu tombol saat diklik */
+            pointer-events: none; 
+            }
+
+
+        .category-card-content h2 {
+            margin: 0;
+
+            font-size: 20px;
+
+            color: #153f68;
+        }
+
+
+        .category-card-content p {
+            min-height: 75px;
+
+            margin:
+                12px 0 20px;
+
+            color: #5d7084;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        /* ========================================
+        BUTTON
+        ======================================== */
+
+        .category-enter-button {
+            width: 100%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 12px 17px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+
+        .category-enter-button:hover {
+            transform: translateX(2px);
+
+            opacity: 0.92;
+        }
+
+
+        .national-card .category-enter-button {
+            background: #1677d2;
+        }
+
+
+        .special-card .category-enter-button {
+            background: #239653;
+        }
+
+
+        .hanging-card .category-enter-button {
+            background: #7950d1;
+        }
+
+
+        .toll-card .category-enter-button {
+            background: #ef8b19;
+        }
+
+
+        /* ========================================
+        FOOTER
+        ======================================== */
+
+        .category-footer {
+            min-height: 90px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 40px;
+
+            padding: 20px 70px;
+
+            border-top:
+                1px solid
+             rgba(20, 65, 105, 0.10);
+
+            background: white;
+
+            color: #31577b;
+        }
+
+
+        .footer-item {
+            display: flex;
+
+            flex-direction: row !important;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .footer-item + .footer-item {
+            padding-left: 28px;
+            border-left: 1px solid rgba(20, 65, 105, 0.14);
+        }
+
+
+        .footer-logo {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            flex: 0 0 auto;
+        }
+
+
+        .footer-icon {
+            width: 46px;
+            height: 46px;
+
+            display: block;
+
+            object-fit: contain;
+
+            flex-shrink: 0;
+        }
+
+
+        .footer-icon img {
+            width: 42px;
+            height: 42px;
+
+            object-fit: contain;
+        }
+
+
+        .footer-text {
+            display: flex !important;
+
+            flex-direction: column !important;
+
+            align-items: flex-start;
+
+            gap: 4px;
+        }
+
+
+        .footer-item-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        
+        .category-footer div strong,
+        .category-footer div span {
+            display: block;
+        }
+
+
+        .footer-item-text strong {
+            font-size: 13px;
+
+            line-height: 1.3;
+
+            color: #17466f;
+
+            white-space: nowrap;
+        }
+
+
+        .footer-item-text span {
+            font-size: 11px;
+
+            line-height: 1.4;
+
+            color: #7a8fa4;
+        }
+
+
+        /* ========================================
+        RESPONSIVE
+        ======================================== */
+
+        @media (max-width: 1100px) {
+
+            .bridge-category-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .category-header {
+                padding: 0 20px;
+            }
+
+            .category-main {
+                padding: 25px 18px;
+            }
+
+            .category-hero {
+                padding: 35px 25px;
+            }
+
+            .category-hero h1 {
+                font-size: 32px;
+            }
+
+            .category-hero-visual {
+                display: none;
+            }
+
+            .bridge-category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-footer {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+        }
+
+
         /* =========================================
         TOMBOL REKAP
         ========================================= */
@@ -2001,9 +2844,3154 @@
         }
 
 
+
+        /* ========================================
+            DASHBOARD JEMBATAN GANTUNG
+        ======================================== */
+
+        #hanging-dashboard {
+            display: none;
+            min-height: 100vh;
+            padding: 32px;
+            box-sizing: border-box;
+            background: #f3f7fb;
+            color: #173b5e;
+            font-family: Arial, sans-serif;
+        }
+
+        .hanging-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .hanging-header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #17466f;
+        }
+
+        .hanging-header p {
+            margin: 8px 0 0;
+            color: #6b8195;
+        }
+
+        .hanging-back-button {
+            border: 1px solid #d5e1ed;
+            border-radius: 8px;
+            padding: 10px 16px;
+            background: white;
+            color: #17466f;
+            cursor: pointer;
+        }
+
+        .hanging-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            margin-bottom: 28px;
+            background: white;
+            border: 1px solid #e0e9f2;
+            border-radius: 12px;
+        }
+
+        .hanging-toolbar label {
+            font-weight: 600;
+        }
+
+        #hanging-year-select {
+            min-width: 150px;
+            padding: 10px 14px;
+            border: 1px solid #cbd9e7;
+            border-radius: 8px;
+            background: white;
+            font-size: 15px;
+        }
+
+        .hanging-summary-section h2 {
+            margin: 0 0 18px;
+            font-size: 21px;
+        }
+
+        .hanging-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .hanging-summary-card {
+            padding: 24px;
+            background: white;
+            border: 1px solid #e0e9f2;
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(27, 70, 110, 0.05);
+        }
+
+        .hanging-summary-label {
+            color: #657d93;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .hanging-summary-value {
+            margin: 14px 0 6px;
+            color: #1677c8;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        .hanging-summary-unit {
+            color: #7c90a3;
+            font-size: 13px;
+        }
+
+        .hanging-summary-message {
+            margin-top: 18px;
+            color: #60788e;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            #hanging-dashboard {
+                padding: 18px;
+            }
+
+            .hanging-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hanging-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hanging-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+
+        /* ========================================
+        REKAP PROVINSI JEMBATAN GANTUNG
+        ======================================== */
+
+        .hanging-province-section {
+            margin-top: 36px;
+        }
+
+        .hanging-province-section-header {
+            margin-bottom: 18px;
+        }
+
+        .hanging-province-section-header h2 {
+            margin: 0;
+            color: #17466f;
+            font-size: 21px;
+        }
+
+        .hanging-province-section-header p {
+            margin: 7px 0 0;
+            color: #71879b;
+            font-size: 14px;
+        }
+
+        .hanging-province-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(0, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+        .hanging-province-card {
+            background: white;
+
+            border:
+                1px solid
+                #e0e9f2;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 5px 18px
+                rgba(
+                    27,
+                    70,
+                    110,
+                    0.05
+                );
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .hanging-province-card:hover {
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 8px 22px
+                rgba(
+                    27,
+                    70,
+                    110,
+                    0.09
+                );
+        }
+
+        .hanging-province-name {
+            margin-bottom: 16px;
+
+            color: #17466f;
+
+            font-size: 16px;
+
+            font-weight: 700;
+        }
+
+        .hanging-province-metrics {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .hanging-province-metric {
+            padding: 12px;
+
+            background:
+                #f6f9fc;
+
+            border-radius: 8px;
+        }
+
+        .hanging-province-metric-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #71879b;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+        }
+
+        .hanging-province-metric-value {
+            color: #1677c8;
+
+            font-size: 20px;
+
+            font-weight: 700;
+        }
+
+        .hanging-province-loading {
+            grid-column: 1 / -1;
+
+            padding: 30px;
+
+            text-align: center;
+
+            color: #71879b;
+
+            background: white;
+
+            border:
+                1px solid
+                #e0e9f2;
+
+            border-radius: 12px;
+        }
+
+        @media (max-width: 1100px) {
+
+            .hanging-province-grid {
+                grid-template-columns:
+                    repeat(
+                        3,
+                        minmax(0, 1fr)
+                    );
+            }
+
+        }
+
+        @media (max-width: 800px) {
+
+            .hanging-province-grid {
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .hanging-province-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+        /* ========================================
+        DETAIL JEMBATAN GANTUNG
+        ======================================== */
+
+        .hanging-bridge-detail-section {
+
+            display: none;
+
+            margin-top: 36px;
+
+        }
+
+
+        .hanging-detail-map {
+            width: 100%;
+            height: 420px;
+            margin-bottom: 18px;
+
+            background: #eaf0f5;
+
+            border: 1px solid #e0e9f2;
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 5px 18px
+                rgba(27, 70, 110, 0.05);
+        }
+
+
+        .hanging-detail-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 18px;
+
+        }
+
+        .hanging-detail-header h2 {
+
+            margin: 0;
+
+            color: #17466f;
+
+            font-size: 21px;
+
+        }
+
+        .hanging-detail-header p {
+
+            margin: 7px 0 0;
+
+            color: #71879b;
+
+            font-size: 14px;
+
+        }
+
+        .hanging-detail-close {
+
+            padding:
+                9px 16px;
+
+            border:
+                1px solid
+                #d5e1ed;
+
+            border-radius:
+                8px;
+
+            background:
+                white;
+
+            color:
+                #17466f;
+
+            cursor:
+                pointer;
+
+        }
+
+        .hanging-detail-close:hover {
+
+            background:
+                #f4f8fc;
+
+        }
+
+        .hanging-bridge-detail-content {
+
+            background:
+                white;
+
+            border:
+                1px solid
+                #e0e9f2;
+
+            border-radius:
+                12px;
+
+            overflow:
+                hidden;
+
+        }
+
+        .hanging-detail-empty {
+
+            padding:
+                40px;
+
+            text-align:
+                center;
+
+            color:
+                #71879b;
+
+        }
+
+
+        /* ========================================
+        TABEL DETAIL
+        ======================================== */
+
+        .hanging-detail-table-wrapper {
+
+            width:
+                100%;
+
+            overflow-x:
+                auto;
+
+        }
+
+        .hanging-detail-table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+        }
+
+        .hanging-detail-table th {
+
+            padding:
+                14px 16px;
+
+            background:
+                #f3f7fb;
+
+            border-bottom:
+                1px solid
+                #dfe8f1;
+
+            color:
+                #17466f;
+
+            font-size:
+                13px;
+
+            font-weight:
+                700;
+
+            text-align:
+                left;
+
+            white-space:
+                nowrap;
+
+        }
+
+        .hanging-detail-table td {
+
+            padding:
+                14px 16px;
+
+            border-bottom:
+                1px solid
+                #edf2f7;
+
+            color:
+                #425f77;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .hanging-detail-table tbody tr:hover {
+
+            background:
+                #f8fbfe;
+
+        }
+
+        .hanging-detail-row {
+            cursor: pointer;
+            transition:
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .hanging-popup {
+            min-width: 280px;
+            font-family: Arial, sans-serif;
+            color: #29445c;
+        }
+
+        .hanging-popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .hanging-popup-title {
+            color: #17466f;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .hanging-popup-number {
+            flex-shrink: 0;
+            padding: 4px 8px;
+            background: #eef6fd;
+            border-radius: 6px;
+            color: #1677c8;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .hanging-popup-location {
+            color: #6c8194;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .hanging-popup-divider {
+            height: 1px;
+            margin: 12px 0;
+            background: #e5edf4;
+        }
+
+        .hanging-popup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .hanging-popup-item {
+            padding: 8px 10px;
+            background: #f6f9fc;
+            border-radius: 7px;
+        }
+
+        .hanging-popup-item span {
+            display: block;
+            margin-bottom: 4px;
+            color: #8193a3;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .hanging-popup-item strong {
+            display: block;
+            color: #29445c;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+
+        .hanging-detail-row:hover {
+            background: #eef6fd;
+        }
+
+
+        .hanging-detail-row.active {
+            background: #e1f0fc;
+            box-shadow:
+                inset 4px 0 0 #1677c8;
+        }
+
+
+        .hanging-detail-row.active td {
+            color: #17466f;
+        }
+
+
+        .hanging-detail-number {
+
+            width:
+                55px;
+
+            text-align:
+                center;
+
+        }
+
+        .hanging-detail-length {
+
+            text-align:
+                right;
+
+            white-space:
+                nowrap;
+
+        }
+
+        .hanging-detail-count {
+
+            padding:
+                16px;
+
+            border-bottom:
+                1px solid
+                #e0e9f2;
+
+            color:
+                #617b91;
+
+            font-size:
+                13px;
+
+        }
+
+        /* =====================================================
+            DASHBOARD JEMBATAN GANTUNG — MAP DOMINANT
+        ===================================================== */
+
+        #hanging-dashboard {
+            display: none;
+            min-height: 100vh;
+            padding: 28px 36px 50px;
+            box-sizing: border-box;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #f4f8fc 0%,
+                    #eef4f9 100%
+                );
+
+            color: #183b59;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =====================================================
+        HEADER
+        ===================================================== */
+
+        .hanging-dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+
+            max-width: 1500px;
+            margin: 0 auto 24px;
+        }
+
+
+        .hanging-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+
+        .hanging-brand-icon {
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #ffffff;
+            border: 1px solid #dce7f0;
+            border-radius: 14px;
+
+            font-size: 26px;
+
+            box-shadow:
+                0 6px 20px rgba(35, 74, 110, 0.08);
+        }
+
+
+        .hanging-brand-kicker {
+            margin-bottom: 4px;
+
+            color: #1976b9;
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 1.4px;
+        }
+
+
+        .hanging-brand-text h1 {
+            margin: 0;
+
+            color: #173f60;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+
+        .hanging-brand-text p {
+            margin: 5px 0 0;
+
+            color: #71869a;
+            font-size: 13px;
+        }
+
+
+        .hanging-back-button {
+            padding: 10px 17px;
+
+            border: 1px solid #d6e2ec;
+            border-radius: 9px;
+
+            background: #ffffff;
+            color: #17466f;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .hanging-back-button:hover {
+            background: #f7fbfe;
+
+            box-shadow:
+                0 5px 15px rgba(30, 76, 112, 0.08);
+        }
+
+
+        /* =====================================================
+        CONTROL BAR
+        ===================================================== */
+
+        .hanging-control-bar {
+            max-width: 1500px;
+            margin: 0 auto 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 15px 18px;
+
+            background: rgba(255,255,255,0.96);
+
+            border: 1px solid #dce7f0;
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 18px rgba(35, 74, 110, 0.05);
+        }
+
+
+        .hanging-control-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+
+        .hanging-control-label {
+            color: #526f86;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        #hanging-year-select {
+            min-width: 130px;
+
+            padding: 9px 13px;
+
+            border: 1px solid #cbdbe8;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: #17466f;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+
+        .hanging-data-source {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            color: #526f86;
+        }
+
+
+        .hanging-data-source strong {
+            display: block;
+
+            color: #365872;
+            font-size: 12px;
+        }
+
+
+        .hanging-data-source small {
+            display: block;
+
+            margin-top: 2px;
+
+            color: #8a9cac;
+            font-size: 10px;
+        }
+
+
+        .hanging-source-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #28a36a;
+
+            box-shadow:
+                0 0 0 4px rgba(40,163,106,0.10);
+        }
+
+
+        /* =====================================================
+        KPI
+        ===================================================== */
+
+        .hanging-kpi-grid {
+            max-width: 1500px;
+            margin: 0 auto 18px;
+
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 16px;
+        }
+
+
+        .hanging-kpi-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            min-height: 100px;
+
+            padding: 18px 20px;
+
+            box-sizing: border-box;
+
+            background: #ffffff;
+
+            border: 1px solid #dce7f0;
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 18px rgba(35, 74, 110, 0.05);
+        }
+
+
+        .hanging-kpi-icon {
+            width: 44px;
+            height: 44px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eef7fd;
+
+            border-radius: 11px;
+
+            font-size: 21px;
+        }
+
+
+        .hanging-kpi-label {
+            color: #71879b;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+
+        .hanging-kpi-value {
+            margin-top: 3px;
+
+            color: #176fae;
+
+            font-size: 27px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+
+        .hanging-kpi-unit {
+            margin-top: 3px;
+
+            color: #8a9cac;
+
+            font-size: 10px;
+        }
+
+
+        .hanging-summary-message {
+            max-width: 1500px;
+            margin: 0 auto 18px;
+
+            color: #70879a;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+        SECTION HEADING
+        ===================================================== */
+
+        .hanging-section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 14px;
+        }
+
+
+        .hanging-section-kicker {
+            margin-bottom: 4px;
+
+            color: #1976b9;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            letter-spacing: 1.3px;
+        }
+
+
+        .hanging-section-heading h2 {
+            margin: 0;
+
+            color: #173f60;
+
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+
+        .hanging-section-heading p {
+            margin: 5px 0 0;
+
+            color: #7a8e9f;
+
+            font-size: 12px;
+        }
+
+
+        .hanging-map-status {
+            padding: 7px 11px;
+
+            border: 1px solid #dce7f0;
+            border-radius: 20px;
+
+            background: #ffffff;
+
+            color: #4f7088;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+        MAP
+        ===================================================== */
+
+        .hanging-map-section {
+            max-width: 1500px;
+            margin: 0 auto 26px;
+
+            padding: 20px;
+
+            background: #ffffff;
+
+            border: 1px solid #dce7f0;
+            border-radius: 15px;
+
+            box-shadow:
+                0 8px 25px rgba(35, 74, 110, 0.07);
+        }
+
+
+        .hanging-detail-map {
+            width: 100%;
+            height: 560px;
+
+            margin: 0;
+
+            background: #e9f0f5;
+
+            border: 1px solid #d9e4ed;
+            border-radius: 11px;
+
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+        PROVINCE
+        ===================================================== */
+
+        .hanging-province-section {
+            max-width: 1500px;
+            margin: 0 auto 28px;
+        }
+
+
+        .hanging-province-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 12px;
+        }
+
+
+        .hanging-province-card {
+            padding: 15px;
+
+            background: #ffffff;
+
+            border: 1px solid #dce7f0;
+            border-radius: 10px;
+
+            box-shadow:
+                0 4px 14px rgba(35, 74, 110, 0.04);
+
+            cursor: pointer;
+
+            transition:
+                transform 0.18s ease,
+                box-shadow 0.18s ease,
+                border-color 0.18s ease;
+        }
+
+
+        .hanging-province-card:hover {
+            transform: translateY(-2px);
+
+            border-color: #b9d7ea;
+
+            box-shadow:
+                0 7px 20px rgba(35, 74, 110, 0.08);
+        }
+
+
+        /* =====================================================
+        DETAIL
+        ===================================================== */
+
+        .hanging-bridge-detail-section {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+
+        .hanging-detail-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 14px;
+        }
+
+
+        .hanging-detail-close {
+            padding: 8px 14px;
+
+            border: 1px solid #d6e2ec;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: #526f86;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+
+        .hanging-bridge-detail-content {
+            background: #ffffff;
+
+            border: 1px solid #dce7f0;
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 5px 18px rgba(35, 74, 110, 0.05);
+        }
+
+
+        /* =====================================================
+        RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            #hanging-dashboard {
+                padding: 24px;
+            }
+
+            .hanging-province-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 800px) {
+
+            .hanging-dashboard-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hanging-control-bar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hanging-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hanging-province-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .hanging-detail-map {
+                height: 450px;
+            }
+
+        }
+
+
+        @media (max-width: 520px) {
+
+            #hanging-dashboard {
+                padding: 18px;
+            }
+
+            .hanging-province-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hanging-brand-text h1 {
+                font-size: 23px;
+            }
+
+            .hanging-detail-map {
+                height: 380px;
+            }
+
+        }
+
+
+        /* ========================================================= */
+        /* DASHBOARD JEMBATAN GANTUNG - 2 COLUMN                     */
+        /* ========================================================= */
+
+        #hanging-dashboard {
+
+            display: none;
+
+            width: 100%;
+            min-height: 100vh;
+
+            box-sizing: border-box;
+
+            padding: 24px;
+
+            background:
+                #f3f6f9;
+
+            color: #183b5a;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+
+        /* ========================================================= */
+        /* HEADER                                                      */
+        /* ========================================================= */
+
+        .hanging-dashboard-header {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
+
+            margin-bottom: 18px;
+
+            padding:
+                18px 22px;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #dfe7ef;
+
+            border-radius:
+                12px;
+
+            box-shadow:
+                0 4px 14px rgba(31, 62, 90, 0.06);
+
+        }
+
+
+        .hanging-dashboard-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+        }
+
+
+        .hanging-dashboard-logo {
+
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background:
+                #17466f;
+
+            color:
+                #ffffff;
+
+            font-size: 25px;
+
+        }
+
+
+        .hanging-dashboard-kicker {
+
+            margin-bottom: 3px;
+
+            color:
+                #1677c8;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing:
+                1.5px;
+
+        }
+
+
+        .hanging-dashboard-brand h1 {
+
+            margin: 0;
+
+            color:
+                #173f63;
+
+            font-size: 24px;
+
+            font-weight: 700;
+
+        }
+
+
+        .hanging-dashboard-brand p {
+
+            margin:
+                5px 0 0;
+
+            color:
+                #718397;
+
+            font-size: 12px;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* YEAR CONTROL                                                */
+        /* ========================================================= */
+
+        .hanging-dashboard-year {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .hanging-dashboard-year label {
+
+            color:
+                #536b80;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+        }
+
+
+        .hanging-dashboard-year select {
+
+            min-width: 135px;
+
+            padding:
+                10px 34px 10px 12px;
+
+            border:
+                1px solid #cbd8e4;
+
+            border-radius:
+                8px;
+
+            background:
+                #ffffff;
+
+            color:
+                #173f63;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* MAIN LAYOUT                                                 */
+        /* ========================================================= */
+
+        .hanging-dashboard-layout {
+
+            display: grid;
+            grid-template-columns: minmax(0, 35fr) minmax(0, 65fr);
+            gap: 24px;
+            align-items: start;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* LEFT RIGHT PANEL                                                  */
+        /* ========================================================= */
+
+        .hanging-left-panel,
+        .hanging-right-panel {
+            min-width: 0;
+        }
+
+
+        /* ========================================================= */
+        /* NATIONAL SUMMARY                                            */
+        /* ========================================================= */
+
+        .hanging-national-summary {
+
+            background: #ffffff;
+            border: 1px solid #dfe7ef;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(31, 62, 90, 0.05);
+            overflow: hidden;
+        }
+
+
+        .hanging-kpi-compact-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+
+        .hanging-panel-title {
+
+            color:
+                #173f63;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing:
+                1.2px;
+
+        }
+
+
+        .hanging-kpi-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 12px;
+
+            margin-top: 13px;
+
+        }
+
+
+        .hanging-kpi-card {
+
+            min-width: 0;
+
+            padding:
+                15px;
+
+            border:
+                1px solid #e3eaf1;
+
+            border-radius:
+                9px;
+
+            background:
+                #f8fafc;
+
+        }
+
+
+        .hanging-kpi-label {
+
+            color:
+                #718397;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing:
+                0.8px;
+
+        }
+
+
+        .hanging-kpi-value {
+
+            margin-top: 7px;
+
+            color:
+                #1677c8;
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            line-height: 1;
+
+        }
+
+
+        .hanging-kpi-unit {
+
+            margin-top: 5px;
+
+            color:
+                #8a9aaa;
+
+            font-size: 10px;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* PROVINCE PANEL                                              */
+        /* ========================================================= */
+
+        .hanging-province-panel {
+
+            min-height: 0;
+
+            flex: 1;
+
+            padding: 18px;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #dfe7ef;
+
+            border-radius:
+                12px;
+
+            box-shadow:
+                0 4px 14px rgba(31, 62, 90, 0.05);
+
+        }
+
+
+        .hanging-panel-heading {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .hanging-panel-heading p {
+
+            margin:
+                4px 0 0;
+
+            color:
+                #7a8b9b;
+
+            font-size: 11px;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* PROVINCE SCROLL AREA                                        */
+        /* ========================================================= */
+
+        .hanging-province-grid {
+
+            max-height:
+                560px;
+
+            overflow-y:
+                auto;
+
+            padding-right:
+                5px;
+
+        }
+
+
+        .hanging-province-grid::-webkit-scrollbar {
+
+            width:
+                6px;
+
+        }
+
+
+        .hanging-province-grid::-webkit-scrollbar-track {
+
+            background:
+                #f0f3f6;
+
+            border-radius:
+                10px;
+
+        }
+
+
+        .hanging-province-grid::-webkit-scrollbar-thumb {
+
+            background:
+                #c3d0dc;
+
+            border-radius:
+                10px;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* PROVINCE CARD                                               */
+        /* ========================================================= */
+
+        .hanging-province-card {
+
+            margin-bottom:
+                8px;
+
+            padding:
+                0;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #dfe7ef;
+
+            border-radius:
+                8px;
+
+            box-shadow:
+                none;
+
+            overflow:
+                hidden;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+
+        }
+
+
+        .hanging-province-card:hover {
+
+            transform:
+                none;
+
+            border-color:
+                #b9cddd;
+
+            box-shadow:
+                0 3px 10px rgba(31, 62, 90, 0.05);
+
+        }
+
+
+
+        /* ========================================================= */
+        /* MAP PANEL                                                   */
+        /* ========================================================= */
+
+        .hanging-map-panel {
+
+            min-width: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            min-height:
+                720px;
+
+            padding:
+                18px;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #dfe7ef;
+
+            border-radius:
+                12px;
+
+            box-shadow:
+                0 4px 14px rgba(31, 62, 90, 0.06);
+
+        }
+
+
+        .hanging-map-header {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom:
+                12px;
+
+        }
+
+
+        .hanging-map-kicker {
+
+            margin-bottom:
+                3px;
+
+            color:
+                #1677c8;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                1.4px;
+
+        }
+
+
+        .hanging-map-header h2 {
+
+            margin:
+                0;
+
+            color:
+                #173f63;
+
+            font-size:
+                19px;
+
+        }
+
+
+        .hanging-map-header p {
+
+            margin:
+                4px 0 0;
+
+            color:
+                #7a8b9b;
+
+            font-size:
+                11px;
+
+        }
+
+
+        .hanging-map-status {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                7px 10px;
+
+            border:
+                1px solid #dce6ee;
+
+            border-radius:
+                20px;
+
+            color:
+                #557086;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
+
+            white-space:
+                nowrap;
+
+        }
+
+
+        .hanging-map-status-dot {
+
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                #32a852;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* MAP                                                          */
+        /* ========================================================= */
+
+        .hanging-map-panel .hanging-detail-map {
+
+            flex:
+                1;
+
+            width:
+                100%;
+
+            min-height:
+                620px;
+
+            margin:
+                0;
+
+            border:
+                1px solid #d7e1ea;
+
+            border-radius:
+                9px;
+
+            background:
+                #e9eff4;
+
+            overflow:
+                hidden;
+
+            box-shadow:
+                none;
+
+        }
+
+
+        .hanging-map-footer {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            padding-top:
+                10px;
+
+        }
+
+
+        .hanging-map-legend {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color:
+                #607589;
+
+            font-size:
+                10px;
+
+        }
+
+
+        .hanging-legend-dot {
+
+            width:
+                8px;
+
+            height:
+                8px;
+
+            border-radius:
+                50%;
+
+            background:
+                #1677c8;
+
+        }
+
+
+        .hanging-map-info {
+
+            color:
+                #8a9aaa;
+
+            font-size:
+                10px;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* DETAIL                                                      */
+        /* ========================================================= */
+
+        .hanging-bridge-detail-section {
+
+            margin-top:
+                18px;
+
+        }
+
+
+        .hanging-detail-header {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom:
+                12px;
+
+            padding:
+                16px 18px;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #dfe7ef;
+
+            border-radius:
+                10px;
+
+        }
+
+
+        .hanging-detail-header h2 {
+
+            margin:
+                0;
+
+            color:
+                #173f63;
+
+            font-size:
+                18px;
+
+        }
+
+
+        .hanging-detail-header p {
+
+            margin:
+                4px 0 0;
+
+            color:
+                #7a8b9b;
+
+            font-size:
+                11px;
+
+        }
+
+
+        .hanging-section-kicker {
+
+            margin-bottom:
+                3px;
+
+            color:
+                #1677c8;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                1.2px;
+
+        }
+
+
+        .hanging-detail-close {
+
+            padding:
+                8px 14px;
+
+            border:
+                1px solid #ccd8e3;
+
+            border-radius:
+                7px;
+
+            background:
+                #ffffff;
+
+            color:
+                #36566f;
+
+            font-size:
+                11px;
+
+            font-weight:
+                600;
+
+            cursor:
+                pointer;
+
+        }
+
+
+        .hanging-detail-close:hover {
+
+            background:
+                #f4f7fa;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* BACK BUTTON                                                 */
+        /* ========================================================= */
+
+        .hanging-dashboard-back-wrapper {
+
+            margin-top:
+                15px;
+
+            text-align:
+                right;
+
+        }
+
+
+        .hanging-dashboard-back-wrapper
+        .hanging-back-button {
+
+            padding:
+                8px 14px;
+
+            border:
+                1px solid #ccd8e3;
+
+            border-radius:
+                7px;
+
+            background:
+                #ffffff;
+
+            color:
+                #36566f;
+
+            font-size:
+                11px;
+
+            font-weight:
+                600;
+
+            cursor:
+                pointer;
+
+        }
+
+
+
+        /* ========================================================= */
+        /* RESPONSIVE                                                   */
+        /* ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .hanging-dashboard-layout {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .hanging-map-panel {
+
+                min-height:
+                    600px;
+
+            }
+
+
+            .hanging-map-panel
+            .hanging-detail-map {
+
+                min-height:
+                    520px;
+
+            }
+
+
+            .hanging-province-grid {
+
+                max-height:
+                    500px;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            #hanging-dashboard {
+
+                padding:
+                    12px;
+
+            }
+
+
+            .hanging-dashboard-header {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+
+            }
+
+
+            .hanging-dashboard-year {
+
+                width:
+                    100%;
+
+            }
+
+
+            .hanging-dashboard-year select {
+
+                flex:
+                    1;
+
+            }
+
+
+            .hanging-kpi-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .hanging-map-panel {
+
+                min-height:
+                    500px;
+
+            }
+
+        }
+
+        /* Header kartu rekap nasional */
+
+            .hanging-national-summary-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            /* Dropdown tahun di dalam kartu */
+
+            .hanging-national-summary .hanging-dashboard-year {
+                gap: 7px;
+            }
+
+            .hanging-national-summary .hanging-dashboard-year label {
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            .hanging-national-summary .hanging-dashboard-year select {
+                min-width: 90px;
+                padding: 7px 10px;
+                font-size: 12px;
+            }
+
+            /* Jarak KPI lebih compact */
+
+            .hanging-national-summary .hanging-kpi-grid {
+                margin-top: 0;
+            }
+
+
+            /* =========================================
+            ACCORDION PROVINSI JEMBATAN GANTUNG
+            ========================================= */
+
+            .hanging-province-card {
+                margin-bottom: 8px;
+                padding: 0;
+                overflow: hidden;
+                background: #fff;
+                border: 1px solid #dfe7ef;
+                border-radius: 8px;
+                box-shadow: none;
+            }
+
+            .hanging-province-card:hover {
+                transform: none;
+                border-color: #b9cddd;
+                box-shadow: 0 2px 8px rgba(31, 62, 90, 0.05);
+            }
+
+            .hanging-province-accordion-header {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto auto auto;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                padding: 12px;
+                border: 0;
+                background: #fff;
+                color: #173f63;
+                text-align: left;
+                cursor: pointer;
+            }
+
+            .hanging-province-accordion-header:hover {
+                background: #f5f9fc;
+            }
+
+            .hanging-province-accordion-arrow {
+                width: 14px;
+                color: #6d8295;
+                font-size: 12px;
+            }
+
+            .hanging-province-accordion-metric {
+                white-space: nowrap;
+                color: #607589;
+                font-size: 11px;
+            }
+
+            .hanging-province-accordion-metric strong {
+                color: #1677c8;
+            }
+
+            .hanging-province-accordion-body {
+                display: none;
+                padding: 0 10px 10px;
+                border-top: 1px solid #edf2f6;
+            }
+
+            .hanging-province-card.is-open
+            .hanging-province-accordion-body {
+                display: block;
+            }
+
+            .hanging-province-bridge-table {
+                width: 100%;
+                border-collapse: collapse;
+                table-layout: fixed;
+            }
+
+            .hanging-province-bridge-table th {
+                padding: 9px 6px;
+                background: #f5f8fb;
+                color: #607589;
+                font-size: 10px;
+                text-align: left;
+            }
+
+
+            .hanging-province-bridge-table th:last-child,
+            .hanging-province-bridge-table td:last-child {
+                text-align: right;
+            }
+
+            .hanging-bridge-focus-button {
+                padding: 5px 8px;
+                border: 1px solid #b9d6ed;
+                border-radius: 5px;
+                background: #eef6fd;
+                color: #176da8;
+                font-size: 10px;
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+            .hanging-bridge-focus-button:hover {
+                background: #dceefd;
+            }
+
+            .hanging-province-empty {
+                padding: 12px 6px;
+                color: #7a8b9b;
+                font-size: 11px;
+            }
+
+            /* =========================================
+            PROVINSI: SATU BARIS PER PROVINSI
+            ========================================= */
+
+            .hanging-province-grid {
+                display: flex !important;
+                flex-direction: column;
+                gap: 0;
+                max-height: 560px;
+                overflow-y: auto;
+                padding: 0 4px 0 0;
+            }
+
+            .hanging-province-card {
+                display: block;
+                width: 100%;
+                flex: 0 0 auto;
+                margin: 0;
+                padding: 0;
+                overflow: visible;
+                background: #fff;
+                border: 0;
+                border-bottom: 1px solid #e1e8ef;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .hanging-province-card:first-child {
+                border-top: 1px solid #e1e8ef;
+            }
+
+            .hanging-province-card:hover {
+                transform: none;
+                border-color: #e1e8ef;
+                box-shadow: none;
+            }
+
+            /* Header provinsi */
+
+            .hanging-province-accordion-header {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 90px 105px;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                min-height: 48px;
+                padding: 10px 12px;
+                border: 0;
+                border-radius: 0;
+                background: #fff;
+                color: #173f63;
+                text-align: left;
+                cursor: pointer;
+            }
+
+            .hanging-province-accordion-header:hover {
+                background: #f3f8fc;
+            }
+
+            .hanging-province-card.is-open
+            .hanging-province-accordion-header {
+                background: #edf6fd;
+            }
+
+            .hanging-province-accordion-name {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                min-width: 0;
+                font-size: 14px;
+                font-weight: 700;
+            }
+
+            .hanging-province-accordion-name > span:last-child {
+                overflow-wrap: anywhere;
+            }
+
+            .hanging-province-accordion-arrow {
+                width: 12px;
+                flex-shrink: 0;
+                color: #1677c8;
+                font-size: 11px;
+            }
+
+            .hanging-province-accordion-metric {
+                white-space: nowrap;
+                color: #72869a;
+                font-size: 13px;
+                text-align: right;
+            }
+
+            .hanging-province-accordion-metric strong {
+                color: #176da8;
+                font-size: 11px;
+            }
+
+            /* Isi accordion */
+
+            .hanging-province-accordion-body {
+                display: none;
+                padding: 8px 12px 12px 32px;
+                border-top: 1px solid #e8eef4;
+                background: #fff;
+            }
+
+            .hanging-province-card.is-open
+            .hanging-province-accordion-body {
+                display: block;
+            }
+
+            /* Tabel jembatan */
+
+            .hanging-province-bridge-table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+
+            .hanging-province-bridge-table th {
+                padding: 10px 8px;
+                background: #f3f7fb;
+                border-bottom: 1px solid #dfe7ef;
+                color: #587086;
+                font-size: 10px;
+                font-weight: 700;
+                text-align: left;
+            }
+
+            .hanging-province-bridge-table td {
+                padding: 10px 8px;
+                border-bottom: 1px solid #edf1f5;
+                color: #36566f;
+                font-size: 12px;
+                vertical-align: middle;
+            }
+
+            .hanging-province-bridge-table th:nth-child(1),
+            .hanging-province-bridge-table td:nth-child(1) {
+                width: 28px;
+                color: #8393a2;
+                text-align: center;
+            }
+
+            .hanging-province-bridge-table th:nth-child(2),
+            .hanging-province-bridge-table td:nth-child(2) {
+                width: auto;
+                overflow-wrap: anywhere;
+            }
+
+            .hanging-province-bridge-table th:nth-child(3),
+            .hanging-province-bridge-table td:nth-child(3) {
+                width: 65px;
+                white-space: nowrap;
+            }
+
+            .hanging-province-bridge-table th:nth-child(4),
+            .hanging-province-bridge-table td:nth-child(4) {
+                width: 60px;
+                white-space: nowrap;
+            }
+
+            .hanging-province-bridge-table th:nth-child(5),
+            .hanging-province-bridge-table td:nth-child(5) {
+                width: 88px;
+                text-align: right;
+            }
+
+            .hanging-bridge-focus-button {
+                padding: 6px 8px;
+                border: 1px solid #b9d6ed;
+                border-radius: 5px;
+                background: #eef6fd;
+                color: #176da8;
+                font-size: 10px;
+                font-weight: 700;
+                white-space: nowrap;
+                cursor: pointer;
+            }
+
+            .hanging-bridge-focus-button:hover {
+                background: #dceefd;
+            }
+
+            .hanging-province-empty {
+                padding: 12px 6px;
+                color: #7a8b9b;
+                font-size: 11px;
+            }
+
+            @media (max-width: 600px) {
+                .hanging-province-accordion-header {
+                    grid-template-columns: minmax(0, 1fr) 60px 75px;
+                    gap: 6px;
+                    padding: 10px 7px;
+                }
+
+                .hanging-province-accordion-metric {
+                    font-size: 9px;
+                }
+
+                .hanging-province-accordion-metric strong {
+                    font-size: 10px;
+                }
+
+                .hanging-province-accordion-body {
+                    position: static;
+                    overflow: visible;
+                    padding: 8px 5px;
+                }
+
+                .hanging-province-bridge-table th,
+                .hanging-province-bridge-table td {
+                    padding: 8px 4px;
+                    font-size: 10px;
+                }
+
+                .hanging-province-bridge-table th:nth-child(3),
+                .hanging-province-bridge-table td:nth-child(3) {
+                    width: 52px;
+                }
+
+                .hanging-province-bridge-table th:nth-child(4),
+                .hanging-province-bridge-table td:nth-child(4) {
+                    width: 48px;
+                }
+
+                .hanging-province-bridge-table th:nth-child(5),
+                .hanging-province-bridge-table td:nth-child(5) {
+                    width: 76px;
+                }
+
+                .hanging-bridge-focus-button {
+                    padding: 5px;
+                    font-size: 9px;
+                }
+            }
+
+                .hanging-kpi-year-box {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    border-right: 1px solid #e2e8f0;
+                    padding-right: 20px;
+                }
+
+                .hanging-kpi-year-box label {
+                    font-size: 11px;
+                    font-weight: 700;
+                    color: #64748b;
+                    white-space: nowrap;
+                }
+
+                .hanging-kpi-year-box select {
+                    padding: 6px 10px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 6px;
+                    font-size: 13px;
+                    font-weight: 700;
+                    color: #1e293b;
+                    background: #f8fafc;
+                    cursor: pointer;
+                    outline: none;
+                }
+
+                .hanging-kpi-metric-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    flex: 1;
+                    padding-left: 24px;
+                }
+
+                .hanging-kpi-metric-item.border-left {
+                    border-left: 1px solid #e2e8f0;
+                }
+
+                .hanging-kpi-metric-label {
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: #64748b;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+
+                .hanging-kpi-metric-value-container {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 4px;
+                }
+
+                .hanging-kpi-metric-number {
+                    font-size: 26px;
+                    font-weight: 800;
+                    color: #1677c8;
+                    line-height: 1;
+                }
+
+                .hanging-kpi-metric-unit {
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #64748b;
+                    white-space: nowrap;
+                }
+
+                .hanging-summary-message {
+                    background: #f8fafc;
+                    padding: 10px 20px;
+                    margin: 0;
+                    font-size: 12px;
+                    color: #64748b;
+                    border-top: 1px solid #f1f5f9;
+                }
+
+                /* =====================================================
+                HEADER KOLOM REKAP PROVINSI (POIN 2)
+                ===================================================== */
+                .hanging-province-table-header {
+                    display: grid;
+                    /* Template kolom disesuaikan dengan grid header accordion jembatan gantung Anda */
+                    grid-template-columns: minmax(0, 1fr) 90px 105px;
+                    gap: 12px;
+                    padding: 10px 12px;
+                    background: #e2e8f0; /* Warna latar belakang abu-abu tegas yang profesional */
+                    border-radius: 6px;
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: #334155;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 8px;
+                    box-sizing: border-box;
+                }
+
+                .hanging-province-table-header div.text-right {
+                    text-align: right;
+                }
+
+                /* Responsif untuk layar kecil/handphone (sinkron dengan breakpoint CSS bawaan Anda) */
+                @media (max-width: 600px) {
+                    .hanging-province-table-header {
+                        grid-template-columns: minmax(0, 1fr) 60px 75px;
+                        gap: 6px;
+                        padding: 10px 7px;
+                        font-size: 9px;
+                    }
+                }
+                
+
+                /* Efek hover interaktif untuk baris tabel jembatan gantung (Poin 4) */
+                .hanging-province-bridge-table tr.hanging-row-clickable {
+                    cursor: pointer;
+                    transition: background-color 0.15s ease;
+                }
+
+                .hanging-province-bridge-table tr.hanging-row-clickable:hover {
+                    background-color: rgb(240, 242, 253) !important; /* Berubah menjadi warna hijau segar transparan saat disorot */
+                }
+
+
+                /* Accordion provinsi aktif tetap terlihat */
+                .hanging-province-card.is-open {
+                    position: sticky;
+                    top: 0;
+                    z-index: 10;
+                    background: #fff;
+                    box-shadow: 0 4px 12px rgba(23, 63, 99, 0.08);
+                }
+
+                .hanging-province-card.is-open {
+                        position: static;
+                        overflow: visible;
+                }
+
+                .hanging-province-accordion-header {
+                    position: relative;
+                    z-index: 2;
+                    background: #edf6fd;
+                    border-bottom: 1px solid #d9e8f5;
+                }
+
+
+                .hanging-province-card.is-open
+                .hanging-province-accordion-header {
+                    position: sticky;
+                    top: 0;
+                    z-index: 5;
+                    background: #edf6fd;
+                    box-shadow: 0 2px 6px rgba(23, 63, 99, 0.08);
+                }
+
+                /* Rekap nasional lebih fleksibel pada panel 30% */
+                .hanging-kpi-compact-bar {
+                    display: grid;
+                    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.2fr);
+                    align-items: center;
+                    gap: 10px;
+                    padding: 14px 12px;
+                    box-sizing: border-box;
+                }
+
+                .hanging-kpi-year-box,
+                .hanging-kpi-metric-item {
+                    min-width: 0;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .hanging-kpi-year-box label {
+                    display: block;
+                    margin-bottom: 6px;
+                    font-size: 11px;
+                }
+
+                #hanging-year-select {
+                    width: 100%;
+                    min-width: 0;
+                    max-width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .hanging-kpi-metric-item {
+                    padding-left: 10px;
+                }
+
+                .hanging-kpi-metric-item.border-left {
+                    border-left: 1px solid #e1e8ef;
+                }
+
+                .hanging-kpi-metric-label {
+                    font-size: 10px;
+                    line-height: 1.3;
+                }
+
+                .hanging-kpi-metric-value-container {
+                    display: flex;
+                    align-items: baseline;
+                    flex-wrap: wrap;
+                    gap: 4px;
+                }
+
+                .hanging-kpi-metric-number {
+                    font-size: 18px;
+                    line-height: 1.2;
+                    overflow-wrap: anywhere;
+                }
+
+                .hanging-kpi-metric-unit {
+                    font-size: 10px;
+                    white-space: normal;
+                    overflow-wrap: anywhere;
+                }
+
+                .hanging-summary-message {
+                    margin: 0;
+                    padding: 10px 12px;
+                    font-size: 11px;
+                    line-height: 1.4;
+                    overflow-wrap: anywhere;
+                }
+
+                @media (min-width: 1101px) and (max-width: 1350px) {
+                .hanging-kpi-compact-bar {
+                    grid-template-columns: minmax(0, 1fr);
+                    gap: 12px;
+                }
+
+                .hanging-kpi-metric-item,
+                .hanging-kpi-metric-item.border-left {
+                    padding: 10px 0 0;
+                    border-left: 0;
+                    border-top: 1px solid #e1e8ef;
+                }
+            }
+
+
+            /* =========================================
+                PERBAIKAN TABEL DAFTAR JEMBATAN GANTUNG
+                ========================================= */
+
+                /* Isi accordion tidak boleh melebar keluar panel */
+                .hanging-province-accordion-body {
+                    min-width: 0;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                /* Pembungkus tabel bisa digulir horizontal */
+                .hanging-province-accordion-body .hanging-detail-table-wrapper {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow-x: auto;
+                    overflow-y: visible;
+                    box-sizing: border-box;
+                }
+
+                /* Tabel mempertahankan lebar kolom yang wajar */
+                .hanging-province-accordion-body .hanging-detail-table {
+                    width: 100%;
+                    min-width: 460px;
+                    table-layout: auto;
+                    border-collapse: collapse;
+                }
+
+                /* Judul kolom tidak terpotong atau tersusun vertikal */
+                .hanging-province-accordion-body .hanging-detail-table th {
+                    white-space: nowrap;
+                    word-break: normal;
+                    overflow-wrap: normal;
+                    padding: 10px 8px;
+                    font-size: 12px;
+                    text-align: left;
+                }
+
+                /* Isi tabel */
+                .hanging-province-accordion-body .hanging-detail-table td {
+                    padding: 10px 8px;
+                    white-space: nowrap;
+                    word-break: normal;
+                    overflow-wrap: normal;
+                    font-size: 12px;
+                }
+
+                /* Nama jembatan boleh memakai ruang lebih besar */
+                .hanging-province-accordion-body .hanging-detail-table th:nth-child(1),
+                .hanging-province-accordion-body .hanging-detail-table td:nth-child(1) {
+                    width: 34px;
+                    text-align: center;
+                }
+
+                .hanging-province-accordion-body .hanging-detail-table th:nth-child(2),
+                .hanging-province-accordion-body .hanging-detail-table td:nth-child(2) {
+                    min-width: 145px;
+                }
+
+                .hanging-province-accordion-body .hanging-detail-table th:last-child,
+                .hanging-province-accordion-body .hanging-detail-table td:last-child {
+                    min-width: 85px;
+                }
+
+                /* Header provinsi aktif tetap netral */
+                .hanging-province-card.is-open
+                .hanging-province-accordion-header {
+                    background: #ffffff;
+                    border-bottom: 1px solid #e1e8ef;
+                    box-shadow: none;
+                }
+
+                /* Warna hanya muncul ketika kursor diarahkan */
+                .hanging-province-accordion-header:hover {
+                    background: #edf6fd;
+                }
+
+
+                /* TABEL JEMBATAN DI DALAM ACCORDION PROVINSI */
+                .hanging-province-bridge-table {
+                    width: 100%;
+                    min-width: 430px;
+                    border-collapse: collapse;
+                    table-layout: auto;
+                }
+
+                /* AREA TABEL: GULIR HORIZONTAL JIKA RUANG SEMPIT */
+
+                .hanging-detail-table-wrapper {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow-x: hidden;
+                    overflow-y: visible;
+                    box-sizing: border-box;
+                }
+
+
+                /* HEADER KOLOM */
+                .hanging-province-bridge-table th {
+                    padding: 10px 8px;
+                    white-space: nowrap;
+                    word-break: normal;
+                    overflow-wrap: normal;
+                    font-size: 11px;
+                    text-align: left;
+                }
+
+                /* ISI TABEL */
+                .hanging-province-bridge-table td {
+                    padding: 10px 8px;
+                    font-size: 11px;
+                    vertical-align: middle;
+                    word-break: normal;
+                    overflow-wrap: normal;
+                }
+
+                /* NOMOR */
+                .hanging-province-bridge-table th:nth-child(1),
+                .hanging-province-bridge-table td:nth-child(1) {
+                    width: 35px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+
+                /* NAMA JEMBATAN */
+                .hanging-province-bridge-table th:nth-child(2),
+                .hanging-province-bridge-table td:nth-child(2) {
+                    min-width: 145px;
+                }
+
+                /* PANJANG */
+                .hanging-province-bridge-table th:nth-child(3),
+                .hanging-province-bridge-table td:nth-child(3) {
+                    min-width: 75px;
+                    white-space: nowrap;
+                }
+
+                /* LEBAR */
+                .hanging-province-bridge-table th:nth-child(4),
+                .hanging-province-bridge-table td:nth-child(4) {
+                    min-width: 65px;
+                    white-space: nowrap;
+                }
+
+                /* STATUS HIBAH */
+                .hanging-province-bridge-table th:nth-child(5),
+                .hanging-province-bridge-table td:nth-child(5) {
+                    min-width: 100px;
+                    white-space: nowrap;
+                    text-align: right;
+                }
+
+
+                /* TABEL COMPACT - TANPA SCROLLER HORIZONTAL */
+                .hanging-province-bridge-table {
+                    width: 100%;
+                    min-width: 0;
+                    table-layout: fixed;
+                    border-collapse: collapse;
+                }
+
+                /* HEADER DAN ISI */
+                .hanging-province-bridge-table th,
+                .hanging-province-bridge-table td {
+                    padding: 7px 3px;
+                    font-size: 10px;
+                    vertical-align: middle;
+                    box-sizing: border-box;
+                }
+
+                /* HEADER: JAGA AGAR TETAP TERBACA */
+                .hanging-province-bridge-table th {
+                    white-space: normal;
+                    word-break: normal;
+                    overflow-wrap: break-word;
+                    line-height: 1.3;
+                }
+
+                /* NOMOR */
+                .hanging-province-bridge-table th:nth-child(1),
+                .hanging-province-bridge-table td:nth-child(1) {
+                    width: 22px;
+                    text-align: center;
+                }
+
+                /* NAMA JEMBATAN */
+                .hanging-province-bridge-table th:nth-child(2),
+                .hanging-province-bridge-table td:nth-child(2) {
+                    width: auto;
+                    overflow-wrap: anywhere;
+                }
+
+                /* PANJANG */
+                .hanging-province-bridge-table th:nth-child(3),
+                .hanging-province-bridge-table td:nth-child(3) {
+                    width: 54px;
+                    white-space: nowrap;
+                }
+
+                /* LEBAR */
+                .hanging-province-bridge-table th:nth-child(4),
+                .hanging-province-bridge-table td:nth-child(4) {
+                    width: 48px;
+                    white-space: nowrap;
+                }
+
+                /* STATUS HIBAH */
+                .hanging-province-bridge-table th:nth-child(5),
+                .hanging-province-bridge-table td:nth-child(5) {
+                    width: 76px;
+                    white-space: normal;
+                    overflow-wrap: break-word;
+                    text-align: right;
+                }
+
+                /* LABEL STATUS */
+                .hanging-province-bridge-table .hanging-badge-hibah {
+                    font-size: 11px;
+                    padding: 6px 7px;
+                    white-space: normal;
+                }
+
+
+                /* TABEL COMPACT DENGAN JARAK KOLOM LEBIH NYAMAN */
+                .hanging-province-bridge-table {
+                    width: 100%;
+                    min-width: 0;
+                    table-layout: fixed;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                }
+
+                /* JARAK ANTAR KOLOM */
+                .hanging-province-bridge-table th,
+                .hanging-province-bridge-table td {
+                    padding: 9px 6px;
+                    font-size: 11.5px;
+                    vertical-align: middle;
+                    box-sizing: border-box;
+                }
+
+                /* NOMOR */
+                .hanging-province-bridge-table th:nth-child(1),
+                .hanging-province-bridge-table td:nth-child(1) {
+                    width: 25px;
+                    text-align: center;
+                }
+
+                /* NAMA JEMBATAN */
+                .hanging-province-bridge-table th:nth-child(2),
+                .hanging-province-bridge-table td:nth-child(2) {
+                    width: auto;
+                    padding-left: 8px;
+                    padding-right: 8px;
+                    overflow-wrap: anywhere;
+                }
+
+                /* PANJANG */
+                .hanging-province-bridge-table th:nth-child(3),
+                .hanging-province-bridge-table td:nth-child(3) {
+                    width: 57px;
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    white-space: nowrap;
+                }
+
+                /* LEBAR */
+                .hanging-province-bridge-table th:nth-child(4),
+                .hanging-province-bridge-table td:nth-child(4) {
+                    width: 50px;
+                    padding-left: 5px;
+                    padding-right: 5px;
+                    white-space: nowrap;
+                }
+
+                /* STATUS HIBAH */
+                .hanging-province-bridge-table th:nth-child(5),
+                .hanging-province-bridge-table td:nth-child(5) {
+                    width: 82px;
+                    padding-left: 6px;
+                    padding-right: 4px;
+                    white-space: normal;
+                    overflow-wrap: break-word;
+                    text-align: right;
+                }
+
+
+                .hanging-province-accordion-header {
+                    background: #ffffff;
+                }
+
+                .hanging-province-card.is-open
+                .hanging-province-accordion-header {
+                    background: #ffffff;
+                    box-shadow: none;
+                }
+
+                .hanging-province-accordion-header:hover,
+                .hanging-province-card.is-open
+                .hanging-province-accordion-header:hover {
+                    background: #edf6fd;
+                }
+
+
+
+
     </style>
 
 </head>
+
 
 
 <body>
@@ -2065,8 +6053,709 @@
     </div>
 
 
+
+    <!-- ========================================
+        BRIDGE CATEGORY MENU
+    ========================================= -->
+
+    <div id="bridge-category-screen">
+
+        <header class="category-header">
+
+            <div class="category-brand">
+
+                <div class="category-logo">
+                     <img
+                    class="category-logo" 
+                    src="logo-dpsi.jpg"
+                    alt="Kementerian Pekerjaan Umum"
+                >
+                </div>
+
+                <div class="category-brand-text">
+
+                    <div class="category-title">
+                        Sistem Informasi Jembatan
+                    </div>
+
+                    <div class="category-subtitle">
+                        Data • Monitoring • Infrastruktur Berkelanjutan
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="category-user">
+
+                <span id="category-user-name">
+                    User
+                </span>
+
+                <span
+                    class="category-user-icon"
+                    id="category-user-icon"
+                >
+                    U
+                </span>
+  
+                <button
+                    type="button"
+                    class="category-logout-button"
+                    onclick="logoutDashboard()"
+                    title="Logout"
+                    aria-label="Logout dari akun"
+                >
+                    ↪
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <main class="category-main">
+
+            <section class="category-hero">
+
+                <div class="category-hero-content">
+
+                    <div
+                        class="category-welcome"
+                        id="category-welcome"
+                    >
+                        Selamat Datang
+                    </div>
+
+                    <h1>
+                        Pilih Jenis Data Jembatan
+                        yang Ingin Anda Akses
+                    </h1>
+
+                    <p>
+                        Silakan pilih kategori jembatan
+                        untuk melihat dashboard, informasi, 
+                        dan data terkait secara lengkap.
+                    </p>
+
+                </div>
+
+              <div class="category-hero-visual">
+    
+                    <!-- 1. FOTO UTAMA (Sekarang hanya berisi gambar, overlay, dan motto) -->
+                    <div class="hero-bridge-background">
+                        <img src="bridge-background.jpeg" alt="Jembatan Indonesia">
+                        <div class="hero-photo-overlay"></div>
+        
+                        <div class="hero-motto">
+                            <strong>Jembatan Kuat</strong>
+                            <strong>Indonesia Maju</strong>
+                        </div>
+                    </div>
+
+                    <!-- 2. PETA INDONESIA (Pindahkan ke SINI, sejajar dengan kotak foto) -->
+                    <div class="hero-indonesia-map">
+                        <img src="indonesia-map.svg" alt="Peta Indonesia">
+                    </div>
+
+                </div>
+
+        </section>
+
+
+            <!-- ========================================
+                CATEGORY CARDS
+            ========================================= -->
+
+            <section class="bridge-category-grid">
+
+
+                <!-- JEMBATAN NASIONAL -->
+
+                <article
+                    class="bridge-category-card national-card"
+                >
+
+                    <div class="category-image national-image">
+                        <div class="category-icon">
+                            <svg
+                                viewBox="0 0 64 64"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M8 46h48"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M14 46V27M50 46V27"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M14 27c5-13 31-13 36 0"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                />
+
+                                <path
+                                    d="M20 29v17M27 25v21M37 25v21M44 29v17"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="category-card-content"
+                         style="--warna-pola: #0056b3;">
+
+                        <h2>
+                            Jembatan Nasional
+                        </h2>
+
+                        <p>
+                            Data dan informasi jembatan
+                            pada jaringan jalan nasional
+                            di seluruh Indonesia.
+                            
+                            <br> 
+                            <br>
+                            <strong>Source : INVIJ</strong>
+                        </p>
+
+                        <button
+                            class="category-enter-button"
+                            onclick="openNationalBridgeDashboard()"
+                        >
+                            <span>
+                                Masuk Dashboard
+                            </span>
+
+                            <span>
+                                →
+                            </span>
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- JEMBATAN KHUSUS -->
+
+                <article
+                    class="bridge-category-card special-card"
+                >
+
+                    <div class="category-image special-image">
+                        <div class="category-icon">
+                                <img
+                                    src="icon-special.svg"
+                                    alt="Kementerian Pekerjaan Umum"
+                                >
+
+                        </div>
+                    </div>
+
+                    <div class="category-card-content"
+                         style="--warna-pola: #28a745;">
+
+                        <h2>
+                            Jembatan Khusus
+                        </h2>
+
+                        <p>
+                            Data dan informasi jembatan
+                            khusus pada kawasan atau
+                            kepentingan tertentu.
+
+                            <br> 
+                            <br>
+                            <strong>Source : BKJTK</strong>
+                        </p>
+
+                        <button
+                            class="category-enter-button"
+                            onclick="openSpecialBridgeDashboard()"
+                        >
+                            <span>
+                                Masuk Dashboard
+                            </span>
+
+                            <span>
+                                →
+                            </span>
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- JEMBATAN GANTUNG -->
+
+                <article
+                    class="bridge-category-card hanging-card"
+                >
+
+                    <div class="category-image hanging-image">
+                        <div class="category-icon">
+                                <img
+                                    src="icon-hanging.svg"
+                                    alt="Kementerian Pekerjaan Umum"
+                                >
+                        </div>
+                    </div>
+
+                    <div class="category-card-content"
+                         style="--warna-pola: #6f42c1;">
+
+                        <h2>
+                            Jembatan Gantung
+                        </h2>
+
+                        <p>
+                            Data dan informasi jembatan
+                            gantung yang tersebar di
+                            berbagai wilayah Indonesia.
+
+                            <br> 
+                            <br>
+                            <strong>Source : PMU Jembatan Gantung</strong>
+                        </p>
+
+                        <button
+                            class="category-enter-button"
+                            onclick="openHangingBridgeDashboard()"
+                        >
+                            <span>
+                                Masuk Dashboard
+                            </span>
+
+                            <span>
+                                →
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- JEMBATAN TOL -->
+
+                <article
+                    class="bridge-category-card toll-card"
+                >
+
+                    <div class="category-image toll-image">
+                        <div class="category-icon">
+                                <img
+                                    src="icon-toll.svg"
+                                    alt="Kementerian Pekerjaan Umum"
+                                >
+                        </div>
+                    </div>
+
+                    <div class="category-card-content"
+                         style="--warna-pola: #fd7e14;">
+
+                        <h2>
+                            Jembatan Tol
+                        </h2>
+
+                        <p>
+                            Data dan informasi jembatan
+                            pada jaringan jalan tol
+                            di seluruh Indonesia.
+
+                            <br> 
+                            <br> 
+                            <strong>Source : ITRAMS, BPJT</strong>
+                        </p>
+
+                        <button
+                            class="category-enter-button"
+                            onclick="openTollBridgeDashboard()"
+                        >
+                            <span>
+                                Masuk Dashboard
+                            </span>
+
+                            <span>
+                                →
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+        </main>
+
+
+        <footer class="category-footer">
+
+            <div class="footer-item">
+
+                <img
+                    class="footer-icon"
+                    src="logo-pu.png"
+                    alt="Kementerian Pekerjaan Umum"
+                >
+
+                <div class="footer-item-text">
+
+                    <strong>
+                        Direktorat Jenderal Bina Marga
+                    </strong>
+
+                    <span>
+                        Kementerian Pekerjaan Umum
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-item">
+                <img
+                    class="footer-icon"
+                    src="icon-data.svg"
+                    alt=""
+                >
+
+                <div class="footer-item-text">
+                    <strong>Data Terintegrasi</strong>
+                    <span>Satu platform, berbagai jenis jembatan</span>
+                </div>
+            </div>
+
+
+            <div class="footer-item">
+                <img
+                    class="footer-icon"
+                    src="icon-monitoring.svg"
+                    alt=""
+                >
+
+                <div class="footer-item-text">
+                    <strong>Monitoring Real-Time</strong>
+                    <span>Untuk infrastruktur yang lebih baik</span>
+                </div>
+            </div>
+
+
+            <div class="footer-item">
+                <img
+                    class="footer-icon"
+                    src="icon-gis.svg"
+                    alt=""
+                >
+
+                <div class="footer-item-text">
+                    <strong>Geographic Information System</strong>
+                    <span>Informasi spasial jembatan Indonesia</span>
+                </div>
+            </div>
+
+        </footer>
+
+    </div>
+
+
     <!-- ======================================= -->
-    <!-- DASHBOARD                              -->
+    <!-- DASHBOARD JEMBATAN GANTUNG             -->
+    <!-- ======================================= -->
+
+        <div id="hanging-dashboard">
+
+    <!-- ======================================== -->
+    <!-- HEADER -->
+    <!-- ======================================== -->
+
+            <header class="hanging-dashboard-header">
+
+                <div class="hanging-dashboard-brand">
+
+                    <div class="hanging-dashboard-logo">
+                        🌁
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            Dashboard Jembatan Gantung Indonesia
+                        </h1>
+
+                        <p>
+                            Monitoring pembangunan dan sebaran jembatan gantung nasional
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </header>
+
+
+
+            <!-- ======================================== -->
+            <!-- MAIN 2 COLUMN -->
+            <!-- ======================================== -->
+
+            <div class="hanging-dashboard-layout">
+
+
+                <!-- ==================================== -->
+                <!-- KOLOM KIRI -->
+                <!-- ==================================== -->
+
+                <aside class="hanging-left-panel">
+
+
+                    <!-- ================================ -->
+                    <!-- KPI -->
+                    <!-- ================================ -->
+
+                        <!-- ================================ -->
+                        <!-- KPI REKAP NASIONAL PIPIH          -->
+                        <!-- ================================ -->
+                        <section class="hanging-national-summary">
+
+                            <div class="hanging-kpi-compact-bar">
+
+                                <!-- Sisi Kiri: Filter Tahun Anggaran -->
+                                <div class="hanging-kpi-year-box">
+                                    <label for="hanging-year-select">Tahun Anggaran</label>
+                                    <select id="hanging-year-select" onchange="updateHangingBridgeSummary()">
+                                        <option value="">Memuat...</option>
+                                    </select>
+                                </div>
+
+                                <!-- Sisi Tengah: KPI Total Unit -->
+                                <div class="hanging-kpi-metric-item">
+                                    <div class="hanging-kpi-metric-label">Total Unit</div>
+                                    <div class="hanging-kpi-metric-value-container">
+                                        <span class="hanging-kpi-metric-number" id="hanging-total-unit">-</span>
+                                        <span class="hanging-kpi-metric-unit">unit jembatan</span>
+                                    </div>
+                                </div>
+
+                                <!-- Sisi Kanan: KPI Total Panjang -->
+                                <div class="hanging-kpi-metric-item border-left">
+                                    <div class="hanging-kpi-metric-label">Total Panjang</div>
+                                    <div class="hanging-kpi-metric-value-container">
+                                        <span class="hanging-kpi-metric-number" id="hanging-total-length">-</span>
+                                        <span class="hanging-kpi-metric-unit">meter</span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Info status load data (dipertahankan dari script lama Anda) -->
+                            <p id="hanging-summary-message" class="hanging-summary-message"></p>
+                            
+                            <!-- Dipertahankan tersembunyi karena masih direferensikan oleh JS lama Anda -->
+                            <h2 id="hanging-summary-title" style="display:none;">Rekap Jembatan Gantung Indonesia</h2>
+                        </section>
+
+
+
+                    <!-- ==================================== -->
+                    <!-- PROVINCE LIST -->
+                    <!-- ==================================== -->
+
+
+                      <section class="hanging-province-panel">
+
+                            <div class="hanging-panel-heading">
+                                <div>
+                                    <div class="hanging-panel-title">REKAP PROVINSI</div>
+                                    <p>Klik provinsi untuk melihat daftar jembatan</p>
+                                </div>
+                            </div>
+
+                            <!-- ========================================================= -->
+                            <!-- TAMBAHAN BARU: HEADER KOLOM REKAP PROVINSI (POIN 2)        -->
+                            <!-- ========================================================= -->
+                            <div class="hanging-province-table-header">
+                                <div>Provinsi</div>
+                                <div class="text-right">Total Unit</div>
+                                <div class="text-right">Total Panjang</div>
+                            </div>
+
+                            <!-- Penampung grid otomatis (dipertahankan dari script lama Anda) -->
+                            <div id="hanging-province-grid" class="hanging-province-grid">
+                                <div class="hanging-province-loading">
+                                    Memuat data provinsi...
+                                </div>
+                            </div>
+
+                    </section>
+
+
+                </aside>
+
+
+                <!-- ==================================== -->
+                <!-- KOLOM KANAN -->
+                <!-- ==================================== -->
+
+                <main class="hanging-map-panel">
+
+
+                    <div class="hanging-map-header">
+
+                        <div>
+
+                            <div class="hanging-map-kicker">
+                                SPATIAL MONITORING
+                            </div>
+
+                            <h2>
+                                Sebaran Jembatan Gantung
+                            </h2>
+
+                            <p>
+                                Peta interaktif lokasi jembatan gantung Indonesia
+                            </p>
+
+                        </div>
+
+
+                        <div class="hanging-map-status">
+
+                            <span class="hanging-map-status-dot"></span>
+
+                            <span>
+                                LIVE MAP
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        Untuk sementara kita pertahankan ID ini
+                        agar fungsi map existing tidak langsung rusak.
+                    -->
+
+                    <div
+                        id="hanging-detail-map"
+                        class="hanging-detail-map"
+                    ></div>
+
+
+                    <!-- ================================= -->
+                    <!-- LEGEND -->
+                    <!-- ================================= -->
+
+                    <div class="hanging-map-footer">
+
+                        <div class="hanging-map-legend">
+
+                            <span class="hanging-legend-dot"></span>
+
+                            <span>
+                                Jembatan Gantung
+                            </span>
+
+                        </div>
+
+                        <div class="hanging-map-info">
+                            Klik marker untuk melihat detail
+                        </div>
+
+                    </div>
+
+
+                </main>
+
+            </div>
+
+
+
+            <!-- ======================================== -->
+            <!-- DETAIL -->
+            <!-- ======================================== -->
+
+            <section
+                id="hanging-bridge-detail-section"
+                class="hanging-bridge-detail-section"
+            >
+
+                <div class="hanging-detail-header">
+
+                    <div>
+
+                        <div class="hanging-section-kicker">
+                            BRIDGE DETAIL
+                        </div>
+
+                        <h2 id="hanging-detail-title">
+                            Detail Jembatan Gantung
+                        </h2>
+
+                        <p id="hanging-detail-subtitle">
+                            Pilih provinsi untuk melihat daftar jembatan.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="hanging-detail-close"
+                        class="hanging-detail-close"
+                        onclick="closeHangingBridgeDetail()"
+                    >
+                        Tutup
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="hanging-bridge-detail-content"
+                    class="hanging-bridge-detail-content"
+                >
+
+                    <div class="hanging-detail-empty">
+                        Pilih salah satu provinsi untuk melihat daftar
+                        jembatan gantung.
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+    <!-- ======================================= -->
+    <!-- DASHBOARD JEMBATAN NASIONAL             -->
     <!-- ======================================= -->
 
     <div id="dashboard">
@@ -3334,6 +8023,1987 @@
 
         }
 
+
+        /* ===================================== */
+        /* MEMBUKA DASHBOARD JBT N               */
+        /* ===================================== */
+
+
+        function openNationalBridgeDashboard() {
+
+            console.log(
+                '🌉 Membuka Dashboard Jembatan Nasional di tab baru...'
+            );
+
+            window.open(
+                window.location.pathname +
+                '?dashboard=national',
+                '_blank'
+            );
+        }
+
+
+        function openSpecialBridgeDashboard() {
+
+            alert(
+                'Dashboard Jembatan Khusus sedang dalam pengembangan.'
+            );
+
+        }
+
+
+        // ========================================
+        // DATA DASHBOARD JEMBATAN GANTUNG
+        // ========================================
+
+        const SUSPENSION_BRIDGE_API =
+            'https://gisportal.binamarga.pu.go.id/arcgis/rest/services/Jembatan/Jembatan_Gantung/MapServer/0/query';
+
+            let hangingDetailMap = null;
+
+            let hangingDetailMarkers = [];
+        
+            let suspensionBridgeProvinces = [];
+
+            let currentYearBridgesFeatures = [];
+
+
+        // ========================================
+        // BUKA DASHBOARD JEMBATAN GANTUNG
+        // ========================================
+
+        function openHangingBridgeDashboard() {
+
+            console.log(
+                '🌁 Membuka Dashboard Jembatan Gantung di tab baru...'
+            );
+
+            window.open(
+                window.location.pathname + '?dashboard=hanging',
+                '_blank'
+            );
+
+        }
+
+
+        async function initializeHangingBridgeDashboardPage() {
+
+            console.log(
+                '🌁 Menginisialisasi Dashboard Jembatan Gantung...'
+            );
+
+            const categoryScreen =
+                document.getElementById('bridge-category-screen');
+
+            const nationalDashboard =
+                document.getElementById('dashboard');
+
+            const hangingDashboard =
+                document.getElementById('hanging-dashboard');
+
+            if (categoryScreen) {
+                categoryScreen.style.display = 'none';
+            }
+
+            if (nationalDashboard) {
+                nationalDashboard.style.display = 'none';
+            }
+
+            if (hangingDashboard) {
+                hangingDashboard.style.display = 'block';
+            }
+
+            initializeHangingDetailMap();
+
+            setTimeout(() => {
+                if (hangingDetailMap) {
+                    hangingDetailMap.invalidateSize();
+                    hangingDetailMap.setView([-2.5, 118], 5);
+                }
+            }, 300);
+
+            suspensionBridgeProvinces =
+                await loadSuspensionBridgeProvinces();
+
+            await loadHangingBridgeYears();
+
+        }
+
+
+        // ========================================
+        // KEMBALI KE LANDING PAGE
+        // ========================================
+
+        function closeHangingBridgeDashboard() {
+
+            document.getElementById(
+                'hanging-dashboard'
+            ).style.display = 'none';
+
+            document.getElementById(
+                'bridge-category-screen'
+            ).style.display = 'block';
+
+        }
+
+
+        function initializeHangingDetailMap() {
+
+            const mapContainer =
+                document.getElementById(
+                    'hanging-detail-map'
+                );
+
+            if (!mapContainer) {
+
+                console.error(
+                    '❌ Container hanging-detail-map tidak ditemukan.'
+                );
+
+                return null;
+            }
+
+
+            // Jika map sudah pernah dibuat
+            if (hangingDetailMap) {
+
+                setTimeout(() => {
+
+                    hangingDetailMap.invalidateSize();
+
+                }, 100);
+
+                return hangingDetailMap;
+            }
+
+
+            console.log(
+                '🗺️ Membuat map detail Jembatan Gantung...'
+            );
+
+
+            hangingDetailMap =
+                L.map(
+                    'hanging-detail-map'
+                ).setView(
+                    [-2.5, 118],
+                    5
+                );
+
+
+            L.tileLayer(
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                {
+                    maxZoom: 19,
+
+                    attribution:
+                        '&copy; OpenStreetMap contributors'
+                }
+            ).addTo(
+                hangingDetailMap
+            );
+
+
+            setTimeout(() => {
+
+                hangingDetailMap.invalidateSize();
+
+            }, 200);
+
+
+            console.log(
+                '✅ Map detail berhasil dibuat.'
+            );
+
+
+            return hangingDetailMap;
+        }
+
+
+        // ========================================
+        // MEMUAT DAFTAR TAHUN DARI API
+        // ========================================
+
+        async function loadHangingBridgeYears() {
+
+            const select =
+                document.getElementById(
+                    'hanging-year-select'
+                );
+
+            select.innerHTML =
+                '<option value="">Memuat tahun...</option>';
+
+            try {
+
+                const params =
+                    new URLSearchParams({
+                        where: '1=1',
+                        outFields: 'CONS_YEAR',
+                        returnGeometry: 'false',
+                        returnDistinctValues: 'true',
+                        orderByFields: 'CONS_YEAR DESC',
+                        f: 'json'
+                    });
+
+                const response =
+                    await fetch(
+                        `${SUSPENSION_BRIDGE_API}?${params.toString()}`
+                    );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+                }
+
+                const data =
+                    await response.json();
+
+                if (data.error) {
+                    throw new Error(
+                        data.error.message ||
+                        'ArcGIS API error'
+                    );
+                }
+
+                const years = [
+                    ...new Set(
+                        (data.features || [])
+                            .map(feature =>
+                                Number(
+                                    feature.attributes?.CONS_YEAR
+                                )
+                            )
+                            .filter(year =>
+                                Number.isInteger(year)
+                            )
+                    )
+                ].sort((a, b) => b - a);
+
+                select.innerHTML = '';
+
+                const allYearsOption = document.createElement('option');
+                allYearsOption.value = 'all';
+                allYearsOption.textContent = 'Seluruh Tahun';
+                select.appendChild(allYearsOption);
+
+
+                if (years.length === 0) {
+
+                    select.innerHTML =
+                        '<option value="">Tahun tidak tersedia</option>';
+
+                    return;
+                }
+
+                years.forEach(year => {
+
+                    const option =
+                        document.createElement('option');
+
+                    option.value = year;
+                    option.textContent = year;
+
+                    select.appendChild(option);
+
+                });
+
+                // Pilih tahun terbaru secara otomatis
+                select.value = 'all';
+
+                await updateHangingBridgeSummary();
+
+                console.log(
+                    '✅ Tahun Jembatan Gantung berhasil dimuat:',
+                    years
+                );
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Gagal memuat daftar tahun:',
+                    error
+                );
+
+                select.innerHTML =
+                    '<option value="">Gagal memuat tahun</option>';
+
+                document.getElementById(
+                    'hanging-summary-message'
+                ).textContent =
+                    'Daftar tahun gagal dimuat. Periksa koneksi atau API.';
+            }
+
+        }
+
+
+        // ================================================
+        // REKAP NASIONAL JEMBATAN GANTUNG
+        // ================================================
+
+        async function updateHangingBridgeSummary() {
+
+            const yearSelect = document.getElementById(
+                'hanging-year-select'
+            );
+
+            const totalUnitElement = document.getElementById(
+                'hanging-total-unit'
+            );
+
+            const totalLengthElement = document.getElementById(
+                'hanging-total-length'
+            );
+
+            const titleElement = document.getElementById(
+                'hanging-summary-title'
+            );
+
+            const messageElement = document.getElementById(
+                'hanging-summary-message'
+            );
+
+            const selectedYear = yearSelect?.value;
+            const currentYear = new Date().getFullYear();
+
+            const isAllYears = selectedYear === 'all';
+
+            const year = isAllYears
+                ? currentYear
+                : Number(selectedYear);
+
+            if (!selectedYear || (!isAllYears && !Number.isInteger(year))) {
+                console.warn('⚠️ Pilihan tahun pembangunan tidak valid.');
+                return;
+            }
+
+            if (!totalUnitElement || !totalLengthElement) {
+                console.error('❌ Elemen KPI tidak ditemukan.');
+                return;
+            }
+
+            totalUnitElement.textContent = '...';
+            totalLengthElement.textContent = '...';
+        
+            if (titleElement) {
+                titleElement.textContent = isAllYears
+                    ? `Rekap Kumulatif Jembatan Gantung Indonesia s.d. ${currentYear}`
+                    : `Rekap Jembatan Gantung Indonesia Tahun ${year}`;
+            }
+     
+            if (messageElement) {
+                messageElement.textContent = isAllYears
+                    ? `Mengambil data kumulatif sampai tahun ${currentYear}...`
+                    : `Mengambil data pembangunan tahun ${year}...`;
+            }
+
+            try {
+
+                // =========================================
+                // 1. AMBIL DATA TAHUN TERPILIH
+                // =========================================
+
+                const whereClause = isAllYears
+                    ? `CONS_YEAR <= ${currentYear}`
+                    : `CONS_YEAR = ${year}`;
+
+                const params = new URLSearchParams({
+                    where: whereClause,
+                    outFields: '*',
+                    returnGeometry: 'true',
+                    returnExceededLimitFeatures: 'true',
+                    f: 'geojson'
+                });
+
+                const response = await fetch(
+                    `${SUSPENSION_BRIDGE_API}?${params.toString()}`
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(
+                        data.error.message || 'ArcGIS API error'
+                    );
+                }
+
+                if (
+                    !data.features ||
+                    !Array.isArray(data.features)
+                ) {
+                    throw new Error(
+                        'Format data fitur dari ArcGIS tidak valid.'
+                    );
+                }
+
+                // Simpan data tahun aktif untuk proses berikutnya.
+                currentYearBridgesFeatures = data.features;
+
+                // =========================================
+                // 2. HITUNG TOTAL UNIT DAN PANJANG
+                // =========================================
+
+                const totalUnit =
+                    currentYearBridgesFeatures.length;
+
+                const totalPanjang =
+                    currentYearBridgesFeatures.reduce(
+                        (total, feature) => {
+
+                            const props =
+                                feature.properties || {};
+
+                            const nilai =
+                                props.BRIDGE_LENGTH;
+
+                            if (
+                                nilai === null ||
+                                nilai === undefined ||
+                                String(nilai).trim() === ''
+                            ) {
+                                return total;
+                            }
+
+                            const panjang = Number(nilai);
+
+                            return Number.isFinite(panjang)
+                                ? total + panjang
+                                : total;
+                        },
+                        0
+                    );
+
+                // Tampilkan KPI segera setelah data berhasil dihitung.
+                totalUnitElement.textContent =
+                    totalUnit.toLocaleString('id-ID');
+
+                totalLengthElement.textContent =
+                    totalPanjang.toLocaleString(
+                        'id-ID',
+                        { maximumFractionDigits: 2 }
+                    );
+
+                if (messageElement) {
+                    messageElement.textContent = isAllYears
+                        ? `Data kumulatif sampai ${currentYear} berhasil dimuat. ` +
+                        `Total ${totalUnit.toLocaleString('id-ID')} unit jembatan.`
+                        : `Data tahun ${year} berhasil dimuat. ` +
+                        `Total ${totalUnit.toLocaleString('id-ID')} unit jembatan.`;
+                }
+
+                console.log('✅ Rekap nasional berhasil dihitung:', {
+                    year,
+                    totalUnit,
+                    totalPanjang
+                });
+
+                // =========================================
+                // 3. PERBARUI REKAP PROVINSI
+                // =========================================
+
+                try {
+
+                    await updateHangingBridgeProvinceCards(year);
+
+                } catch (provinceError) {
+
+                    console.error(
+                        '❌ Rekap provinsi gagal diperbarui:',
+                        provinceError
+                    );
+
+                }
+
+                // =========================================
+                // 4. PERBARUI MARKER PETA
+                //    Terpisah dari perhitungan KPI
+                // =========================================
+
+                try {
+
+                    if (!hangingDetailMap) {
+                        initializeHangingDetailMap();
+                    }
+
+                    if (!hangingDetailMap) {
+                        throw new Error(
+                            'Peta belum berhasil diinisialisasi.'
+                        );
+                    }
+
+                    // Hapus marker tahun sebelumnya.
+                    hangingDetailMarkers.forEach(marker => {
+
+                        if (
+                            hangingDetailMap.hasLayer(marker)
+                        ) {
+                            hangingDetailMap.removeLayer(marker);
+                        }
+
+                    });
+
+                    hangingDetailMarkers = [];
+
+                    // Buat marker untuk data tahun terpilih.
+                    currentYearBridgesFeatures.forEach(feature => {
+
+                        const props =
+                            feature.properties || {};
+
+                        const coords =
+                            feature.geometry?.coordinates;
+
+                        if (
+                            !Array.isArray(coords) ||
+                            coords.length < 2
+                        ) {
+                            return;
+                        }
+
+                        const longitude = Number(coords[0]);
+                        const latitude = Number(coords[1]);
+
+                        if (
+                            !Number.isFinite(latitude) ||
+                            !Number.isFinite(longitude)
+                        ) {
+                            return;
+                        }
+
+                        const panjang =
+                            props.BRIDGE_LENGTH !== null &&
+                            props.BRIDGE_LENGTH !== undefined &&
+                            String(props.BRIDGE_LENGTH).trim() !== ''
+                                ? Number(props.BRIDGE_LENGTH)
+                                : null;
+
+                        const lebar =
+                            props.BRIDGE_WIDTH !== null &&
+                            props.BRIDGE_WIDTH !== undefined &&
+                            String(props.BRIDGE_WIDTH).trim() !== ''
+                                ? Number(props.BRIDGE_WIDTH)
+                                : null;
+
+                        
+                        const popupContent = `
+                            <div class="bridge-popup">
+
+                                <div class="bridge-popup-header">
+                                    <div class="bridge-popup-header-title">
+                                        INFORMASI JEMBATAN
+                                    </div>
+                                </div>
+
+                                <div class="bridge-popup-body">
+
+                                    <div class="bridge-section">
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Nama Jembatan</div>
+                                            <div class="bridge-value">
+                                                ${props.BRIDGE_NAME ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">No. Jembatan</div>
+                                            <div class="bridge-value">
+                                                ${props.BRIDGE_NUM ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Provinsi</div>
+                                            <div class="bridge-value">
+                                                ${props.PROVINCE ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Kabupaten/Kota</div>
+                                            <div class="bridge-value">
+                                                ${props.CITY_REGENCY ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Tahun Bangun</div>
+                                            <div class="bridge-value">
+                                                ${props.CONS_YEAR ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Panjang</div>
+                                            <div class="bridge-value">
+                                                ${
+                                                    Number.isFinite(Number(props.BRIDGE_LENGTH))
+                                                        ? Number(props.BRIDGE_LENGTH).toLocaleString('id-ID') + ' m'
+                                                        : '-'
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Lebar</div>
+                                            <div class="bridge-value">
+                                                ${
+                                                    Number.isFinite(Number(props.BRIDGE_WIDTH))
+                                                        ? Number(props.BRIDGE_WIDTH).toLocaleString('id-ID', {
+                                                            minimumFractionDigits: 0,
+                                                            maximumFractionDigits: 2
+                                                        }) + ' m'
+                                                        : '-'
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Tipe Bangunan Atas</div>
+                                            <div class="bridge-value">
+                                                ${props.SUPERSTR_TYPE ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Latitude</div>
+                                            <div class="bridge-value">
+                                                ${props.LATITUDE ?? '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Longitude</div>
+                                            <div class="bridge-value">
+                                                ${props.LONGITUDE ?? '-'}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        `;
+
+
+                        // Pertahankan ikon marker default yang digunakan saat ini.
+                        const marker = L.marker([
+                            latitude,
+                            longitude
+                        ]).addTo(hangingDetailMap);
+
+                        marker.bindPopup(popupContent);
+
+                        marker.bridgeId =
+                            props.OBJECTID ||
+                            props.BRIDGE_NUM ||
+                            props.BRIDGE_NAME;
+
+                        marker.bridgeProvince =
+                            String(props.PROVINCE || '').trim().toLowerCase();
+
+                        hangingDetailMarkers.push(marker);
+
+
+                    });
+
+                    // =====================================
+                    // 5. ATUR EXTENT PETA
+                    // =====================================
+
+                    if (hangingDetailMarkers.length > 0) {
+
+                        const markerGroup = L.featureGroup(
+                            hangingDetailMarkers
+                        );
+
+                        hangingDetailMap.fitBounds(
+                            markerGroup.getBounds(),
+                            {
+                                padding: [30, 30],
+                                maxZoom: 12
+                            }
+                        );
+
+                    } else {
+
+                        hangingDetailMap.setView(
+                            [-2.5, 118],
+                            5
+                        );
+
+                    }
+
+                    setTimeout(() => {
+                        hangingDetailMap.invalidateSize();
+                    }, 200);
+
+                    console.log(
+                        `🗺️ Marker tahun ${year}:`,
+                        hangingDetailMarkers.length
+                    );
+
+                } catch (mapError) {
+
+                    // Error peta tidak menghapus KPI yang sudah valid.
+                    console.error(
+                        '❌ Peta gagal diperbarui:',
+                        mapError
+                    );
+
+                    if (messageElement) {
+                        messageElement.textContent =
+                            `Data tahun ${year} berhasil dihitung, ` +
+                            'tetapi peta gagal diperbarui. Periksa Console.';
+                    }
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    `❌ Gagal memuat rekap tahun ${year}:`,
+                    error
+                );
+
+                totalUnitElement.textContent = '-';
+                totalLengthElement.textContent = '-';
+
+                if (messageElement) {
+                    messageElement.textContent =
+                        `Data tahun ${year} gagal dimuat. ` +
+                        'Periksa koneksi atau respons ArcGIS.';
+                }
+
+            }
+
+        }
+
+
+
+        // ========================================
+        // LOAD DATA JEMBATAN GANTUNG
+        // ========================================
+
+        async function loadSuspensionBridges(
+            year,
+            province = null
+        ) {
+            console.log('🌉 Memuat data detail Jembatan Gantung...');
+
+            if (!year) {
+                console.error('❌ Tahun belum diberikan.');
+                return null;
+            }
+
+            let where = `CONS_YEAR = ${year}`;
+
+            if (province) {
+                // PENTING: Paksa nama provinsi menjadi HURUF KAPITAL SEMUA (.toUpperCase())
+                // agar sesuai dengan format query database Server ArcGIS Bina Marga
+                const provinceUpper = String(province).trim().toUpperCase();
+                where += ` AND PROVINCE = '${provinceUpper}'`;
+            }
+
+            console.log('🔎 Query ArcGIS:', where);
+
+            const params = new URLSearchParams({
+                where: where,
+                outFields: '*',
+                returnGeometry: 'true',
+                f: 'geojson' // Meminta format GeoJSON agar Leaflet dapat membaca data koordinat tabel
+            });
+
+            try {
+                const response = await fetch(`${SUSPENSION_BRIDGE_API}?${params.toString()}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('❌ ArcGIS API Error:', data.error);
+                    return null;
+                }
+
+                if (!data.features || !Array.isArray(data.features)) {
+                    return {
+                        type: 'FeatureCollection',
+                        features: []
+                    };
+                }
+
+                const totalUnit = data.features.length;
+                let totalPanjang = 0;
+
+                data.features.forEach(feature => {
+                    const panjang = Number(feature.properties?.BRIDGE_LENGTH);
+                    if (!isNaN(panjang)) {
+                        totalPanjang += panjang;
+                    }
+                });
+
+                console.log(`📊 Hasil Detail Wilayah [${province || 'Indonesia'}]:`, {
+                    totalUnit: totalUnit,
+                    totalPanjang: totalPanjang
+                });
+
+                return {
+                    type: 'FeatureCollection',
+                    features: data.features,
+                    year: year,
+                    province: province,
+                    totalUnit: totalUnit,
+                    totalPanjang: totalPanjang
+                };
+
+            } catch (error) {
+                console.error('❌ Gagal memuat detail Jembatan Gantung:', error);
+                return null;
+            }
+        }
+
+
+
+        // ========================================
+        // LOAD SUMMARY
+        // ========================================
+
+        async function loadSuspensionBridgeSummary(
+            year,
+            province = null
+        ) {
+
+            console.log(
+                '📊 Memuat summary Jembatan Gantung...'
+            );
+
+            const data =
+                await loadSuspensionBridges(
+                    year,
+                    province
+                );
+
+            if (!data) {
+
+                console.warn(
+                    '⚠️ Data Jembatan Gantung tidak tersedia.'
+                );
+
+                return null;
+
+            }
+
+            const region =
+                province ||
+                'Indonesia';
+
+            const summary = {
+
+                year:
+                    year,
+
+                province:
+                    province,
+
+                region:
+                    region,
+
+                totalUnit:
+                    data.totalUnit,
+
+                totalPanjang:
+                    data.totalPanjang
+
+            };
+
+            console.log(
+                '📊 SUMMARY:',
+                summary
+            );
+
+            return summary;
+
+        }
+
+
+        async function loadSuspensionBridgeProvinces() {
+
+            console.log(
+                '📍 Membaca daftar provinsi Jembatan Gantung...'
+            );
+
+            try {
+
+                const params =
+                    new URLSearchParams({
+
+                        where:
+                            '1=1',
+
+                        outFields:
+                            'PROVINCE',
+
+                        returnGeometry:
+                            'false',
+
+                        returnDistinctValues:
+                            'true',
+
+                        f:
+                            'json'
+
+                    });
+
+                const response =
+                    await fetch(
+                        `${SUSPENSION_BRIDGE_API}?${params.toString()}`
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+
+                }
+
+                const data =
+                    await response.json();
+
+                if (data.error) {
+
+                    console.error(
+                        '❌ ArcGIS API Error:',
+                        data.error
+                    );
+
+                    return [];
+
+                }
+
+                const provinces =
+                    data.features
+                        .map(
+                            feature =>
+                                feature.attributes
+                                    ?.PROVINCE
+                        )
+                        .filter(
+                            province =>
+                                province &&
+                                province.trim() !== ''
+                        );
+
+                const uniqueProvinces =
+                    [
+                        ...new Set(
+                            provinces
+                        )
+                    ];
+
+                uniqueProvinces.sort(
+                    (a, b) =>
+                        a.localeCompare(b)
+                );
+
+                console.log(
+                    '📍 Jumlah provinsi:',
+                    uniqueProvinces.length
+                );
+
+                console.log(
+                    '📍 Provinsi tersedia:',
+                    uniqueProvinces
+                );
+
+                return uniqueProvinces;
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Gagal membaca daftar provinsi:',
+                    error
+                );
+
+                return [];
+
+            }
+
+        }
+
+
+        // ========================================
+        // LOAD SUMMARY SELURUH PROVINSI
+        // ========================================
+
+        async function loadSuspensionBridgeProvinceSummaries(
+            year
+        ) {
+
+            console.log(
+                `📊 Memuat summary seluruh provinsi tahun ${year}...`
+            );
+
+            if (!year) {
+
+                console.error(
+                    '❌ Tahun belum diberikan.'
+                );
+
+                return [];
+
+            }
+
+            if (
+                !Array.isArray(
+                    suspensionBridgeProvinces
+                ) ||
+                suspensionBridgeProvinces.length === 0
+            ) {
+
+                console.error(
+                    '❌ Daftar provinsi belum tersedia.'
+                );
+
+                return [];
+
+            }
+
+            const summaries = [];
+
+            for (
+                const province
+                of suspensionBridgeProvinces
+            ) {
+
+                const summary =
+                    await loadSuspensionBridgeSummary(
+                        year,
+                        province
+                    );
+
+                if (!summary) {
+                    continue;
+                }
+
+                summaries.push(
+                    summary
+                );
+
+            }
+
+            console.log(
+                `📊 Total summary provinsi: ${summaries.length}`
+            );
+
+            console.log(
+                '📋 SUMMARY PROVINSI:',
+                summaries
+            );
+
+            return summaries;
+
+        }
+
+
+                // ========================================================
+        // REKAP PROVINSI — MEMBACA LANGSUNG DATA MAP GLOBAL (INSTANT)
+        // ========================================================
+        async function updateHangingBridgeProvinceCards(year) {
+            const grid = document.getElementById('hanging-province-grid');
+            if (!grid) return;
+
+            grid.innerHTML = '<div class="hanging-province-loading">Memproses data wilayah...</div>';
+
+            // Kelompokkan data dari cache global currentYearBridgesFeatures
+            const provMap = {};
+            
+            // Inisialisasi awal menggunakan daftar provinsi bawaan sistem Anda
+            if (Array.isArray(suspensionBridgeProvinces)) {
+                suspensionBridgeProvinces.forEach(p => {
+                    provMap[p.toUpperCase()] = { province: p, totalUnit: 0, totalPanjang: 0, features: [] };
+                });
+            }
+
+            // Distribusikan jembatan ke masing-masing provinsi
+            currentYearBridgesFeatures.forEach(f => {
+                const provName = String(f.properties?.PROVINCE || '').trim().toUpperCase();
+                
+                // Jika belum terdaftar di master wilayah, buat grup baru dinamis
+                if (!provMap[provName]) {
+                    provMap[provName] = { province: f.properties?.PROVINCE || provName, totalUnit: 0, totalPanjang: 0, features: [] };
+                }
+                
+                provMap[provName].totalUnit += 1;
+                const len = Number(f.properties?.BRIDGE_LENGTH) || 0;
+                provMap[provName].totalPanjang += len;
+                provMap[provName].features.push(f);
+            });
+
+            // Saring dan tampilkan hanya provinsi yang memiliki jembatan aktif pada tahun tersebut
+            const activeProvinces = Object.values(provMap).filter(p => p.totalUnit > 0);
+
+            // Urutkan provinsi berdasarkan abjad alfabetis
+            activeProvinces.sort((a, b) => String(a.province).localeCompare(String(b.province)));
+
+            if (activeProvinces.length === 0) {
+                grid.innerHTML = '<div class="hanging-province-empty">Tidak ada proyek jembatan di tahun ini.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+
+            activeProvinces.forEach(summary => {
+                const card = document.createElement('article');
+                card.className = 'hanging-province-card';
+
+                card.innerHTML = `
+                    <button type="button" class="hanging-province-accordion-header" aria-expanded="false">
+                        <span class="hanging-province-accordion-name">
+                            <span class="hanging-province-accordion-arrow">▶</span>
+                            <span>${summary.province}</span>
+                        </span>
+                        <span class="hanging-province-accordion-metric"><strong>${summary.totalUnit}</strong> unit</span>
+                        <span class="hanging-province-accordion-metric"><strong>${summary.totalPanjang.toLocaleString('id-ID')}</strong> m</span>
+                    </button>
+                    <div class="hanging-province-accordion-body"></div>
+                `;
+
+                const header = card.querySelector('.hanging-province-accordion-header');
+                const body = card.querySelector('.hanging-province-accordion-body');
+
+                header.addEventListener('click', () => {
+                    const isOpen = card.classList.contains('is-open');
+
+                    if (isOpen) {
+                        card.classList.remove('is-open');
+                        header.setAttribute('aria-expanded', 'false');
+                        card.querySelector('.hanging-province-accordion-arrow').textContent = '▶';
+                        return;
+                    }
+
+                    // Tutup accordion provinsi lain yang sedang terbuka
+                    grid.querySelectorAll('.hanging-province-card.is-open').forEach(openCard => {
+                        openCard.classList.remove('is-open');
+                        openCard.querySelector('.hanging-province-accordion-header').setAttribute('aria-expanded', 'false');
+                        openCard.querySelector('.hanging-province-accordion-arrow').textContent = '▶';
+                    });
+
+                    // Buka accordion wilayah ini
+                    card.classList.add('is-open');
+                    header.setAttribute('aria-expanded', 'true');
+                    card.querySelector('.hanging-province-accordion-arrow').textContent = '▼';
+
+
+                    renderProvinceBridgesList(summary.features, body);
+
+                    // Tampilkan marker provinsi terpilih saja.
+                    showOnlyProvinceMarkers(summary.province);
+
+                    // Zoom ke cakupan provinsi terpilih.
+                    zoomToProvinceLayer(summary.province);
+
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        
+                // ========================================================
+        // RENDERING DAFTAR TABEL JEMBATAN DALAM ACCORDION
+        // ========================================================
+        function renderProvinceBridgesList(features, container) {
+            features.sort((a, b) => (a.properties?.BRIDGE_NAME || '').localeCompare(b.properties?.BRIDGE_NAME || ''));
+
+            let tableRowsHtml = '';
+            features.forEach((f, idx) => {
+                const props = f.properties || {};
+                const bridgeIdentifier = props.OBJECTID || props.BRIDGE_NUM || props.BRIDGE_NAME;
+                
+                const coords = f.geometry?.coordinates;
+                let lat = 0, lng = 0;
+                if (coords && coords.length >= 2) {
+                    lng = coords[0];
+                    lat = coords[1];
+                }
+
+                tableRowsHtml += `
+                    <tr class="hanging-row-clickable" onclick="focusAndPopupBridge('${bridgeIdentifier}', ${lat}, ${lng})">
+                        <td>${idx + 1}</td>
+                        <td>
+                            <strong>${props.BRIDGE_NAME || '-'}</strong>
+                            <div style="color:#8a9aaa;font-size:10px;margin-top:3px;">
+                                ${props.BRIDGE_NUM && props.BRIDGE_NUM !== '-' ? 'No. ' + props.BRIDGE_NUM : ''}
+                            </div>
+                        </td>
+                        <td>${Number(props.BRIDGE_LENGTH || 0).toLocaleString('id-ID')} m</td>
+                        <td>${Number(props.BRIDGE_WIDTH || 0).toLocaleString('id-ID')} m</td>
+                        <td><span class="hanging-badge-hibah">Sudah Hibah</span></td>
+                    </tr>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="hanging-detail-table-wrapper">
+                    <table class="hanging-province-bridge-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Jembatan</th>
+                                <th>Panjang</th>
+                                <th>Lebar</th>
+                                <th>Status Hibah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRowsHtml}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+
+        // =========================================================================
+        // FITUR ACTION POIN 4: KLIK BARIS JEMBATAN -> FLY TO LOKASI & BUKA POPUP
+        // =========================================================================
+        function focusAndPopupBridge(bridgeId, lat, lng) {
+            if (!hangingDetailMap) return;
+
+            // Abaikan aksi jika koordinat spasial bernilai nol atau tidak valid
+            if (!lat || !lng) {
+                alert('Koordinat lokasi jembatan gantung ini tidak tersedia.');
+                return;
+            }
+
+            // 1. Luncurkan kamera peta secara smooth (Fly To) ke koordinat presisi jembatan dengan zoom tinggi (level 16)
+            hangingDetailMap.flyTo([lat, lng], 16, {
+                animate: true,
+                duration: 1.2 // Durasi animasi pergerakan kamera (dalam hitungan detik)
+            });
+
+            // 2. Scan array marker peta gantung untuk mencari marker jembatan ini, lalu buka pop-up secara otomatis
+            setTimeout(() => {
+                const targetMarker = hangingDetailMarkers.find(m => m.bridgeId == bridgeId);
+                if (targetMarker) {
+                    targetMarker.openPopup();
+                } else {
+                    console.warn(`Marker tidak ditemukan untuk bridgeId: ${bridgeId}`);
+                }
+            }, 1200); // Trigger popup mencuat tepat sesaat setelah animasi meluncur (flyTo) selesai bergeser
+        }
+
+
+
+
+        // ========================================
+        // BUKA DETAIL PROVINSI
+        // ========================================
+
+        async function openHangingBridgeProvinceDetail(
+            year,
+            province
+        ) {
+
+            console.log(
+                '📂 Membuka detail Jembatan Gantung:',
+                year,
+                province
+            );
+
+            const section =
+                document.getElementById(
+                    'hanging-bridge-detail-section'
+                );
+
+            const title =
+                document.getElementById(
+                    'hanging-detail-title'
+                );
+
+            const subtitle =
+                document.getElementById(
+                    'hanging-detail-subtitle'
+                );
+
+            const content =
+                document.getElementById(
+                    'hanging-bridge-detail-content'
+                );
+
+            if (
+                !section ||
+                !title ||
+                !subtitle ||
+                !content
+            ) {
+
+                console.error(
+                    '❌ Container detail tidak ditemukan.'
+                );
+
+                return;
+
+            }
+
+            section.style.display =
+                'block';
+
+            // ==============================
+            // INISIALISASI MAP
+            // ==============================
+
+            initializeHangingDetailMap();
+
+
+            title.textContent =
+                `Jembatan Gantung ${province}`;
+
+            subtitle.textContent =
+                `Daftar Jembatan Gantung Tahun ${year}`;
+
+            content.innerHTML = `
+
+                <div class="hanging-detail-empty">
+
+                    Memuat data
+                    ${province}...
+
+                </div>
+
+            `;
+
+            // Scroll ke detail
+            section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            try {
+
+                const data =
+                    await loadSuspensionBridges(
+                        year,
+                        province
+                    );
+
+                if (!data) {
+
+                    content.innerHTML = `
+
+                        <div class="hanging-detail-empty">
+
+                            Gagal memuat data
+                            ${province}.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+                if (
+                    !data.features ||
+                    data.features.length === 0
+                ) {
+
+                    content.innerHTML = `
+
+                        <div class="hanging-detail-empty">
+
+                            Tidak terdapat Jembatan Gantung
+                            pada ${province}
+                            untuk tahun ${year}.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+                renderHangingBridgeDetailTable(
+                    data
+                );
+
+            } catch (error) {
+
+                console.error(
+                    '❌ Gagal membuka detail provinsi:',
+                    error
+                );
+
+                content.innerHTML = `
+
+                    <div class="hanging-detail-empty">
+
+                        Terjadi kesalahan saat
+                        memuat data.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        // ========================================
+        // RENDER TABEL DETAIL
+        // ========================================
+
+        function renderHangingBridgeDetailTable(data) {
+
+            const content =
+                document.getElementById(
+                    'hanging-bridge-detail-content'
+                );
+
+            if (!content) {
+                return;
+            }
+
+
+            const features =
+                data.features || [];
+
+
+            // ==========================================
+            // BERSIHKAN MARKER SEBELUM MEMBUAT ULANG
+            // ==========================================
+
+            hangingDetailMarkers.forEach(
+                marker => {
+
+                    hangingDetailMap.removeLayer(
+                        marker
+                    );
+
+                }
+            );
+
+            hangingDetailMarkers = [];
+
+
+            // ==========================================
+            // BUAT BARIS TABEL
+            // ==========================================
+
+            const rows =
+                features.map(
+                    (feature, index) => {
+
+                        const properties =
+                            feature.properties || {};
+
+
+                        const nama =
+                            properties.BRIDGE_NAME || '-';
+
+
+                        const nomor =
+                            properties.BRIDGE_NUM || '-';
+
+
+                        const kabupaten =
+                            properties.CITY_REGENCY || '-';
+
+
+                        const tahun =
+                            properties.CONS_YEAR || '-';
+
+
+                        const panjang =
+                            Number(
+                                properties.BRIDGE_LENGTH
+                            );
+
+
+                        const lebar =
+                            Number(
+                                properties.BRIDGE_WIDTH
+                            );
+
+
+                        return `
+                            <tr
+                                class="hanging-detail-row"
+                                data-bridge-index="${index}"
+                            >
+
+                                <td
+                                    class="hanging-detail-number"
+                                >
+                                    ${index + 1}
+                                </td>
+
+
+                                <td>
+                                    <strong>
+                                        ${nama}
+                                    </strong>
+                                </td>
+
+
+                                <td>
+                                    ${nomor}
+                                </td>
+
+
+                                <td>
+                                    ${kabupaten}
+                                </td>
+
+
+                                <td>
+                                    ${tahun}
+                                </td>
+
+
+                                <td
+                                    class="hanging-detail-length"
+                                >
+                                    ${
+                                        !isNaN(panjang)
+                                            ? panjang.toLocaleString(
+                                                'id-ID'
+                                            )
+                                            : '-'
+                                    }
+                                    m
+                                </td>
+
+
+                                <td
+                                    class="hanging-detail-length"
+                                >
+                                    ${
+                                        !isNaN(lebar)
+                                            ? lebar.toLocaleString(
+                                                'id-ID',
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }
+                                            )
+                                            : '-'
+                                    }
+                                    m
+                                </td>
+
+                            </tr>
+                        `;
+                    }
+                ).join('');
+
+
+            // ==========================================
+            // TAMPILKAN TABEL
+            // ==========================================
+
+            content.innerHTML = `
+
+                <div class="hanging-detail-count">
+
+                    Total:
+                    <strong>
+                        ${features.length}
+                    </strong>
+                    unit jembatan
+
+                </div>
+
+
+                <div class="hanging-detail-table-wrapper">
+
+                    <table
+                        class="hanging-detail-table"
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th
+                                    class="hanging-detail-number"
+                                >
+                                    No
+                                </th>
+
+                                <th>
+                                    Nama Jembatan
+                                </th>
+
+                                <th>
+                                    No. Jembatan
+                                </th>
+
+                                <th>
+                                    Kabupaten/Kota
+                                </th>
+
+                                <th>
+                                    Tahun
+                                </th>
+
+                                <th>
+                                    Panjang
+                                </th>
+
+                                <th>
+                                    Lebar
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            ${rows}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            `;
+
+
+            // ==========================================
+            // BUAT MARKER
+            // ==========================================
+
+            features.forEach(
+                (feature, index) => {
+
+                    const properties =
+                        feature.properties || {};
+
+
+                    const latitude =
+                        Number(
+                            properties.LATITUDE
+                        );
+
+
+                    const longitude =
+                        Number(
+                            properties.LONGITUDE
+                        );
+
+
+                    // Abaikan jika koordinat tidak valid
+                    if (
+                        isNaN(latitude) ||
+                        isNaN(longitude)
+                    ) {
+
+                        console.warn(
+                            '⚠️ Koordinat tidak valid:',
+                            properties.BRIDGE_NAME
+                        );
+
+                        return;
+
+                    }
+
+
+                    const marker =
+                        L.marker([
+                            latitude,
+                            longitude
+                        ]).addTo(
+                            hangingDetailMap
+                        );
+
+
+                    // ==================================
+                    // POPUP
+                    // ==================================
+
+                    const nama =
+                        properties.BRIDGE_NAME || '-';
+
+                    const nomor =
+                        properties.BRIDGE_NUM || '-';
+
+                    const kabupaten =
+                        properties.CITY_REGENCY || '-';
+
+                    const tahun =
+                        properties.CONS_YEAR || '-';
+
+                    const panjang =
+                        properties.BRIDGE_LENGTH ?? '-';
+
+                    const lebar =
+                        properties.BRIDGE_WIDTH ?? '-';
+
+
+                    const popupContent = `
+                        <div class="hanging-popup">
+
+                            <div class="hanging-popup-header">
+                                <div class="hanging-popup-title">
+                                    ${nama}
+                                </div>
+
+                                <div class="hanging-popup-number">
+                                    ${nomor}
+                                </div>
+                            </div>
+
+                            <div class="hanging-popup-location">
+                                📍 ${kabupaten}
+                            </div>
+
+                            <div class="hanging-popup-divider"></div>
+
+                            <div class="hanging-popup-grid">
+
+                                <div class="hanging-popup-item">
+                                    <span>Tahun</span>
+                                    <strong>
+                                        ${tahun}
+                                    </strong>
+                                </div>
+
+                                <div class="hanging-popup-item">
+                                    <span>Panjang</span>
+                                    <strong>
+                                        ${panjang !== '-'
+                                            ? Number(panjang).toLocaleString('id-ID')
+                                            : '-'
+                                        } m
+                                    </strong>
+                                </div>
+
+                                <div class="hanging-popup-item">
+                                    <span>Lebar</span>
+                                    <strong>
+                                        ${lebar !== '-'
+                                            ? Number(lebar).toLocaleString(
+                                                'id-ID',
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }
+                                            )
+                                            : '-'
+                                        } m
+                                    </strong>
+                                </div>
+
+                                <div class="hanging-popup-item">
+                                    <span>Koordinat</span>
+                                    <strong>
+                                        ${latitude.toFixed(5)},
+                                        ${longitude.toFixed(5)}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                    marker.bindPopup(popupContent);
+
+                    marker.on('click', function () {
+
+                        const rows =
+                            document.querySelectorAll(
+                                '.hanging-detail-row'
+                            );
+
+                        rows.forEach(row => {
+                            row.classList.remove('active');
+                        });
+
+                        const targetRow =
+                            document.querySelector(
+                                `.hanging-detail-row[data-bridge-index="${index}"]`
+                            );
+
+                        if (targetRow) {
+
+                            targetRow.classList.add('active');
+
+                            targetRow.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'center'
+                            });
+                        }
+
+                    });
+
+                    // Simpan marker
+                    hangingDetailMarkers.push(
+                        marker
+                    );
+
+
+                    // ==================================
+                    // HUBUNGKAN DENGAN BARIS TABEL
+                    // ==================================
+
+                    const row =
+                        document.querySelector(
+                            `.hanging-detail-row[data-bridge-index="${index}"]`
+                        );
+
+
+                    if (row) {
+
+                        row.style.cursor =
+                            'pointer';
+
+
+                        row.addEventListener(
+                            'click',
+                            function() {
+
+                                console.log(
+                                    '📍 Membuka lokasi:',
+                                    nama
+                                );
+
+
+                                // =========================
+                                // ZOOM KE LOKASI
+                                // =========================
+
+                                hangingDetailMap.setView(
+                                    [
+                                        latitude,
+                                        longitude
+                                    ],
+                                    17,
+                                    {
+                                        animate: true
+                                    }
+                                );
+
+
+                                // =========================
+                                // BUKA POPUP
+                                // =========================
+
+                                marker.openPopup();
+
+
+                                // =========================
+                                // HIGHLIGHT BARIS
+                                // =========================
+
+                                document
+                                    .querySelectorAll(
+                                        '.hanging-detail-row'
+                                    )
+                                    .forEach(
+                                        item => {
+
+                                            item.classList.remove(
+                                                'active'
+                                            );
+
+                                        }
+                                    );
+
+
+                                this.classList.add(
+                                    'active'
+                                );
+
+                            }
+                        );
+
+                    }
+
+                }
+            );
+
+
+            // ==========================================
+            // FIT MAP KE SEMUA JEMBATAN
+            // ==========================================
+
+            if (
+                hangingDetailMarkers.length > 0
+            ) {
+
+                const markerGroup =
+                    L.featureGroup(
+                        hangingDetailMarkers
+                    );
+
+
+                hangingDetailMap.fitBounds(
+                    markerGroup.getBounds(),
+                    {
+                        padding: [30, 30]
+                    }
+                );
+
+            }
+
+
+            // Pastikan ukuran map diperbarui
+            setTimeout(
+                () => {
+
+                    hangingDetailMap.invalidateSize();
+
+                },
+                200
+            );
+
+        }
+
+        // ========================================
+        // TUTUP DETAIL PROVINSI
+        // ========================================
+
+        function closeHangingBridgeDetail() {
+
+            const section =
+                document.getElementById(
+                    'hanging-bridge-detail-section'
+                );
+
+            if (!section) {
+                return;
+            }
+
+            section.style.display =
+                'none';
+
+        }
+
+
+        function openTollBridgeDashboard() {
+
+            alert(
+                'Dashboard Jembatan Tol sedang dalam pengembangan.'
+            );
+
+        }
 
         /* ===================================== */
         /* CEK AKSES SELURUH PROVINSI            */
@@ -12910,24 +19580,24 @@ document.addEventListener(
     // LOGIN DASHBOARD MENGGUNAKAN USERNAME
     // ========================================
 
-async function loginDashboard() {
+        async function loginDashboard() {
 
-    const username =
-        document.getElementById(
-            'login-username'
-        ).value.trim().toLowerCase();
-
-
-    const password =
-        document.getElementById(
-            'login-password'
-        ).value;
+            const username =
+                document.getElementById(
+                    'login-username'
+                ).value.trim().toLowerCase();
 
 
-    const message =
-        document.getElementById(
-            'login-message'
-        );
+            const password =
+                document.getElementById(
+                    'login-password'
+                ).value;
+
+
+            const message =
+                document.getElementById(
+                    'login-message'
+                );
 
 
     // ====================================
@@ -13069,16 +19739,16 @@ async function loginDashboard() {
             await loadUserProfile();
 
 
-        if (!profile) {
+            if (!profile) {
 
-            await supabaseClient.auth.signOut();
+                await supabaseClient.auth.signOut();
 
-            message.textContent =
-                'Profile user tidak ditemukan.';
+                message.textContent =
+                    'Profile user tidak ditemukan.';
 
-            return;
+                return;
 
-        }
+            }
 
 
         // ====================================
@@ -13112,12 +19782,24 @@ async function loginDashboard() {
 
 
         // ====================================
-        // TAMPILKAN DASHBOARD
+        // SETELAH LOGIN, TAMPILKAN LANDING PAGE
         // ====================================
 
         document.getElementById(
             'dashboard'
-        ).style.display = 'flex';
+        ).style.display = 'none';
+
+        document.getElementById(
+            'hanging-dashboard'
+        ).style.display = 'none';
+
+        document.getElementById(
+            'bridge-category-screen'
+        ).style.display = 'block';
+
+        updateBridgeCategoryUser();
+
+        message.textContent = '';
 
 
         // ====================================
@@ -13244,7 +19926,7 @@ function applyExportPermission() {
 }
 
 
-   // ========================================
+    // ========================================
     // CEK STATUS LOGIN SUPABASE SAAT HALAMAN DIBUKA
     // ========================================
 
@@ -13301,8 +19983,9 @@ function applyExportPermission() {
                     profile
                 );
 
-            
+            updateBridgeCategoryUser();
 
+            
             // ====================================
             // PROFILE TIDAK DITEMUKAN
             // ====================================
@@ -13371,12 +20054,70 @@ function applyExportPermission() {
 
 
         // ====================================
-        // TAMPILKAN DASHBOARD
+        // SEMBUNYIKAN DASHBOARD & MENAMPILKAN PAGE LANDING
         // ====================================
 
         document.getElementById(
             'dashboard'
-        ).style.display = 'flex';
+        ).style.display = 'none';
+
+
+        document.getElementById(
+            'bridge-category-screen'
+        ).style.display = 'block';
+
+
+        
+        // ====================================
+        // SETELAH LOGIN SELALU KE LANDING PAGE
+        // ====================================
+
+        
+        const categoryScreen = document.getElementById(
+            'bridge-category-screen'
+        );
+        const nationalDashboard = document.getElementById('dashboard');
+        const hangingDashboard = document.getElementById('hanging-dashboard');
+
+        const requestedDashboard = new URLSearchParams(
+            window.location.search
+        ).get('dashboard');
+
+        // Sembunyikan semua layar terlebih dahulu.
+        if (categoryScreen) categoryScreen.style.display = 'none';
+        if (nationalDashboard) nationalDashboard.style.display = 'none';
+        if (hangingDashboard) hangingDashboard.style.display = 'none';
+
+        // Tampilkan halaman sesuai parameter URL.
+        if (requestedDashboard === 'hanging') {
+
+            await initializeHangingBridgeDashboardPage();
+
+        } else if (requestedDashboard === 'national') {
+
+            if (nationalDashboard) {
+                nationalDashboard.style.display = 'block';
+            }
+
+            // Perbarui ukuran peta Leaflet setelah dashboard tampil.
+            setTimeout(function () {
+                if (typeof map !== 'undefined' && map) {
+                    map.invalidateSize();
+                }
+            }, 250);
+
+        } else {
+
+            // URL tanpa parameter: tampilkan landing page.
+            if (categoryScreen) {
+                categoryScreen.style.display = 'block';
+            }
+        }
+
+        // Terapkan izin export setelah halaman tampil.
+        setTimeout(function () {
+            applyExportPermission();
+        }, 300);
 
 
         // ====================================
@@ -13445,83 +20186,286 @@ console.log('🟢 SESUDAH checkLoginStatus');
 
 
 
+        // ========================================
+        // LOGOUT DASHBOARD
+        // ========================================
 
-// ========================================
-// LOGOUT DASHBOARD
-// ========================================
+        async function logoutDashboard() {
 
-async function logoutDashboard() {
+            // ====================================
+            // LOGOUT DARI SUPABASE
+            // ====================================
 
-    // ====================================
-    // LOGOUT DARI SUPABASE
-    // ====================================
-
-    const { error } =
-        await supabaseClient.auth.signOut();
-
-
-    // ====================================
-    // CEK HASIL LOGOUT
-    // ====================================
-
-    if (error) {
-
-        console.error(
-            'Logout Supabase gagal:',
-            error
-        );
-
-        return;
-
-    }
+            const { error } =
+                await supabaseClient.auth.signOut();
 
 
-    console.log(
-        '✅ Logout Supabase berhasil'
-    );
+            // ====================================
+            // CEK HASIL LOGOUT
+            // ====================================
+
+            if (error) {
+
+                console.error(
+                    'Logout Supabase gagal:',
+                    error
+                );
+
+             return;
+
+            }
 
 
-    // Hapus status login dashboard
-    sessionStorage.removeItem('dashboardLoggedIn');
-
-    // ====================================
-    // SEMBUNYIKAN DASHBOARD
-    // ====================================
-
-    document.getElementById(
-        'dashboard'
-    ).style.display = 'none';
+            console.log(
+                '✅ Logout Supabase berhasil'
+            );
 
 
-    // ====================================
-    // TAMPILKAN HALAMAN LOGIN
-    // ====================================
+            // Hapus status login dashboard
+            sessionStorage.removeItem('dashboardLoggedIn');
 
-    document.getElementById(
-        'login-screen'
-    ).style.display = 'flex';
+            // ====================================
+            // SEMBUNYIKAN DASHBOARD
+            // ====================================
+
+            document.getElementById(
+                'dashboard'
+            ).style.display = 'none';
+
+            document.getElementById(
+                'bridge-category-screen'
+            ).style.display = 'none';
+
+            // ====================================
+            // TAMPILKAN HALAMAN LOGIN
+            // ====================================
+
+            document.getElementById(
+                'login-screen'
+            ).style.display = 'flex';
 
 
-    // ====================================
-    // KOSONGKAN FORM LOGIN
-    // ====================================
+            // ====================================
+            // KOSONGKAN FORM LOGIN
+            // ====================================
 
-    document.getElementById(
-        'login-username'
-    ).value = '';
-
-
-    document.getElementById(
-        'login-password'
-    ).value = '';
+            document.getElementById(
+                'login-username'
+            ).value = '';
 
 
-    document.getElementById(
-        'login-message'
-    ).textContent = '';
+            document.getElementById(
+                'login-password'
+            ).value = '';
 
-}
- 
+
+            document.getElementById(
+                'login-message'
+            ).textContent = '';
+
+        }
+        
+        
+        function updateBridgeCategoryUser() {
+            const userNameElement =
+                document.getElementById('category-user-name');
+
+            const welcomeElement =
+                document.getElementById('category-welcome');
+
+            const userIconElement =
+                document.getElementById('category-user-icon');
+
+            if (!currentUserProfile) {
+                return;
+            }
+
+            // Prioritaskan username akun yang sedang login.
+            const username =
+                currentUserProfile.username ||
+                currentUserProfile.full_name ||
+                currentUserProfile.email ||
+                'User';
+
+            if (userNameElement) {
+                userNameElement.textContent = username;
+            }
+
+            if (welcomeElement) {
+                welcomeElement.textContent =
+                    `Selamat Datang, ${username}`;
+            }
+
+            if (userIconElement) {
+                userIconElement.textContent =
+                    username.trim().charAt(0).toUpperCase() || 'U';
+
+                userIconElement.title = username;
+                userIconElement.setAttribute(
+                    'aria-label',
+                    `Akun ${username}`
+                );
+            }
+        }
+
+
+        function showOnlyProvinceMarkers(provinceName) {
+            if (!hangingDetailMap) return;
+
+            const targetProvince = String(provinceName || '')
+                .trim()
+                .toLowerCase();
+
+            hangingDetailMarkers.forEach(marker => {
+                const isSelectedProvince =
+                    marker.bridgeProvince === targetProvince;
+
+                if (isSelectedProvince) {
+                    if (!hangingDetailMap.hasLayer(marker)) {
+                        marker.addTo(hangingDetailMap);
+                    }
+                } else {
+                    if (hangingDetailMap.hasLayer(marker)) {
+                        hangingDetailMap.removeLayer(marker);
+                    }
+                }
+            });
+
+            console.log(
+                `📍 Marker ditampilkan hanya untuk provinsi: ${provinceName}`
+            );
+        }
+
+
+        // =========================================================================
+        // FITUR ACTION POIN 3: ZOOM TO LAYER KUMPULAN JEMBATAN PER PROVINSI (REVISED)
+        // =========================================================================
+        
+            function zoomToProvinceLayer(provinceName) {
+                console.log(
+                    `🎯 Zoom ke provinsi: ${provinceName}`
+                );
+
+                if (
+                    !hangingDetailMap ||
+                    !Array.isArray(currentYearBridgesFeatures) ||
+                    currentYearBridgesFeatures.length === 0
+                ) {
+                    console.warn(
+                        'Data tahun aktif belum tersedia untuk zoom provinsi.'
+                    );
+                    return;
+                }
+
+                const targetProvince = String(provinceName || '')
+                    .trim()
+                    .toLowerCase();
+
+                const matchingCoordinates = [];
+
+                currentYearBridgesFeatures.forEach(feature => {
+                    const props = feature.properties || {};
+
+                    const featureProvince = String(props.PROVINCE || '')
+                        .trim()
+                        .toLowerCase();
+
+                    if (featureProvince !== targetProvince) {
+                        return;
+                    }
+
+                    const coords = feature.geometry?.coordinates;
+
+                    if (
+                        Array.isArray(coords) &&
+                        coords.length >= 2 &&
+                        Number.isFinite(Number(coords[0])) &&
+                        Number.isFinite(Number(coords[1]))
+                    ) {
+                        matchingCoordinates.push([
+                            Number(coords[1]),
+                            Number(coords[0])
+                        ]);
+                    }
+                });
+
+                console.log(
+                    `📍 Jumlah jembatan untuk ${provinceName}:`,
+                    matchingCoordinates.length
+                );
+
+                if (matchingCoordinates.length === 0) {
+                    console.warn(
+                        `Tidak ditemukan koordinat untuk ${provinceName}.`
+                    );
+                    return;
+                }
+
+                const bounds = L.latLngBounds(matchingCoordinates);
+
+                if (matchingCoordinates.length === 1) {
+                    hangingDetailMap.flyTo(
+                        matchingCoordinates[0],
+                        10,
+                        {
+                            animate: true,
+                            duration: 1
+                        }
+                    );
+                } else {
+                    hangingDetailMap.flyToBounds(
+                        bounds,
+                        {
+                            padding: [35, 35],
+                            maxZoom: 10,
+                            duration: 1
+                        }
+                    );
+                }
+            }
+
+
+
+        async function initializeHangingBridgeDashboardPage() {
+
+            const categoryScreen =
+                document.getElementById('bridge-category-screen');
+
+            const nationalDashboard =
+                document.getElementById('dashboard');
+
+            const hangingDashboard =
+                document.getElementById('hanging-dashboard');
+
+            if (categoryScreen) {
+                categoryScreen.style.display = 'none';
+            }
+
+            if (nationalDashboard) {
+                nationalDashboard.style.display = 'none';
+            }
+
+            if (hangingDashboard) {
+                hangingDashboard.style.display = 'block';
+            }
+
+            initializeHangingDetailMap();
+
+            setTimeout(() => {
+                if (hangingDetailMap) {
+                    hangingDetailMap.invalidateSize();
+                    hangingDetailMap.setView([-2.5, 118], 5);
+                }
+            }, 300);
+
+            suspensionBridgeProvinces =
+                await loadSuspensionBridgeProvinces();
+
+            await loadHangingBridgeYears();
+
+        }
+
+
 
 </script>
 
