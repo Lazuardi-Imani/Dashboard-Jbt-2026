@@ -667,7 +667,7 @@
 
         .national-image {
             background-image:
-                url('bridge-national.jpeg');
+                url('assets/bridge-national.jpeg');
 
             background-size: cover;
 
@@ -677,7 +677,7 @@
 
         .special-image {
             background-image:
-                url('bridge-special.jpeg');
+                url('assets/bridge-special.jpeg');
 
             background-size: cover;
 
@@ -687,7 +687,7 @@
 
         .hanging-image {
             background-image:
-                url('bridge-hanging.jpeg');
+                url('assets/bridge-hanging.jpeg');
 
             background-size: cover;
 
@@ -697,7 +697,7 @@
 
         .toll-image {
             background-image:
-                url('bridge-toll.jpg');
+                url('assets/bridge-toll.jpg');
 
             background-size: cover;
 
@@ -5918,7 +5918,7 @@
                 .hanging-province-bridge-table th,
                 .hanging-province-bridge-table td {
                     padding: 9px 6px;
-                    font-size: 10.5px;
+                    font-size: 11.5px;
                     vertical-align: middle;
                     box-sizing: border-box;
                 }
@@ -5984,9 +5984,927 @@
                 .hanging-province-accordion-header:hover {
                     background: #edf6fd;
                 }
+                
+/* Container seluruh kartu penanganan */
+.handling-card-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+}
 
+/* Kartu setiap jenis penanganan */
+.handling-card {
+    min-width: 0;
+    padding: 12px;
+    background: #ffffff;
+    border: 1px solid #dce5ef;
+    border-left: 3px solid #2563eb;
+    border-radius: 9px;
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04);
+    transition:
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
 
+.handling-card:hover {
+    border-color: #b8cbea;
+    border-left-color: #1746a2;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    transform: translateY(-1px);
+}
 
+/* Nama jenis penanganan */
+.handling-card-title {
+    margin-bottom: 9px;
+    color: #174a83;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.35px;
+    overflow-wrap: anywhere;
+}
+
+/* Jumlah unit jembatan */
+.handling-card-unit {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* Total panjang jembatan */
+.handling-card-length {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Dropdown daftar jembatan */
+.handling-bridge-dropdown {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #edf1f5;
+}
+
+.handling-bridge-summary {
+    cursor: pointer;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.5;
+    user-select: none;
+}
+
+.handling-bridge-summary:hover {
+    color: #1746a2;
+}
+
+.handling-bridge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-top: 8px;
+    padding-right: 4px;
+}
+
+.handling-bridge-item {
+    width: 100%;
+    padding: 7px 8px;
+    border: 1px solid #edf1f5;
+    border-radius: 5px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: left;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.handling-bridge-item:hover {
+    border-color: #c6d8f5;
+    background: #edf4ff;
+    color: #1746a2;
+}
+
+/* Tampilan satu kolom pada panel yang sempit */
+@media (max-width: 420px) {
+    .handling-card-container {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Kartu kategori yang sedang dipilih */
+.handling-card-active {
+    border-color: #60a5fa !important;
+    border-left-color: #2563eb !important;
+    background: #eff6ff !important;
+    box-shadow:
+        0 0 0 2px rgba(59, 130, 246, 0.12),
+        0 5px 16px rgba(37, 99, 235, 0.12) !important;
+}
+
+/* Efek cahaya pada marker jembatan terpilih */
+.handling-highlight-marker {
+    filter:
+        drop-shadow(0 0 4px rgba(245, 158, 11, 1))
+        drop-shadow(0 0 8px rgba(245, 158, 11, 0.75));
+}
+
+/* Interaksi pada kartu */
+.handling-card {
+    cursor: pointer;
+}
+
+.handling-card-active .handling-card-title {
+    color: #1d4ed8;
+}
+
+/* Penanganan: daftar interaktif */
+.handling-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.handling-card {
+    display: block;
+    padding: 11px 12px;
+    border: 1px solid transparent;
+    border-bottom-color: #e2e8f0;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.handling-card:hover {
+    background: #ffffff;
+    border-color: #dbe5f1;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    transform: none;
+}
+
+.handling-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.handling-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #edf4ff;
+    font-size: 16px;
+}
+
+.handling-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.handling-card-title {
+    margin: 0 0 4px;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    overflow-wrap: anywhere;
+}
+
+.handling-card-stats {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.handling-card-action {
+    flex-shrink: 0;
+    color: #94a3b8;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.handling-card-status {
+    display: none;
+    margin: 9px 0 0 44px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.handling-card-active {
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    border-left: 3px solid #1f4e79 !important;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.08) !important;
+}
+
+.handling-card-active .handling-card-icon {
+    background: #dbeafe;
+}
+
+.handling-card-active .handling-card-title {
+    color: #1f4e79;
+}
+
+.handling-card-active .handling-card-action {
+    color: #1f4e79;
+}
+
+.handling-card-active .handling-card-status {
+    display: block;
+}
+
+/* Dropdown daftar jembatan */
+.handling-bridge-dropdown {
+    margin: 9px 0 0 44px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.handling-bridge-summary {
+    cursor: pointer;
+    color: #1f4e79;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.6;
+    user-select: none;
+}
+
+.handling-bridge-summary:hover {
+    color: #1d4ed8;
+}
+
+.handling-bridge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-top: 8px;
+    padding-right: 4px;
+}
+
+.handling-bridge-item {
+    width: 100%;
+    padding: 7px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 11px;
+    text-align: left;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.handling-bridge-item:hover {
+    background: #edf4ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+/* Kontrol pencarian dan sortir daftar jembatan */
+.handling-bridge-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 145px;
+    gap: 8px;
+    padding: 10px 0 6px;
+}
+
+.handling-bridge-search,
+.handling-bridge-sort {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    color: #1f2937;
+    font: inherit;
+    font-size: 12px;
+}
+
+.handling-bridge-search:focus,
+.handling-bridge-sort:focus {
+    outline: 2px solid #1f4e79;
+    outline-offset: 1px;
+    border-color: #1f4e79;
+}
+
+.handling-bridge-count {
+    padding: 2px 0 8px;
+    color: #6b7280;
+    font-size: 11px;
+}
+
+.handling-bridge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.handling-bridge-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    background: #fff;
+    color: #1f2937;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.handling-bridge-item:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}
+
+.handling-bridge-number {
+    display: flex;
+    flex: 0 0 42px;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    border-radius: 7px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.handling-bridge-details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.handling-bridge-name {
+    overflow-wrap: anywhere;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.handling-bridge-meta {
+    color: #6b7280;
+    font-size: 10px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.handling-bridge-map-icon {
+    flex: 0 0 auto;
+    color: #2563eb;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.handling-bridge-empty {
+    padding: 16px 8px;
+    color: #6b7280;
+    font-size: 12px;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .handling-bridge-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Warna aksen utama dashboard */
+.handling-bridge-search:focus,
+.handling-bridge-sort:focus {
+    outline: 2px solid #1f4e79;
+    outline-offset: 1px;
+    border-color: #1f4e79;
+}
+
+.handling-bridge-item:hover {
+    background: #edf3f8;
+    border-color: #1f4e79;
+}
+
+.handling-bridge-number {
+    display: flex;
+    flex: 0 0 42px;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    border-radius: 7px;
+    background: #e5edf5;
+    color: #1f4e79;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.handling-bridge-map-icon {
+    flex: 0 0 auto;
+    color: #1f4e79;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* Pembungkus tabel daftar jembatan */
+
+.handling-bridge-table-wrapper {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    max-height: 240px;
+    overflow: auto;
+    border: 1px solid #d8e1eb;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* Tabel jembatan */
+.handling-bridge-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    font-size: 10px;
+    color: #334155;
+}
+
+/* Header tabel */
+.handling-bridge-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 9px 10px;
+    background: #1f4e79;
+    color: #fff;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #163b5c;
+}
+
+/* Lebar kolom */
+.handling-bridge-table th:first-child,
+.handling-bridge-table td:first-child {
+    width: 68%;
+}
+
+.handling-bridge-table th:last-child,
+.handling-bridge-table td:last-child {
+    width: 32%;
+}
+
+/* Isi tabel */
+.handling-bridge-table tbody td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e8edf3;
+    overflow-wrap: anywhere;
+    vertical-align: top;
+}
+
+/* Baris bergantian */
+.handling-bridge-table tbody tr:nth-child(even) {
+    background: #f6f8fb;
+}
+
+/* Efek saat diarahkan atau dipilih */
+.handling-bridge-table tbody tr.handling-bridge-table-row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.handling-bridge-table tbody tr.handling-bridge-table-row:hover,
+.handling-bridge-table tbody tr.handling-bridge-table-row:focus {
+    background: #e8f0f7;
+    outline: none;
+}
+
+.handling-bridge-table tbody tr.handling-bridge-table-row:focus {
+    box-shadow: inset 0 0 0 1px #1f4e79;
+}
+
+/* Pesan jika hasil pencarian kosong */
+.handling-bridge-table .handling-bridge-empty {
+    padding: 16px 10px;
+    text-align: center;
+    color: #64748b;
+}
+
+/* Pencarian */
+.handling-bridge-search {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 12px;
+    background: #fff;
+    color: #334155;
+}
+
+.handling-bridge-search:focus {
+    outline: 2px solid #1f4e79;
+    outline-offset: 1px;
+    border-color: #1f4e79;
+}
+
+/* Jumlah hasil */
+.handling-bridge-count {
+    margin: 7px 0;
+    color: #64748b;
+    font-size: 11px;
+}
+
+/* PERBAIKAN POSISI DROPDOWN DAN TABEL JEMBATAN */
+.handling-card,
+.handling-card * {
+    box-sizing: border-box;
+}
+
+.handling-bridge-dropdown {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 9px 0 0 0;
+    padding: 8px 0 0 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Area pencarian mengikuti lebar kartu */
+.handling-bridge-controls {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 10px 0 6px;
+}
+
+/* Tabel tidak boleh keluar dari kartu */
+.handling-bridge-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 240px;
+    border: 1px solid #d8e1eb;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* Tabel mengikuti lebar pembungkus */
+.handling-bridge-table {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Isi tabel tetap berada di dalam kolom */
+.handling-bridge-table th,
+.handling-bridge-table td {
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+/* Judul kolom Nomor Jembatan tetap satu baris */
+.handling-bridge-table th:last-child {
+    white-space: nowrap;
+    width: 32%;
+    font-size: 10px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+.handling-bridge-table th:first-child,
+.handling-bridge-table td:first-child {
+    width: 68%;
+}
+
+/* Garis pemisah sebelum bagian Penanganan Jembatan */
+.handling-card-container {
+    border-top: 1px solid #dce5ef;
+    padding-top: 14px;
+    margin-top: 14px;
+}
+
+/* Beri ruang agar judul dan ikon sortir terlihat */
+.handling-bridge-table th:last-child,
+.handling-bridge-table td:last-child {
+    width: 36%;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.handling-bridge-table th:first-child,
+.handling-bridge-table td:first-child {
+    width: 64%;
+}
+
+/* ==========================================
+   PENYELARASAN DESAIN KARTU PENANGANAN
+   ========================================== */
+
+/* Jarak antar kartu mengikuti gaya dashboard */
+.handling-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #e1e6eb;
+}
+
+/* Kartu utama */
+.handling-card {
+    display: block;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #e1e6eb;
+    border-radius: 7px;
+    background: #ffffff;
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Efek hover yang halus */
+.handling-card:hover {
+    background: #f8fafc;
+    border-color: #cbd9e7;
+    box-shadow: 0 2px 6px rgba(31, 78, 121, 0.06);
+}
+
+/* Susunan judul dan ikon */
+.handling-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Ikon dibuat lebih sederhana */
+.handling-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    background: #edf3f8;
+    font-size: 15px;
+}
+
+/* Area informasi */
+.handling-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Judul kartu */
+.handling-card-title {
+    margin: 0 0 5px;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15px;
+    overflow-wrap: anywhere;
+}
+
+/* Ringkasan jumlah unit dan panjang */
+.handling-card-stats {
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+/* Ikon penanda dropdown */
+.handling-card-action {
+    flex-shrink: 0;
+    color: #94a3b8;
+    font-size: 20px;
+    line-height: 1;
+}
+
+/* Status kartu aktif */
+.handling-card-status {
+    display: none;
+    margin: 9px 0 0 42px;
+    color: #1f4e79;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Kartu saat dipilih */
+.handling-card-active {
+    background: #f4f8fc !important;
+    border: 1px solid #b8ccdf !important;
+    border-left: 3px solid #1f4e79 !important;
+    box-shadow: 0 2px 8px rgba(31, 78, 121, 0.08) !important;
+}
+
+/* Warna elemen di dalam kartu aktif */
+.handling-card-active .handling-card-icon {
+    background: #e5edf5;
+}
+
+.handling-card-active .handling-card-title {
+    color: #1f4e79;
+}
+
+.handling-card-active .handling-card-action {
+    color: #1f4e79;
+}
+
+.handling-card-active .handling-card-status {
+    display: block;
+}
+
+/* Dropdown daftar jembatan */
+.handling-bridge-dropdown {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 10px 0 0;
+    padding: 10px 0 0;
+    border-top: 1px solid #e1e6eb;
+}
+
+/* Judul dropdown */
+.handling-bridge-summary {
+    color: #1f4e79;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.6;
+    cursor: pointer;
+    user-select: none;
+}
+
+.handling-bridge-summary:hover {
+    color: #2563eb;
+}
+
+/* Pembungkus tabel */
+.handling-bridge-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    max-height: 240px;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    border: 1px solid #e1e6eb;
+    border-radius: 7px;
+    background: #ffffff;
+}
+
+/* Tabel */
+.handling-bridge-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #334155;
+    font-size: 10px;
+}
+
+/* Header tabel */
+.handling-bridge-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 9px 7px;
+    background: #1f4e79;
+    color: #ffffff;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid #163b5c;
+}
+
+/* Isi tabel */
+.handling-bridge-table tbody td {
+    box-sizing: border-box;
+    padding: 8px 7px;
+    border-bottom: 1px solid #e8edf3;
+    overflow-wrap: anywhere;
+    vertical-align: top;
+}
+
+/* Baris selang-seling */
+.handling-bridge-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+/* Hover pada baris jembatan */
+.handling-bridge-table tbody tr.handling-bridge-table-row:hover,
+.handling-bridge-table tbody tr.handling-bridge-table-row:focus {
+    background: #edf3f8;
+    outline: none;
+}
+
+.handling-bridge-table tbody tr.handling-bridge-table-row:focus {
+    box-shadow: inset 0 0 0 1px #1f4e79;
+}
+
+/* Input pencarian */
+.handling-bridge-search {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 12px;
+}
+
+.handling-bridge-search:focus,
+.handling-bridge-sort:focus {
+    outline: 2px solid #1f4e79;
+    outline-offset: 1px;
+    border-color: #1f4e79;
+}
+
+/* Lebar tabel */
+.handling-bridge-table th:first-child,
+.handling-bridge-table td:first-child {
+    width: 64%;
+}
+
+.handling-bridge-table th:last-child,
+.handling-bridge-table td:last-child {
+    width: 36%;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.handling-bridge-table th:last-child {
+    white-space: nowrap;
+    font-size: 10px;
+}
+
+/* Pesan ketika tidak ada hasil */
+.handling-bridge-table .handling-bridge-empty {
+    padding: 16px 10px;
+    color: #64748b;
+    text-align: center;
+}
+
+/* Tampilan layar kecil */
+@media (max-width: 480px) {
+    .handling-card {
+        padding: 10px;
+    }
+
+    .handling-card-icon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .handling-bridge-table th,
+    .handling-bridge-table td {
+        padding: 7px 5px;
+    }
+}
 
     </style>
 
@@ -6007,7 +6925,7 @@
 
             <div class="login-title">
                 DASHBOARD KEMANTAPAN 
-                JEMBATAN NASIONAL
+                JEMBATAN INDONESIA
             </div>
 
             <div class="login-subtitle">
@@ -6067,7 +6985,7 @@
                 <div class="category-logo">
                      <img
                     class="category-logo" 
-                    src="logo-dpsi.jpg"
+                    src="assets/logo-dpsi.jpg"
                     alt="Kementerian Pekerjaan Umum"
                 >
                 </div>
@@ -6145,7 +7063,7 @@
     
                     <!-- 1. FOTO UTAMA (Sekarang hanya berisi gambar, overlay, dan motto) -->
                     <div class="hero-bridge-background">
-                        <img src="bridge-background.jpeg" alt="Jembatan Indonesia">
+                        <img src="assets/bridge-background.jpeg" alt="Jembatan Indonesia">
                         <div class="hero-photo-overlay"></div>
         
                         <div class="hero-motto">
@@ -6156,7 +7074,7 @@
 
                     <!-- 2. PETA INDONESIA (Pindahkan ke SINI, sejajar dengan kotak foto) -->
                     <div class="hero-indonesia-map">
-                        <img src="indonesia-map.svg" alt="Peta Indonesia">
+                        <img src="assets/indonesia-map.svg" alt="Peta Indonesia">
                     </div>
 
                 </div>
@@ -6263,7 +7181,7 @@
                     <div class="category-image special-image">
                         <div class="category-icon">
                                 <img
-                                    src="icon-special.svg"
+                                    src="assets/icon-special.svg"
                                     alt="Kementerian Pekerjaan Umum"
                                 >
 
@@ -6314,7 +7232,7 @@
                     <div class="category-image hanging-image">
                         <div class="category-icon">
                                 <img
-                                    src="icon-hanging.svg"
+                                    src="assets/icon-hanging.svg"
                                     alt="Kementerian Pekerjaan Umum"
                                 >
                         </div>
@@ -6365,7 +7283,7 @@
                     <div class="category-image toll-image">
                         <div class="category-icon">
                                 <img
-                                    src="icon-toll.svg"
+                                    src="assets/icon-toll.svg"
                                     alt="Kementerian Pekerjaan Umum"
                                 >
                         </div>
@@ -6379,9 +7297,9 @@
                         </h2>
 
                         <p>
-                            Data dan informasi sebaran 
-                            jembatan tol pada jaringan 
-                            jalan tol di seluruh Indonesia.
+                            Data dan informasi jembatan
+                            pada jaringan jalan tol
+                            di seluruh Indonesia.
 
                             <br> 
                             <br> 
@@ -6418,7 +7336,7 @@
 
                 <img
                     class="footer-icon"
-                    src="logo-pu.png"
+                    src="assets/logo-pu.png"
                     alt="Kementerian Pekerjaan Umum"
                 >
 
@@ -6440,7 +7358,7 @@
             <div class="footer-item">
                 <img
                     class="footer-icon"
-                    src="icon-data.svg"
+                    src="assets/icon-data.svg"
                     alt=""
                 >
 
@@ -6454,7 +7372,7 @@
             <div class="footer-item">
                 <img
                     class="footer-icon"
-                    src="icon-monitoring.svg"
+                    src="assets/icon-monitoring.svg"
                     alt=""
                 >
 
@@ -6468,7 +7386,7 @@
             <div class="footer-item">
                 <img
                     class="footer-icon"
-                    src="icon-gis.svg"
+                    src="assets/icon-gis.svg"
                     alt=""
                 >
 
@@ -10280,6 +11198,15 @@ function canAccessProvince(province) {
             7
 
         );
+
+        let handlingHighlightLayer = null;
+        let activeHandlingType = null;
+
+        // Pane sorotan penanganan di bawah marker jembatan
+        map.createPane('handlingHighlightPane');
+
+        map.getPane('handlingHighlightPane').style.zIndex = 399;
+        map.getPane('handlingHighlightPane').style.pointerEvents = 'none';
 
 
         /* ===================================== */
@@ -15304,6 +16231,8 @@ async function refreshOrganization(organization) {
             bridgeData
         ) {
 
+            console.log('TES: updateOrganizationSummary dijalankan');
+
             console.log(
                 '📊 Update summary organisasi:',
                 organization
@@ -15378,6 +16307,54 @@ async function refreshOrganization(organization) {
                     Number(
                         feature.properties.Pjg_Jbt_26
                     );
+
+                // ========================================
+                // REKAP JENIS PENANGANAN JEMBATAN
+                // ========================================
+
+                const penangananCounts = {};
+
+                features.forEach(feature => {
+
+                    const properties = feature.properties || {};
+
+                    const jenis = String(
+                        properties.Pnangnn_26 ?? ''
+                    ).trim();
+
+                    const panjang = Number(
+                        properties.Pjg_Jbt_26
+                    );
+
+                    // Lewati jika jenis penanganan kosong
+                    if (!jenis) return;
+
+                    // Siapkan rekap untuk setiap jenis
+                    if (!penangananCounts[jenis]) {
+
+                        penangananCounts[jenis] = {
+                            unit: 0,
+                            panjang: 0
+                        };
+
+                    }
+
+                    // Tambahkan total unit
+                    penangananCounts[jenis].unit++;
+
+                    // Tambahkan total panjang
+                    if (Number.isFinite(panjang)) {
+
+                        penangananCounts[jenis].panjang += panjang;
+
+                    }
+
+                });
+
+                console.log(
+                    'Rekap jenis penanganan:',
+                    penangananCounts
+                );
 
 
                 if (!isNaN(panjang)) {
@@ -16374,12 +17351,64 @@ async function refreshOrganization(organization) {
 
 }
 
+        // ========================================
+        // LAMBANG SOROTAN PENANGANAN JEMBATAN
+        // ========================================
+
+        const handlingIconConfig = {
+            'RUTIN': {
+                color: '#2563eb',
+                icon: '🔧'
+            },
+
+            'BERKALA': {
+                color: '#16a34a',
+                icon: '🛠️'
+            },
+
+            'REHABILITASI': {
+                color: '#9333ea',
+                icon: '🏗️'
+            },
+
+            'PENGGANTIAN': {
+                color: '#ea580c',
+                icon: '🔄'
+            },
+
+            'PELEBARAN': {
+                color: '#0891b2',
+                icon: '↔️'
+            },
+
+            'OPRIT': {
+                color: '#a16207',
+                icon: '🛣️'
+            },
+
+            'TANPA PENANGANAN': {
+                color: '#64748b',
+                icon: '○'
+            }
+        };
 
         // ========================================
         // FUNGSI MENAMPILKAN REKAP PROVINSI
         // ========================================
 
         function updateProvinceSummary(province, bridgeData) {
+
+            // Bersihkan sorotan penanganan dari provinsi sebelumnya
+            if (handlingHighlightLayer) {
+                map.removeLayer(handlingHighlightLayer);
+                handlingHighlightLayer = null;
+            }
+
+            // Hapus status aktif dari kartu penanganan sebelumnya
+            document.querySelectorAll('.handling-card-active')
+                .forEach(card => {
+                    card.classList.remove('handling-card-active');
+                });
 
             // Cari tombol provinsi yang aktif
             const button = document.querySelector(
@@ -17402,9 +18431,622 @@ async function refreshOrganization(organization) {
                 chartContainer
             );
 
+            /* ================================= */
+            /* PENANGANAN JEMBATAN               */
+            /* ================================= */
+
+            const handlingSection = document.createElement('div');
+
+            handlingSection.className = 'handling-section';
+
+            handlingSection.innerHTML = `
+                <div class="condition-chart-title">
+                    <br>
+                    Penanganan Jembatan
+                </div>
+
+                <div class="handling-card-container">
+                    <div class="handling-empty">
+                        Memuat data penanganan jembatan...
+                    </div>
+                </div>
+            `;
+
+            summary.appendChild(handlingSection);
+
+            /* ================================= */
+            /* REKAP JENIS PENANGANAN JEMBATAN   */
+            /* ================================= */
+
+            const handlingContainer =
+                handlingSection.querySelector(
+                    '.handling-card-container'
+                );
+
+            const handlingGroups = new Map();
+
+            filteredFeatures.forEach(feature => {
+                const properties = feature.properties || {};
+
+                const jenisRaw = String(
+                    properties.Pnangnn_26 ?? ''
+                ).trim();
+
+                const jenis =
+                    !jenisRaw || jenisRaw === '-'
+                        ? 'Tanpa penanganan'
+                        : jenisRaw;
+
+                const panjang = Number(
+                    properties.Pjg_Jbt_26
+                );
+
+                // Buat kelompok berdasarkan kategori dari data
+                if (!handlingGroups.has(jenis)) {
+                    handlingGroups.set(jenis, {
+                        unit: 0,
+                        panjang: 0,
+                        bridges: []
+                    });
+                }
+
+                const group = handlingGroups.get(jenis);
+
+                group.unit++;
+
+                if (Number.isFinite(panjang)) {
+                    group.panjang += panjang;
+                }
+
+                group.bridges.push(feature);
+            });
+
+            /* ================================= */
+            /* TAMPILKAN KARTU PENANGANAN        */
+            /* ================================= */
+
+            handlingContainer.innerHTML = '';
+
+            if (handlingGroups.size === 0) {
+                handlingContainer.textContent =
+                    'Belum ada data jenis penanganan jembatan.';
+            } else {
+                [...handlingGroups.entries()]
+                    .sort((a, b) => a[0].localeCompare(b[0], 'id'))
+                    .forEach(([jenis, data]) => {
+                        
+                        const card = document.createElement('div');
+                        card.className = 'handling-card';
+
+                        const cardHeader = document.createElement('div');
+                        cardHeader.className = 'handling-card-header';
+
+                        const handlingIcons = {
+                            'RUTIN': '🔧',
+                            'BERKALA': '🛠️',
+                            'REHABILITASI': '🏗️',
+                            'PENGGANTIAN': '🔄',
+                            'PELEBARAN': '↔️',
+                            'OPRIT': '🛣️',
+                            'Tanpa penanganan': '○'
+                        };
+
+                        const fallbackHandlingIcons = [
+                            "🛠️", "🏗️", "🚧", "🔩",
+                            "⚙️", "🧰", "🔨", "🪛",
+                            "📐", "🪜", "🧱", "🚜",
+                            "🛣️", "🔧", "🏢", "🪨"
+                        ];
+
+                        function getHandlingIcon(jenis) {
+                            const nama = String(jenis || "Tanpa penanganan").trim();
+
+                            // Gunakan ikon yang sudah terdaftar jika tersedia.
+                            if (handlingIcons[nama]) {
+                                return handlingIcons[nama];
+                            }
+
+                            // Pilih ikon alternatif secara konsisten berdasarkan nama.
+                            let hash = 0;
+
+                            for (let i = 0; i < nama.length; i++) {
+                                hash = (hash * 31 + nama.charCodeAt(i)) | 0;
+                            }
+
+                            const index = Math.abs(hash) % fallbackHandlingIcons.length;
+
+                            return fallbackHandlingIcons[index];
+                        }
+
+                        const cardIcon = document.createElement('span');
+                        cardIcon.className = 'handling-card-icon';
+                        cardIcon.textContent = getHandlingIcon(jenis);
+
+                        const cardInfo = document.createElement('div');
+                        cardInfo.className = 'handling-card-info';
+
+                        const title = document.createElement('div');
+                        title.className = 'handling-card-title';
+                        title.textContent = jenis;
+
+                        const stats = document.createElement('div');
+                        stats.className = 'handling-card-stats';
+                        stats.textContent =
+                            `${data.unit.toLocaleString('id-ID')} unit | ${
+                                data.panjang.toLocaleString('id-ID', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                })
+                            } m`;
+
+                        const cardAction = document.createElement('span');
+                        cardAction.className = 'handling-card-action';
+                        cardAction.textContent = '⌖';
+
+                        const activeStatus = document.createElement('div');
+                        activeStatus.className = 'handling-card-status';
+                        
+
+                        cardInfo.appendChild(title);
+                        cardInfo.appendChild(stats);
+
+                        cardHeader.appendChild(cardIcon);
+                        cardHeader.appendChild(cardInfo);
+                        cardHeader.appendChild(cardAction);
+
+                        card.appendChild(cardHeader);
+                        card.appendChild(activeStatus);
+
+                        const bridgeDropdown = document.createElement('details');
+                        bridgeDropdown.className = 'handling-bridge-dropdown';
+
+                        const bridgeSummary = document.createElement('summary');
+                        bridgeSummary.className = 'handling-bridge-summary';
+                        bridgeSummary.textContent =
+                            `Lihat daftar jembatan (${data.bridges.length})`;
+
+                        const bridgeControls = document.createElement('div');
+                        bridgeControls.className = 'handling-bridge-controls';
+
+                        const bridgeSearch = document.createElement('input');
+                        bridgeSearch.type = 'search';
+                        bridgeSearch.className = 'handling-bridge-search';
+                        bridgeSearch.placeholder = 'Cari nama / nomor jembatan...';
+                        bridgeSearch.setAttribute(
+                            'aria-label',
+                            `Cari jembatan ${jenis}`
+                        );
+
+                        bridgeControls.appendChild(bridgeSearch);
+                        
+                        const bridgeList = document.createElement('div');
+                        bridgeList.className = 'handling-bridge-table-wrapper';
+
+                        const bridgeTable = document.createElement('table');
+                        bridgeTable.className = 'handling-bridge-table';
+
+                        const bridgeThead = document.createElement('thead');
+                        const headerRow = document.createElement('tr');
+
+                        const nameHeader = document.createElement('th');
+                        const numberHeader = document.createElement('th');
+
+                        let bridgeSortKey = 'name';
+                        let bridgeSortDirection = 1;
+
+                        function updateSortHeaders() {
+                            nameHeader.textContent =
+                                'Nama Jembatan' +
+                                (bridgeSortKey === 'name'
+                                    ? (bridgeSortDirection === 1 ? ' ▲' : ' ▼')
+                                    : '');
+
+                            numberHeader.textContent =
+                                'Nomor Jembatan' +
+                                (bridgeSortKey === 'number'
+                                    ? (bridgeSortDirection === 1 ? ' ▲' : ' ▼')
+                                    : '');
+
+                            nameHeader.setAttribute('aria-sort',
+                                bridgeSortKey === 'name'
+                                    ? (bridgeSortDirection === 1
+                                        ? 'ascending'
+                                        : 'descending')
+                                    : 'none');
+
+                            numberHeader.setAttribute('aria-sort',
+                                bridgeSortKey === 'number'
+                                    ? (bridgeSortDirection === 1
+                                        ? 'ascending'
+                                        : 'descending')
+                                    : 'none');
+                        }
+
+                        function toggleBridgeSort(key) {
+                            if (bridgeSortKey === key) {
+                                bridgeSortDirection *= -1;
+                            } else {
+                                bridgeSortKey = key;
+                                bridgeSortDirection = 1;
+                            }
+
+                            updateSortHeaders();
+                            renderBridgeList();
+                        }
+
+                        [nameHeader, numberHeader].forEach(header => {
+                            header.tabIndex = 0;
+                            header.style.cursor = 'pointer';
+                            header.title = 'Klik untuk mengurutkan';
+
+                            header.addEventListener('click', event => {
+                                event.stopPropagation();
+                                toggleBridgeSort(
+                                    header === nameHeader ? 'name' : 'number'
+                                );
+                            });
+
+                            header.addEventListener('keydown', event => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    toggleBridgeSort(
+                                        header === nameHeader ? 'name' : 'number'
+                                    );
+                                }
+                            });
+                        });
+
+                        updateSortHeaders();
+
+                        headerRow.appendChild(nameHeader);
+                        headerRow.appendChild(numberHeader);
+                        bridgeThead.appendChild(headerRow);
+
+                        const bridgeTbody = document.createElement('tbody');
+
+                        bridgeTable.appendChild(bridgeThead);
+                        bridgeTable.appendChild(bridgeTbody);
+                        bridgeList.appendChild(bridgeTable);
+
+                        function renderBridgeList() {
+
+                            const query = bridgeSearch.value
+                                .trim()
+                                .toLocaleLowerCase('id');
+
+                            const bridges = data.bridges.filter(feature => {
+                                const p = feature.properties || {};
+
+                                const name = String(p.Nm_Jbt_26 ?? '');
+                                const number = String(p.No_Jbt_26 ?? '');
+
+                                return (
+                                    name.toLocaleLowerCase('id').includes(query) ||
+                                    number.toLocaleLowerCase('id').includes(query)
+                                );
+                            });
+
+                            bridges.sort((a, b) => {
+                                const pA = a.properties || {};
+                                const pB = b.properties || {};
+
+                                const valueA = bridgeSortKey === 'name'
+                                    ? String(pA.Nm_Jbt_26 ?? '')
+                                    : String(pA.No_Jbt_26 ?? '');
+
+                                const valueB = bridgeSortKey === 'name'
+                                    ? String(pB.Nm_Jbt_26 ?? '')
+                                    : String(pB.No_Jbt_26 ?? '');
+
+                                return valueA.localeCompare(valueB, 'id', {
+                                    numeric: true,
+                                    sensitivity: 'base'
+                                }) * bridgeSortDirection;
+                            });
+
+                            bridgeTbody.innerHTML = '';
+
+                            if (bridges.length === 0) {
+                                const row = document.createElement('tr');
+                                const cell = document.createElement('td');
+
+                                cell.colSpan = 2;
+                                cell.className = 'handling-bridge-empty';
+                                cell.textContent = 'Jembatan tidak ditemukan.';
+
+                                row.appendChild(cell);
+                                bridgeTbody.appendChild(row);
+                                return;
+                            }
+
+                            bridges.forEach(feature => {
+                                const p = feature.properties || {};
+
+                                const row = document.createElement('tr');
+                                row.className = 'handling-bridge-table-row';
+                                row.tabIndex = 0;
+                                row.title = 'Klik untuk melihat lokasi jembatan';
+
+                                const nameCell = document.createElement('td');
+                                nameCell.textContent =
+                                    p.Nm_Jbt_26 || 'Nama tidak tersedia';
+
+                                const numberCell = document.createElement('td');
+                                numberCell.textContent =
+                                    p.No_Jbt_26 || '-';
+
+                                row.appendChild(nameCell);
+                                row.appendChild(numberCell);
+
+                                function closeBridgePopup() {
+                                    map.closePopup();
+                                }
+
+                                function zoomToBridge() {
+                                    const props = feature.properties || {};
+                                    const bridgeId = String(props.ID_Jbt_26 ?? '');
+
+                                    let targetLayer = null;
+
+                                    // Cari layer jembatan asli yang sudah ada di peta
+                                    function findBridgeLayer(parentLayer) {
+                                        parentLayer.eachLayer(function(layer) {
+                                            if (targetLayer) return;
+
+                                            const layerProps = layer.feature?.properties;
+
+                                            if (
+                                                layerProps &&
+                                                String(layerProps.ID_Jbt_26 ?? '') === bridgeId &&
+                                                typeof layer.openPopup === 'function'
+                                            ) {
+                                                targetLayer = layer;
+                                                return;
+                                            }
+
+                                            // Periksa layer di dalam FeatureGroup/GeoJSON
+                                            if (
+                                                typeof layer.eachLayer === 'function' &&
+                                                !layerProps
+                                            ) {
+                                                findBridgeLayer(layer);
+                                            }
+                                        });
+                                    }
+
+                                    findBridgeLayer(map);
+
+                                    // Jika layer asli ditemukan, gunakan popup aslinya
+                                    if (targetLayer) {
+                                        const latlng = typeof targetLayer.getLatLng === 'function'
+                                            ? targetLayer.getLatLng()
+                                            : targetLayer.getBounds().getCenter();
+
+                                        // Pusatkan jembatan dengan ruang di sekelilingnya
+                                        map.setView(latlng, 16, {
+                                            animate: true
+                                        });
+
+                                        // Tunggu pergerakan peta selesai sebelum membuka popup
+                                        map.once('moveend', function() {
+                                            targetLayer.openPopup();
+                                        });
+
+                                        return;
+                                    }
+
+                                    // Beri informasi jika layer asli tidak ditemukan
+                                    console.warn(
+                                        'Layer jembatan asli tidak ditemukan untuk ID:',
+                                        bridgeId
+                                    );
+                                }
+
+                                row.addEventListener('click', function(event) {
+                                    event.stopPropagation();
+                                    zoomToBridge();
+                                });
+
+                                row.addEventListener('keydown', function(event) {
+                                    if (event.key === 'Enter' || event.key === ' ') {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        zoomToBridge();
+                                    }
+                                });
+
+                                bridgeTbody.appendChild(row);
+                            });
+                        }
+
+                        bridgeSearch.addEventListener('input', renderBridgeList);
+
+                        renderBridgeList();
+
+                        bridgeDropdown.appendChild(bridgeSummary);
+                        bridgeDropdown.appendChild(bridgeControls);
+                        bridgeDropdown.appendChild(bridgeList);
+
+                        card.appendChild(bridgeDropdown);
+
+                        /* ================================= */
+                        /* KLIK KARTU UNTUK ZOOM KE PETA     */
+                        /* ================================= */
+
+                        card.style.cursor = 'pointer';
+
+                        card.title = `Klik untuk melihat lokasi jembatan: ${jenis}`;
+                        
+                        card.addEventListener('click', function (event) {
+
+                            // Abaikan klik yang berasal dari dropdown daftar jembatan
+                            if (event.target.closest('.handling-bridge-dropdown')) {
+                                return;
+                            }
+
+                            // Tutup popup jembatan yang sedang terbuka
+                            map.closePopup();
+
+                             // Tutup dropdown pada kartu penanganan lainnya
+                            document.querySelectorAll(
+                                '.handling-card .handling-bridge-dropdown'
+                            ).forEach(function(dropdown) {
+                                const parentCard = dropdown.closest('.handling-card');
+
+                                if (parentCard !== card) {
+                                    dropdown.open = false;
+                                }
+                            });
+
+
+                            // ========================================
+                            // TOGGLE SOROTAN PENANGANAN
+                            // ========================================
+
+                            // Jika kartu yang sama diklik untuk kedua kalinya,
+                            // tutup sorotan dan nonaktifkan status kartu
+                            if (
+                                handlingHighlightLayer &&
+                                activeHandlingType === jenis
+                            ) {
+                                // Hapus layer sorotan dari peta
+                                map.removeLayer(handlingHighlightLayer);
+                                handlingHighlightLayer = null;
+
+                                // Reset kategori aktif
+                                activeHandlingType = null;
+
+                                // Tutup daftar jembatan pada kartu ini
+                                bridgeDropdown.open = false;
+
+                                // Hapus tampilan aktif kartu
+                                card.classList.remove('handling-card-active');
+
+                                // Sembunyikan status kartu
+                                activeStatus.style.display = 'none';
+
+                                return;
+                            }
+
+                            // Hapus sorotan sebelumnya jika memilih jenis lain
+                            if (handlingHighlightLayer) {
+                                map.removeLayer(handlingHighlightLayer);
+                                handlingHighlightLayer = null;
+                            }
+
+                            activeHandlingType = jenis;
+
+                            // Reset semua kartu yang sebelumnya aktif
+                            document.querySelectorAll('.handling-card-active')
+                                .forEach(item => {
+                                    item.classList.remove('handling-card-active');
+                                });
+
+                            // Sembunyikan status semua kartu
+                            document.querySelectorAll('.handling-card-status')
+                                .forEach(status => {
+                                    status.style.display = 'none';
+                                });
+
+                            // Aktifkan kartu yang dipilih
+                            card.classList.add('handling-card-active');
+                            activeStatus.style.display = 'block';
+
+                            // Buat layer khusus untuk jembatan kategori terpilih
+                            
+                            handlingHighlightLayer = L.geoJSON({
+                                type: 'FeatureCollection',
+                                features: data.bridges
+                            }, {
+                                pointToLayer: function (feature, latlng) {
+
+                                    /* Ambil jenis penanganan dari data jembatan */
+                                    const jenisAsli = String(
+                                        feature.properties?.Pnangnn_26 ?? ''
+                                    ).trim();
+
+                                    const jenis = jenisAsli.toUpperCase();
+
+                                    /* Ambil konfigurasi warna berdasarkan jenis penanganan */
+                                    const config = handlingIconConfig[jenis] || {
+                                        color: '#64748b'
+                                    };
+
+                                    /* Tentukan ikon:
+                                    - Ikon lama tetap digunakan jika jenis terdaftar.
+                                    - Jenis yang belum terdaftar menggunakan ikon alternatif.
+                                    */
+                                    const icon = getHandlingIcon(jenisAsli);
+
+                                    // Buat ikon khusus untuk sorotan
+                                    const iconHtml = `
+                                        <div style="
+                                            width: 38px;
+                                            height: 38px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            background: transparent;
+                                            border: none;
+                                            box-shadow: none;
+                                            font-size: 22px;
+                                            line-height: 1;
+                                            box-sizing: border-box;
+                                            filter:
+                                                drop-shadow(0 0 3px ${config.color})
+                                                drop-shadow(0 0 7px ${config.color}cc);
+                                        ">
+                                            <span>${icon}</span>
+                                        </div>
+                                    `;
+
+                                    return L.marker(latlng, {
+                                        pane: 'handlingHighlightPane',
+
+                                        icon: L.divIcon({
+                                            className: 'handling-special-icon',
+                                            html: iconHtml,
+                                            iconSize: [38, 38],
+                                            iconAnchor: [19, 19]
+                                        }),
+
+                                        interactive: false,
+                                        keyboard: false
+                                    });
+                                },
+
+                                style: function () {
+                                    return {
+                                        pane: 'handlingHighlightPane',
+                                        color: '#64748b',
+                                        weight: 2,
+                                        opacity: 0.7,
+                                        fillOpacity: 0,
+                                        interactive: false
+                                    };
+                                }
+                            });
+
+                            // Tambahkan sorotan di atas layer peta yang sudah ada
+                            handlingHighlightLayer.addTo(map);
+
+                            // Zoom ke seluruh jembatan dalam kategori ini
+                            const bounds = handlingHighlightLayer.getBounds();
+
+                            if (bounds.isValid()) {
+                                map.fitBounds(bounds, {
+                                    padding: [45, 45],
+                                    maxZoom: 14
+                                });
+                            }
+                        });
+
+                        handlingContainer.appendChild(card);
+                    });
+            }
+
         }
-
-
 
 
         function toggleMantapChart(button) {
