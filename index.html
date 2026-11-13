@@ -2695,6 +2695,8 @@
                 -15px -15px 12px -15px;
 
             box-sizing: border-box;
+            
+            font-weight: bold;
 
         }
 
@@ -8897,7 +8899,311 @@
             return currentUserProfile;
 
         }
+
+        /* ==========================================
+        DOKUMENTASI FOTO JEMBATAN
+        ========================================== */
+
+        // Menyamakan format teks untuk pencocokan provinsi.
+        function normalizeBridgeText(value) {
+            return String(value ?? '')
+                .trim()
+                .toUpperCase();
+        }
         
+        // Memeriksa apakah pengguna boleh mengelola foto
+        // berdasarkan role dan kewenangan wilayah.
+        
+        function canManageBridgePhotos(province) {
+            const profile = currentUserProfile;
+
+            console.log('[DEBUG HAK FOTO]', {
+                profileDitemukan: !!profile,
+                role: profile?.role,
+                access_scope: profile?.access_scope,
+                institution: profile?.institution,
+                provinceProfil: profile?.province,
+                provinceJembatan: province,
+                akunAktif: profile?.is_active
+            });
+
+            // Pastikan pengguna sudah login dan akun aktif
+            if (!profile || profile.is_active !== true) {
+                return false;
+            }
+
+            const role = String(profile.role || '')
+                .trim()
+                .toLowerCase();
+
+            const accessScope = String(profile.access_scope || '')
+                .trim()
+                .toLowerCase();
+
+            const institution = String(profile.institution || '')
+                .trim()
+                .toLowerCase();
+
+            // Admin tetap memiliki hak pengelolaan foto
+            if (role === 'admin') {
+                return true;
+            }
+
+            // Selain admin, hanya operator yang dapat diproses
+            if (role !== 'operator') {
+                return false;
+            }
+
+            // Operator Pusat hanya boleh melihat foto
+            if (
+                accessScope === 'all' &&
+                institution === 'pusat'
+            ) {
+                return false;
+            }
+
+            // Operator Balai harus memiliki cakupan provinsi
+            if (accessScope !== 'province') {
+                return false;
+            }
+
+            // Pastikan provinsi jembatan tersedia
+            if (!province || !profile.province) {
+                return false;
+            }
+
+            // Operator Balai hanya boleh mengelola foto
+            // pada provinsi yang menjadi kewenangannya
+            const authorizedProvince = normalizeBridgeText(
+                profile.province
+            );
+
+            const bridgeProvince = normalizeBridgeText(
+                province
+            );
+
+            return authorizedProvince === bridgeProvince;
+        }
+
+
+        // Mengambil dokumentasi foto dari Supabase.
+        async function getBridgePhotos(bridgeNumber) {
+
+            if (!bridgeNumber) {
+                return {
+                    data: [],
+                    error: new Error(
+                        'Nomor jembatan tidak tersedia.'
+                    )
+                };
+            }
+
+            const {
+                data,
+                error
+            } = await supabaseClient
+                .from('bridge_photos')
+                .select(
+                    'id, bridge_number, photo_url, caption, created_at, uploaded_by'
+                )
+                .eq('bridge_number', String(bridgeNumber))
+                .order('created_at', {
+                    ascending: false
+                });
+
+            if (error) {
+
+                console.error(
+                    'Gagal mengambil dokumentasi foto:',
+                    error
+                );
+
+                return {
+                    data: [],
+                    error
+                };
+            }
+
+            return {
+                data: data ?? [],
+                error: null
+            };
+        }
+
+        // =====================================
+        // PERBARUI INDIKATOR DOKUMENTASI FOTO
+        // =====================================
+
+        async function updateBridgePhotoIndicator(bridgeNumber) {
+
+            console.log(
+                '[INDIKATOR FOTO] Fungsi dipanggil.',
+                'Nomor jembatan:',
+                bridgeNumber
+            );
+
+            if (!bridgeNumber) {
+
+                console.warn(
+                    '[INDIKATOR FOTO] Dihentikan: nomor jembatan kosong.'
+                );
+
+                return;
+            }
+
+            // Cari indikator milik jembatan ini.
+            const indicators = Array.from(
+                document.querySelectorAll(
+                    '.bridge-photo-indicator'
+                )
+            ).filter(
+                indicator =>
+                    indicator.dataset.bridgePhotoIndicator ===
+                    String(bridgeNumber)
+            );
+
+            console.log(
+                '[INDIKATOR FOTO] Elemen lampu ditemukan:',
+                indicators.length
+            );
+
+            if (indicators.length === 0) {
+
+                console.warn(
+                    '[INDIKATOR FOTO] Dihentikan: elemen lampu tidak ditemukan.'
+                );
+
+                return;
+            }
+
+            // Status awal: sedang memeriksa.
+            indicators.forEach(indicator => {
+                indicator.style.background = '#e5e7eb';
+                indicator.style.color = '#6b7280';
+                indicator.title =
+                    'Memeriksa dokumentasi foto...';
+            });
+
+            try {
+
+                const result =
+                    await getBridgePhotos(bridgeNumber);
+
+                // =====================================
+                // DIAGNOSTIK INDIKATOR FOTO
+                // =====================================
+
+                console.log(
+                    '[INDIKATOR FOTO] Nomor jembatan:',
+                    bridgeNumber
+                );
+
+                console.log(
+                    '[INDIKATOR FOTO] Jumlah indikator ditemukan:',
+                    indicators.length
+                );
+
+                console.log(
+                    '[INDIKATOR FOTO] Data Supabase:',
+                    result.data
+                );
+
+                console.log(
+                    '[INDIKATOR FOTO] Error Supabase:',
+                    result.error
+                );
+
+                // Jika gagal, jangan menyimpulkan
+                // bahwa jembatan tidak memiliki foto.
+                if (result.error) {
+
+                    indicators.forEach(indicator => {
+                        indicator.style.background = '#e5e7eb';
+                        indicator.style.color = '#6b7280';
+                        indicator.title =
+                            'Status dokumentasi foto tidak dapat diperiksa.';
+                    });
+
+                    return;
+                }
+
+                // Tentukan apakah setidaknya satu foto tersedia.
+                const hasPhotos =
+                    Array.isArray(result.data) &&
+                    result.data.length > 0;
+
+                indicators.forEach(indicator => {
+
+                    const lamp = indicator.querySelector(
+                        '.bridge-photo-lamp-icon'
+                    );
+
+                    if (hasPhotos) {
+
+                        // =====================================
+                        // LAMPU MENYALA: FOTO TERSEDIA
+                        // =====================================
+
+                        indicator.style.background = '#fef3c7';
+
+                        if (lamp) {
+                            lamp.setAttribute(
+                                'stroke',
+                                '#d97706'
+                            );
+                        }
+
+                        indicator.title =
+                            'Dokumentasi foto tersedia';
+
+                        indicator.setAttribute(
+                            'aria-label',
+                            'Dokumentasi foto tersedia'
+                        );
+
+                    } else {
+
+                        // =====================================
+                        // LAMPU MATI: FOTO BELUM TERSEDIA
+                        // =====================================
+
+                        indicator.style.background = '#e5e7eb';
+
+                        if (lamp) {
+                            lamp.setAttribute(
+                                'stroke',
+                                '#6b7280'
+                            );
+                        }
+
+                        indicator.title =
+                            'Belum ada dokumentasi foto';
+
+                        indicator.setAttribute(
+                            'aria-label',
+                            'Belum ada dokumentasi foto'
+                        );
+
+                    }
+
+                });
+
+            } catch (error) {
+
+                console.error(
+                    'Gagal memperbarui indikator foto:',
+                    error
+                );
+
+                indicators.forEach(indicator => {
+                    indicator.style.background = '#e5e7eb';
+                    indicator.style.color = '#6b7280';
+                    indicator.title =
+                        'Status dokumentasi foto tidak dapat diperiksa.';
+                });
+
+            }
+        }
 
         /* ===================================== */
         /* CEK ROLE USER                         */
@@ -14744,66 +15050,154 @@ async function refreshOrganization(organization) {
                         layer
                     ) {
 
+                         console.log(
+                            'POPUP REFRESH ORGANIZATION AKTIF:',
+                            feature.properties.Nm_Jbt_26
+                        );
+
                         layer.bindPopup(
                             `
                             <div class="bridge-popup">
 
-                                <div class="bridge-popup-header">
-                                    Jembatan
+                                <!-- HALAMAN INFORMASI JEMBATAN -->
+                                <div
+                                    class="bridge-popup-page"
+                                    data-bridge-page="info"
+                                >
+
+                                    <div class="bridge-popup-header">
+                                        Informasi Jembatan
+                                    </div>
+
+                                    <div class="bridge-popup-body">
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Nama Jembatan</div>
+                                            <div class="bridge-value">
+                                                ${feature.properties.Nm_Jbt_26 || '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Nomor Jembatan</div>
+                                            <div class="bridge-value">
+                                                ${feature.properties.No_Jbt_26 || '-'}
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Panjang</div>
+                                            <div class="bridge-value">
+                                                ${feature.properties.Pjg_Jbt_26 || '-'} m
+                                            </div>
+                                        </div>
+
+                                        <div class="bridge-row">
+                                            <div class="bridge-label">Kondisi</div>
+                                            <div class="bridge-value">
+                                                ${feature.properties.JBT_26 || '-'}
+                                            </div>
+                                        </div>
+
+                                        <!-- TOMBOL KE HALAMAN FOTO -->
+                                        <div
+                                            style="
+                                                display:flex;
+                                                justify-content:flex-end;
+                                                margin-top:16px;
+                                                padding-top:12px;
+                                                border-top:1px solid #e5e7eb;
+                                            "
+                                        >
+                                            <button
+                                                type="button"
+                                                onclick="showBridgePopupPage(this, 'photos')"
+                                                style="
+                                                    display:flex;
+                                                    align-items:center;
+                                                    gap:8px;
+                                                    padding:9px 14px;
+                                                    border:0;
+                                                    border-radius:8px;
+                                                    background:#1f4e79;
+                                                    color:white;
+                                                    cursor:pointer;
+                                                    font-weight:600;
+                                                "
+                                            >
+                                                Dokumentasi Foto
+                                                <span aria-hidden="true">➜</span>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
                                 </div>
+                                <!-- AKHIR HALAMAN INFORMASI -->
 
-                                <div class="bridge-popup-body">
 
-                                    <div class="bridge-row">
+                                <!-- HALAMAN DOKUMENTASI FOTO -->
+                                <div
+                                    class="bridge-popup-page"
+                                    data-bridge-page="photos"
+                                    style="display:none;"
+                                >
 
-                                        <div class="bridge-label">
-                                            Nama Jembatan
-                                        </div>
-
-                                        <div class="bridge-value">
-                                            ${
-                                                feature.properties
-                                                    .Nm_Jbt_26 || '-'
-                                            }
-                                        </div>
-
+                                    <div class="bridge-popup-header">
+                                        Dokumentasi Foto
                                     </div>
 
+                                    <div class="bridge-popup-body">
 
-                                    <div class="bridge-row">
-
-                                        <div class="bridge-label">
-                                            Panjang
+                                        <div
+                                            id="bridge-photo-content"
+                                            style="
+                                                min-height:160px;
+                                                display:flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                text-align:center;
+                                                color:#64748b;
+                                                border:1px dashed #cbd5e1;
+                                                border-radius:8px;
+                                                padding:16px;
+                                            "
+                                        >
+                                            Dokumentasi foto akan ditampilkan di sini.
                                         </div>
 
-                                        <div class="bridge-value">
-                                            ${
-                                                feature.properties
-                                                    .Pjg_Jbt_26 || '-'
-                                            } m
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="bridge-row">
-
-                                        <div class="bridge-label">
-                                            Kondisi
-                                        </div>
-
-                                        <div class="bridge-value">
-                                            ${
-                                                feature.properties
-                                                    .JBT_26 || '-'
-                                            }
+                                        <!-- TOMBOL KEMBALI KE INFORMASI -->
+                                        <div
+                                            style="
+                                                display:flex;
+                                                justify-content:flex-start;
+                                                margin-top:16px;
+                                            "
+                                        >
+                                            <button
+                                                type="button"
+                                                onclick="showBridgePopupPage(this, 'info')"
+                                                style="
+                                                    padding:9px 14px;
+                                                    border:1px solid #cbd5e1;
+                                                    border-radius:8px;
+                                                    background:white;
+                                                    color:#334155;
+                                                    cursor:pointer;
+                                                    font-weight:600;
+                                                "
+                                            >
+                                                ← Informasi Jembatan
+                                            </button>
                                         </div>
 
                                     </div>
 
                                 </div>
+                                <!-- AKHIR HALAMAN FOTO -->
 
                             </div>
+                            <!-- AKHIR POPUP UTAMA -->
                             `
                         );
 
@@ -14841,6 +15235,2142 @@ async function refreshOrganization(organization) {
 
 }
 
+window.showBridgePopupPage = function(button, targetPage) {
+    const popup = button.closest('.bridge-popup');
+
+    if (!popup) {
+        console.error('Popup jembatan tidak ditemukan.');
+        return;
+    }
+
+    const pages = popup.querySelectorAll('[data-bridge-page]');
+
+    if (pages.length === 0) {
+        console.error('Halaman info/foto belum ditemukan.');
+        return;
+    }
+
+    pages.forEach(function(page) {
+        page.style.display =
+            page.dataset.bridgePage === targetPage
+                ? 'block'
+                : 'none';
+    });
+
+    console.log('Halaman popup aktif:', targetPage);
+};
+
+/* =====================================================
+   MUAT FOTO DAN KELOLA FORMULIR DOKUMENTASI
+===================================================== */
+
+window.loadBridgePhotosForPopup = async function(button) {
+
+    const popup = button.closest('.bridge-popup');
+
+    if (!popup) {
+        console.error('Popup jembatan tidak ditemukan.');
+        return;
+    }
+
+    const bridgeNumber = popup.dataset.bridgeNumber;
+    const province = popup.dataset.bridgeProvince;
+
+    const content = popup.querySelector(
+        '[data-bridge-photo-content]'
+    );
+
+    const management =
+    popup.querySelector('[data-bridge-photo-management]') ||
+    content?._bridgePhotoManagement;
+
+    if (management) {
+        content._bridgePhotoManagement = management;
+    }
+
+    if (!content) {
+        console.error(
+            'Area dokumentasi foto tidak ditemukan.'
+        );
+        return;
+    }
+
+    if (!bridgeNumber) {
+        content.textContent =
+            'Nomor jembatan tidak tersedia.';
+        return;
+    }
+
+
+    // ================================================
+    // 1. ATUR AKSES FORMULIR BERDASARKAN HAK PENGGUNA
+    // ================================================
+
+    const saveButton = management?.querySelector(
+        '[data-bridge-photo-save]'
+    );
+
+    const urlInput = management?.querySelector(
+        '[data-bridge-photo-url]'
+    );
+
+    const captionInput = management?.querySelector(
+        '[data-bridge-photo-caption]'
+    );
+
+    const titleSelect = management?.querySelector(
+    '[data-bridge-photo-title-select]'
+    );
+
+    // ========================================
+    // PRATINJAU FOTO DARI URL
+    // ========================================
+
+    const previewBox = management?.querySelector(
+        '[data-bridge-photo-preview]'
+    );
+
+    const previewImage = management?.querySelector(
+        '[data-bridge-photo-preview-image]'
+    );
+
+    const previewStatus = management?.querySelector(
+        '[data-bridge-photo-preview-status]'
+    );
+
+    function updateBridgePhotoPreview() {
+
+        if (!urlInput || !previewBox || !previewImage) {
+            return;
+        }
+
+        const url = urlInput.value.trim();
+
+        // Tampilkan area pratinjau
+        previewBox.style.display = url ? 'block' : 'none';
+
+        // Reset pratinjau sebelumnya
+        previewImage.style.display = 'none';
+        previewImage.removeAttribute('src');
+
+        if (previewStatus) {
+            previewStatus.textContent = '';
+            previewStatus.style.color = '#64748b';
+        }
+
+        // URL masih kosong
+        if (!url) {
+            return;
+        }
+
+        // Validasi format URL dan protokol
+        let parsedUrl;
+
+        try {
+            parsedUrl = new URL(url);
+        } catch (error) {
+            if (previewStatus) {
+                previewStatus.textContent =
+                    'Masukkan URL gambar yang valid.';
+                previewStatus.style.color = '#dc2626';
+            }
+
+            return;
+        }
+
+        if (
+            parsedUrl.protocol !== 'https:' &&
+            parsedUrl.protocol !== 'http:'
+        ) {
+            if (previewStatus) {
+                previewStatus.textContent =
+                    'URL harus menggunakan HTTP atau HTTPS.';
+                previewStatus.style.color = '#dc2626';
+            }
+
+            return;
+        }
+
+        if (previewStatus) {
+            previewStatus.textContent = 'Memuat pratinjau foto...';
+        }
+
+        // Tangani gambar yang berhasil dimuat
+        previewImage.onload = function() {
+
+            previewImage.style.display = 'block';
+
+            if (previewStatus) {
+                previewStatus.textContent =
+                    'Foto berhasil dimuat dan siap disimpan.';
+                previewStatus.style.color = '#15803d';
+            }
+        };
+
+        // Tangani URL yang bukan gambar atau gagal diakses
+        previewImage.onerror = function() {
+
+            previewImage.style.display = 'none';
+
+            if (previewStatus) {
+                previewStatus.textContent =
+                    'Foto gagal dimuat. Periksa URL atau gunakan tautan langsung ke gambar.';
+                previewStatus.style.color = '#dc2626';
+            }
+        };
+
+        // Muat gambar dari URL
+        previewImage.src = url;
+    }
+
+    // Pasang listener satu kali agar tidak berulang
+    if (
+        urlInput &&
+        urlInput.dataset.previewHandlerReady !== 'true'
+    ) {
+
+        urlInput.dataset.previewHandlerReady = 'true';
+
+        urlInput.addEventListener(
+            'input',
+            updateBridgePhotoPreview
+        );
+
+        urlInput.addEventListener(
+            'change',
+            updateBridgePhotoPreview
+        );
+    }
+
+    // Tampilkan pratinjau jika kolom sudah berisi URL
+    updateBridgePhotoPreview();
+
+    const status = management?.querySelector(
+        '[data-bridge-photo-status]'
+    );
+
+    const canManage = canManageBridgePhotos(province);
+    
+    if (management) {
+
+        management.dataset.canManage =
+            canManage ? 'true' : 'false';
+
+        management.style.boxSizing = 'border-box';
+        management.style.width = 'min(100%, 340px)';
+        management.style.maxWidth = '100%';
+        management.style.flex = '1 1 260px';
+        management.style.marginTop = '0';
+
+        if (canManage) {
+
+            // Formulir akan ditempatkan di toolbar
+            // oleh window.renderBridgePhoto().
+            management.style.display =
+                management.dataset.open === 'true'
+                    ? 'block'
+                    : 'none';
+
+        } else {
+
+            // Pengguna tanpa izin hanya boleh melihat galeri.
+            management.dataset.open = 'false';
+            management.style.display = 'none';
+
+        }
+
+    } else {
+
+        console.error(
+            'Elemen formulir data-bridge-photo-management tidak ditemukan pada popup ini.'
+        );
+
+    }
+
+    // ================================================
+    // 2. PASANG AKSI TOMBOL SIMPAN
+    // ================================================
+
+    if (canManage && saveButton) {
+
+            // Pastikan tombol tidak memicu submit formulir HTML
+            saveButton.type = 'button';
+
+            // Mencegah pemasangan event berulang
+            if (saveButton.dataset.handlerReady !== 'true') {
+
+            saveButton.dataset.handlerReady = 'true';
+
+            saveButton.addEventListener('click', async function(event) {
+
+                // Cegah perilaku bawaan tombol/formulir
+                event.preventDefault();
+
+                // Cegah proses simpan dijalankan dua kali
+                if (saveButton.dataset.saving === 'true') {
+                    return;
+                }
+
+                saveButton.dataset.saving = 'true';
+
+                const photoUrl = urlInput.value.trim();
+
+                const selectedTitle = titleSelect?.value.trim() || '';
+                const newTitle = captionInput?.value.trim() || '';
+
+                const caption = selectedTitle || newTitle;
+
+                // ------------------------------------
+                // Validasi URL
+                // ------------------------------------
+
+                let parsedUrl;
+
+                try {
+                    parsedUrl = new URL(photoUrl);
+                } catch {
+                    status.textContent =
+                        'Masukkan URL gambar yang valid.';
+                    status.style.color = '#b91c1c';
+                    return;
+                }
+
+                if (
+                    !['http:', 'https:'].includes(
+                        parsedUrl.protocol
+                    )
+                ) {
+                    status.textContent =
+                        'URL harus menggunakan HTTP atau HTTPS.';
+                    status.style.color = '#b91c1c';
+                    return;
+                }
+
+                if (!photoUrl) {
+                    status.textContent =
+                        'URL gambar wajib diisi.';
+                    status.style.color = '#b91c1c';
+                    return;
+                }
+
+                // ------------------------------------
+                // Validasi judul foto
+                // ------------------------------------
+
+                if (!caption) {
+                    status.textContent =
+                        'Pilih kelompok foto atau isi Judul Baru.';
+                    status.style.color = '#b91c1c';
+                    return;
+                }
+
+                // ------------------------------------
+                // Cegah klik ganda saat menyimpan
+                // ------------------------------------
+
+                saveButton.disabled = true;
+                saveButton.textContent = 'Menyimpan...';
+
+                status.textContent =
+                    'Sedang menyimpan dokumentasi foto...';
+
+                status.style.color = '#475569';
+
+                try {
+
+                    // -------------------------------
+                    // Ambil ID pengguna yang login
+                    // -------------------------------
+
+                    const {
+                        data: sessionData,
+                        error: sessionError
+                    } = await supabaseClient.auth.getSession();
+
+                    if (sessionError) {
+                        throw sessionError;
+                    }
+
+                    if (!sessionData.session) {
+                        throw new Error(
+                            'Sesi login tidak ditemukan. Silakan login kembali.'
+                        );
+                    }
+
+                    const userId =
+                        sessionData.session.user.id;
+
+                    // -------------------------------
+                    // Simpan data ke Supabase
+                    // -------------------------------
+
+                    const { data, error } =
+                        await supabaseClient
+                            .from('bridge_photos')
+                            .insert({
+                                bridge_number: bridgeNumber,
+                                photo_url: photoUrl,
+                                caption: caption || null,
+                                uploaded_by: userId
+                            })
+                            .select(
+                                'id, bridge_number, photo_url, caption, created_at'
+                            )
+                            .single();
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    console.log(
+                        'Dokumentasi foto berhasil disimpan:',
+                        data
+                    );
+
+                    
+                    // =====================================
+                    // RESET FORM SETELAH BERHASIL MENYIMPAN
+                    // =====================================
+
+                    urlInput.value = '';
+
+                    if (captionInput) {
+                        captionInput.value = '';
+                    }
+
+                    if (titleSelect) {
+                        titleSelect.value = '';
+                        titleSelect.dispatchEvent(
+                            new Event('change', { bubbles: true })
+                        );
+                    }
+
+                    // Reset pratinjau URL
+                    const previewBox = management?.querySelector(
+                        '[data-bridge-photo-preview]'
+                    );
+
+                    const previewImage = management?.querySelector(
+                        '[data-bridge-photo-preview-image]'
+                    );
+
+                    const previewStatus = management?.querySelector(
+                        '[data-bridge-photo-preview-status]'
+                    );
+
+                    if (previewImage) {
+                        previewImage.onload = null;
+                        previewImage.onerror = null;
+                        previewImage.removeAttribute('src');
+                        previewImage.style.display = 'none';
+                    }
+
+                    if (previewBox) {
+                        previewBox.style.display = 'none';
+                    }
+
+                    if (previewStatus) {
+                        previewStatus.textContent = '';
+                    }
+
+                    // =====================================
+                    // TUTUP FORM TAMBAH FOTO
+                    // =====================================
+
+                    if (management) {
+                        management.dataset.open = 'false';
+                        management.style.display = 'none';
+                    }
+
+                    // =====================================
+                    // MUAT ULANG GALERI
+                    // =====================================
+
+                    await window.loadBridgePhotosForPopup(button);
+
+                    // Pastikan formulir tetap tertutup
+                    if (management) {
+                        management.dataset.open = 'false';
+                        management.style.display = 'none';
+                    }
+
+                    console.log(
+                        'Galeri dokumentasi berhasil diperbarui.'
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Gagal menyimpan dokumentasi foto:',
+                        error
+                    );
+
+                    status.textContent =
+                        'Gagal menyimpan foto: ' +
+                        (error.message || 'Terjadi kesalahan.');
+
+                    status.style.color = '#b91c1c';
+
+                } finally {
+
+                    saveButton.disabled = false;
+
+                    saveButton.dataset.saving = 'false';
+
+                    saveButton.textContent =
+                        'Simpan Dokumentasi Foto';
+
+                }
+
+            });
+
+        }
+
+    }
+
+
+    // ================================================
+    // 3. MUAT DOKUMENTASI FOTO DARI SUPABASE
+    // ================================================
+
+    content.textContent =
+        'Memuat dokumentasi foto...';
+
+    const { data, error } =
+        await getBridgePhotos(bridgeNumber);
+
+    if (error) {
+        content.textContent =
+            'Gagal memuat foto. Periksa koneksi dan hak akses.';
+        return;
+    }
+
+    // ================================================
+    // ISI DROPDOWN DARI JUDUL FOTO YANG SUDAH ADA
+    // ================================================
+
+    if (titleSelect) {
+
+        titleSelect.innerHTML = '';
+
+        // Opsi untuk membuat judul baru
+        const newOption = document.createElement('option');
+
+        newOption.value = '';
+        newOption.textContent = '— Buat judul baru —';
+
+        titleSelect.appendChild(newOption);
+
+        // Ambil judul unik dari foto jembatan ini
+        const uniqueTitles = [
+            ...new Set(
+                (data || [])
+                    .map(photo => String(photo.caption || '').trim())
+                    .filter(title => title !== '')
+            )
+        ].sort((a, b) => a.localeCompare(b, 'id'));
+
+        // Masukkan judul lama ke dropdown
+        uniqueTitles.forEach(function(title) {
+
+            const option = document.createElement('option');
+
+            option.value = title;
+            option.textContent = title;
+
+            titleSelect.appendChild(option);
+
+        });
+    }
+
+    // ================================================
+    // TAMPILKAN JUDUL BARU HANYA JIKA DIPERLUKAN
+    // ================================================
+
+    const newTitleWrap = management?.querySelector(
+        '[data-bridge-photo-new-title-wrap]'
+    );
+
+    function updateNewTitleVisibility() {
+
+        const isCreatingNewTitle =
+            !titleSelect || titleSelect.value === '';
+
+        if (newTitleWrap) {
+            newTitleWrap.style.display =
+                isCreatingNewTitle ? 'block' : 'none';
+        }
+
+        if (captionInput) {
+            captionInput.required = isCreatingNewTitle;
+
+            if (!isCreatingNewTitle) {
+                captionInput.value = '';
+            }
+        }
+    }
+
+    if (
+        titleSelect &&
+        titleSelect.dataset.visibilityHandlerReady !== 'true'
+    ) {
+        titleSelect.dataset.visibilityHandlerReady = 'true';
+
+        titleSelect.addEventListener(
+            'change',
+            updateNewTitleVisibility
+        );
+    }
+
+    updateNewTitleVisibility();
+
+    // ================================================
+    // 4. TAMPILKAN GALERI
+    // ================================================
+
+    content._bridgePhotos = data || [];
+    content._bridgePhotoIndex = 0;
+
+    window.renderBridgePhoto(content);
+
+};
+
+/* =====================================================
+   PANEL EDIT DOKUMENTASI FOTO JEMBATAN
+   - Pilih kelompok judul terlebih dahulu
+   - Tampilkan foto sesuai kelompok terpilih
+   - Tutup panel setelah berhasil menyimpan perubahan
+   - Pertahankan pemeriksaan hak akses dan Supabase/RLS
+===================================================== */
+
+window.openBridgePhotoEditor = async function(content) {
+
+    const popup = content?.closest('.bridge-popup');
+
+    if (!popup || !content) {
+        console.error('Popup atau galeri tidak ditemukan.');
+        return;
+    }
+
+    const bridgeNumber = popup.dataset.bridgeNumber;
+    const province = popup.dataset.bridgeProvince;
+
+    if (!canManageBridgePhotos(province)) {
+        alert('Anda tidak memiliki izin untuk mengelola foto.');
+        return;
+    }
+
+    const photoPage = popup.querySelector(
+        '[data-bridge-page="photos"]'
+    );
+
+    const photoBody = photoPage?.querySelector(
+        '.bridge-popup-body'
+    );
+
+    if (!photoBody) {
+        console.error(
+            'Halaman dokumentasi foto tidak ditemukan.'
+        );
+        return;
+    }
+
+    // ========================================
+    // HAPUS PANEL LAMA JIKA MASIH ADA
+    // ========================================
+
+    const oldEditor = photoBody.querySelector(
+        '[data-bridge-photo-editor]'
+    );
+
+    if (oldEditor) {
+        oldEditor.remove();
+    }
+
+    // ========================================
+    // BUAT PANEL EDIT
+    // ========================================
+
+    const editor = document.createElement('div');
+
+    editor.dataset.bridgePhotoEditor = 'true';
+
+    editor.style.cssText = `
+        display:block;
+        width:100%;
+        box-sizing:border-box;
+        padding:14px;
+        border:1px solid #e2e8f0;
+        border-radius:10px;
+        background:#ffffff;
+        margin-top:12px;
+    `;
+
+    // ========================================
+    // HEADER PANEL
+    // ========================================
+
+    const editorHeader = document.createElement('div');
+
+    editorHeader.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        margin-bottom:14px;
+    `;
+
+    const editorTitle = document.createElement('div');
+
+    editorTitle.textContent = 'Edit Dokumentasi Foto';
+
+    editorTitle.style.cssText = `
+        color:#334155;
+        font-size:14px;
+        font-weight:700;
+    `;
+
+    const closeButton = document.createElement('button');
+
+    closeButton.type = 'button';
+    closeButton.textContent = '✕';
+    closeButton.title = 'Tutup panel edit';
+    closeButton.setAttribute('aria-label', 'Tutup panel edit');
+
+    closeButton.style.cssText = `
+        flex:0 0 auto;
+        width:32px;
+        height:32px;
+        border:1px solid #cbd5e1;
+        border-radius:7px;
+        background:#ffffff;
+        color:#334155;
+        cursor:pointer;
+    `;
+
+    // ========================================
+    // STATUS PANEL
+    // ========================================
+
+    const status = document.createElement('div');
+
+    status.dataset.bridgePhotoEditorStatus = 'true';
+
+    status.style.cssText = `
+        margin-bottom:14px;
+        font-size:12px;
+        line-height:1.5;
+        color:#475569;
+    `;
+
+    // ========================================
+    // PILIH KELOMPOK JUDUL TERLEBIH DAHULU
+    // ========================================
+
+    const groupLabel = document.createElement('label');
+
+    groupLabel.textContent = 'Pilih kelompok foto yang ingin diedit';
+
+    groupLabel.style.cssText = `
+        display:block;
+        margin-bottom:6px;
+        color:#334155;
+        font-size:12px;
+        font-weight:700;
+    `;
+
+    const groupSelect = document.createElement('select');
+
+    groupSelect.dataset.bridgePhotoEditGroup = 'true';
+
+    groupSelect.style.cssText = `
+        display:block;
+        width:100%;
+        box-sizing:border-box;
+        padding:10px;
+        margin-bottom:14px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+        background:#ffffff;
+        color:#334155;
+        font-size:12px;
+    `;
+
+    const initialOption = document.createElement('option');
+
+    initialOption.value = '';
+    initialOption.textContent = '— Pilih kelompok foto —';
+
+    groupSelect.appendChild(initialOption);
+
+    // ========================================
+    // DAFTAR FOTO
+    // ========================================
+
+    const editorList = document.createElement('div');
+
+    editorList.dataset.bridgePhotoEditorList = 'true';
+
+    editorList.style.cssText = `
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+        width:100%;
+        min-width:0;
+    `;
+
+    // Susun panel.
+    editorHeader.appendChild(editorTitle);
+    editorHeader.appendChild(closeButton);
+
+    editor.appendChild(editorHeader);
+    editor.appendChild(status);
+    editor.appendChild(groupLabel);
+    editor.appendChild(groupSelect);
+    editor.appendChild(editorList);
+
+    photoBody.appendChild(editor);
+
+    // Sembunyikan galeri saat panel Edit dibuka.
+    content.style.display = 'none';
+
+    
+    // ========================================
+    // FUNGSI MENUTUP PANEL EDIT
+    // ========================================
+
+    function closeEditor() {
+
+        // Hapus panel edit saja
+        editor.remove();
+
+        // Tampilkan kembali galeri foto
+        content.style.display = 'block';
+
+    }
+
+    // Tombol X hanya menutup panel edit
+    closeButton.type = 'button';
+
+    closeButton.addEventListener('click', function(event) {
+
+        // Cegah perilaku bawaan tombol
+        event.preventDefault();
+
+        // Cegah klik diteruskan ke elemen Leaflet
+        event.stopPropagation();
+
+        // Tutup panel edit saja
+        closeEditor();
+
+    });
+
+    // ========================================
+    // MUAT FOTO DARI SUPABASE
+    // ========================================
+
+    status.textContent = 'Memuat dokumentasi foto...';
+    status.style.color = '#475569';
+
+    const { data: photos, error } =
+        await getBridgePhotos(bridgeNumber);
+
+    if (!editor.isConnected) {
+        return;
+    }
+
+    if (error) {
+
+        status.textContent =
+            'Gagal memuat foto. Periksa koneksi atau hak akses.';
+
+        status.style.color = '#b91c1c';
+        return;
+    }
+
+    if (!photos || photos.length === 0) {
+
+        status.textContent =
+            'Belum ada foto yang dapat dikelola.';
+
+        status.style.color = '#64748b';
+
+        groupSelect.disabled = true;
+
+        return;
+    }
+
+    // ========================================
+    // AMBIL KELOMPOK JUDUL YANG UNIK
+    // ========================================
+
+    const groupMap = new Map();
+
+    photos.forEach(function(photo) {
+
+        const caption =
+            String(photo.caption || 'Dokumentasi Umum').trim()
+            || 'Dokumentasi Umum';
+
+        const key = caption.toLocaleLowerCase('id-ID');
+
+        if (!groupMap.has(key)) {
+            groupMap.set(key, caption);
+        }
+
+    });
+
+    const groups = Array.from(groupMap.entries())
+        .sort((a, b) => a[1].localeCompare(b[1], 'id'));
+
+    groups.forEach(function(entry) {
+
+        const option = document.createElement('option');
+
+        option.value = entry[0];
+        option.textContent = entry[1];
+
+        groupSelect.appendChild(option);
+
+    });
+
+    status.textContent =
+        '';
+
+    status.style.color = '#475569';
+
+    // ========================================
+    // RENDER FOTO SESUAI KELOMPOK TERPILIH
+    // ========================================
+
+    function renderSelectedGroup() {
+
+        editorList.innerHTML = '';
+
+        const selectedGroup = groupSelect.value;
+
+        // Belum memilih kelompok.
+        if (!selectedGroup) {
+
+            const instruction = document.createElement('div');
+
+            instruction.textContent =
+                'Daftar foto akan muncul setelah Anda memilih kelompok judul di atas.';
+
+            instruction.style.cssText = `
+                padding:16px 12px;
+                border:1px dashed #cbd5e1;
+                border-radius:8px;
+                color:#64748b;
+                font-size:12px;
+                line-height:1.6;
+                text-align:center;
+            `;
+
+            editorList.appendChild(instruction);
+
+            return;
+        }
+
+        const selectedPhotos = photos.filter(function(photo) {
+
+            const caption =
+                String(photo.caption || 'Dokumentasi Umum').trim()
+                || 'Dokumentasi Umum';
+
+            return caption.toLocaleLowerCase('id-ID') === selectedGroup;
+
+        });
+
+        if (selectedPhotos.length === 0) {
+
+            const emptyMessage = document.createElement('div');
+
+            emptyMessage.textContent =
+                'Tidak ada foto dalam kelompok ini.';
+
+            emptyMessage.style.cssText = `
+                padding:14px;
+                color:#64748b;
+                font-size:12px;
+                text-align:center;
+            `;
+
+            editorList.appendChild(emptyMessage);
+
+            return;
+        }
+
+        status.textContent =
+            'Menampilkan ' + selectedPhotos.length +
+            ' foto dalam kelompok "' +
+            groupSelect.options[groupSelect.selectedIndex].text +
+            '".';
+
+        status.style.color = '#475569';
+
+        selectedPhotos.forEach(function(photo) {
+
+            const item = document.createElement('div');
+
+            item.style.cssText = `
+                display:flex;
+                flex-direction:column;
+                gap:9px;
+                padding:12px;
+                border:1px solid #e2e8f0;
+                border-radius:9px;
+                background:#f8fafc;
+                min-width:0;
+            `;
+
+            // -------------------------------
+            // PRATINJAU FOTO
+            // -------------------------------
+
+            const preview = document.createElement('img');
+
+            preview.src = photo.photo_url;
+            preview.alt = photo.caption || 'Dokumentasi foto';
+            preview.loading = 'lazy';
+
+            preview.style.cssText = `
+                width:100%;
+                height:150px;
+                object-fit:contain;
+                background:#e2e8f0;
+                border-radius:7px;
+            `;
+
+            preview.onerror = function() {
+                preview.alt = 'Gambar tidak dapat dimuat';
+            };
+
+            // -------------------------------
+            // INPUT JUDUL
+            // -------------------------------
+
+            const titleLabel = document.createElement('label');
+
+            titleLabel.textContent = 'Judul kelompok';
+
+            titleLabel.style.cssText = `
+                font-size:12px;
+                font-weight:600;
+                color:#475569;
+            `;
+
+            const titleInput = document.createElement('input');
+
+            titleInput.type = 'text';
+            titleInput.value = photo.caption || '';
+            titleInput.maxLength = 500;
+            titleInput.placeholder = 'Judul dokumentasi';
+
+            titleInput.style.cssText = `
+                width:100%;
+                box-sizing:border-box;
+                padding:9px;
+                border:1px solid #cbd5e1;
+                border-radius:7px;
+                background:#ffffff;
+                font-size:12px;
+            `;
+
+            // -------------------------------
+            // INPUT URL
+            // -------------------------------
+
+            const urlLabel = document.createElement('label');
+
+            urlLabel.textContent = 'URL gambar';
+
+            urlLabel.style.cssText = `
+                font-size:12px;
+                font-weight:600;
+                color:#475569;
+            `;
+
+            const urlInput = document.createElement('input');
+
+            urlInput.type = 'url';
+            urlInput.value = photo.photo_url || '';
+            urlInput.placeholder = 'https://alamat-gambar.jpg';
+
+            urlInput.style.cssText = `
+                width:100%;
+                box-sizing:border-box;
+                padding:9px;
+                border:1px solid #cbd5e1;
+                border-radius:7px;
+                background:#ffffff;
+                font-size:12px;
+            `;
+
+            // -------------------------------
+            // PRATINJAU URL BARU SAAT EDIT
+            // -------------------------------
+
+            const previewStatus = document.createElement('div');
+
+            previewStatus.style.cssText = `
+                font-size:11px;
+                color:#64748b;
+                line-height:1.5;
+                overflow-wrap:anywhere;
+            `;
+
+            urlInput.addEventListener('input', function() {
+
+                const newUrl = urlInput.value.trim();
+
+                previewStatus.textContent = '';
+
+                if (!newUrl) {
+                    return;
+                }
+
+                let parsedUrl;
+
+                try {
+                    parsedUrl = new URL(newUrl);
+                } catch {
+                    previewStatus.textContent =
+                        'URL gambar belum valid.';
+                    previewStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+                    previewStatus.textContent =
+                        'URL harus menggunakan HTTP atau HTTPS.';
+                    previewStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                previewStatus.textContent =
+                    'Memuat pratinjau URL baru...';
+
+                previewStatus.style.color = '#475569';
+
+                const testImage = new Image();
+
+                testImage.onload = function() {
+
+                    preview.src = newUrl;
+
+                    previewStatus.textContent =
+                        'Pratinjau URL baru berhasil dimuat.';
+
+                    previewStatus.style.color = '#15803d';
+
+                };
+
+                testImage.onerror = function() {
+
+                    previewStatus.textContent =
+                        'Gambar tidak dapat dimuat dari URL ini.';
+
+                    previewStatus.style.color = '#b91c1c';
+
+                };
+
+                testImage.src = newUrl;
+
+            });
+
+            // -------------------------------
+            // TOMBOL AKSI
+            // -------------------------------
+
+            const actions = document.createElement('div');
+
+            actions.style.cssText = `
+                display:flex;
+                flex-wrap:wrap;
+                gap:8px;
+            `;
+
+            const updateButton = document.createElement('button');
+
+            updateButton.type = 'button';
+            updateButton.textContent = 'Simpan Perubahan';
+
+            updateButton.style.cssText = `
+                flex:1 1 120px;
+                padding:6px 8px;
+                border:none;
+                border-radius:6px;
+                background:#1f4e79;
+                color:#ffffff;
+                font-size:10px;
+                font-weight:600;
+                cursor:pointer;
+            `;
+
+            const deleteButton = document.createElement('button');
+
+            deleteButton.type = 'button';
+            deleteButton.textContent = 'Hapus';
+
+            deleteButton.style.cssText = `
+                flex:0 1 70px;
+                padding:6px 8px;
+                border:1px solid #fecaca;
+                border-radius:6px;
+                background:#fff1f2;
+                color:#b91c1c;
+                font-size:10px;
+                font-weight:600;
+                cursor:pointer;
+            `;
+
+            const itemStatus = document.createElement('div');
+
+            itemStatus.style.cssText = `
+                font-size:12px;
+                line-height:1.5;
+                color:#64748b;
+                overflow-wrap:anywhere;
+            `;
+
+            // ========================================
+            // SIMPAN PERUBAHAN FOTO
+            // ========================================
+
+            updateButton.addEventListener('click', async function() {
+
+                if (!canManageBridgePhotos(province)) {
+                    itemStatus.textContent =
+                        'Akses pengelolaan foto tidak diizinkan.';
+                    itemStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                const newUrl = urlInput.value.trim();
+                const newCaption = titleInput.value.trim();
+
+                let parsedUrl;
+
+                try {
+                    parsedUrl = new URL(newUrl);
+                } catch {
+                    itemStatus.textContent =
+                        'Masukkan URL gambar yang valid.';
+                    itemStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+                    itemStatus.textContent =
+                        'URL harus menggunakan HTTP atau HTTPS.';
+                    itemStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                if (!newCaption) {
+                    itemStatus.textContent =
+                        'Judul kelompok tidak boleh kosong.';
+                    itemStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                updateButton.disabled = true;
+                updateButton.textContent = 'Menyimpan...';
+
+                try {
+
+                    const { data: updatedRows, error: updateError } =
+                        await supabaseClient
+                            .from('bridge_photos')
+                            .update({
+                                photo_url: newUrl,
+                                caption: newCaption
+                            })
+                            .eq('id', photo.id)
+                            .eq('bridge_number', bridgeNumber)
+                            .select('id');
+
+                    if (updateError) {
+                        throw updateError;
+                    }
+
+                    if (!updatedRows || updatedRows.length === 0) {
+                        throw new Error(
+                            'Foto tidak berubah. Periksa izin RLS atau data foto.'
+                        );
+                    }
+
+                    // Muat ulang data galeri dari Supabase.
+                    const {
+                        data: refreshedPhotos,
+                        error: refreshError
+                    } = await getBridgePhotos(bridgeNumber);
+
+                    if (refreshError) {
+                        throw refreshError;
+                    }
+
+                    content._bridgePhotos = refreshedPhotos || [];
+                    content._bridgePhotoIndex = 0;
+
+                    window.renderBridgePhoto(content);
+
+                    // Tutup panel Edit setelah penyimpanan berhasil.
+                    closeEditor();
+
+                    console.log(
+                        'Dokumentasi foto berhasil diperbarui:',
+                        photo.id
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        'Gagal memperbarui dokumentasi foto:',
+                        error
+                    );
+
+                    itemStatus.textContent =
+                        'Gagal menyimpan: ' +
+                        (error.message || 'Terjadi kesalahan.');
+
+                    itemStatus.style.color = '#b91c1c';
+
+                    updateButton.disabled = false;
+                    updateButton.textContent = 'Simpan Perubahan';
+
+                }
+
+            });
+
+            // ========================================
+            // HAPUS FOTO DENGAN KONFIRMASI
+            // ========================================
+
+            deleteButton.addEventListener('click', async function() {
+
+                if (!canManageBridgePhotos(province)) {
+                    itemStatus.textContent =
+                        'Akses pengelolaan foto tidak diizinkan.';
+                    itemStatus.style.color = '#b91c1c';
+                    return;
+                }
+
+                const confirmed = window.confirm(
+                    'Apakah Anda yakin ingin menghapus foto ini? ' +
+                    'Tindakan ini tidak dapat dibatalkan.'
+                );
+
+                if (!confirmed) {
+                    return;
+                }
+
+                deleteButton.disabled = true;
+                deleteButton.textContent = 'Menghapus...';
+
+                try {
+
+                    const { data: deletedRows, error: deleteError } =
+                        await supabaseClient
+                            .from('bridge_photos')
+                            .delete()
+                            .eq('id', photo.id)
+                            .eq('bridge_number', bridgeNumber)
+                            .select('id');
+
+                    if (deleteError) {
+                        throw deleteError;
+                    }
+
+                    if (!deletedRows || deletedRows.length === 0) {
+                        throw new Error(
+                            'Foto tidak terhapus. Periksa izin RLS atau data foto.'
+                        );
+                    }
+
+                    const {
+                        data: refreshedPhotos,
+                        error: refreshError
+                    } = await getBridgePhotos(bridgeNumber);
+
+                    if (refreshError) {
+                        throw refreshError;
+                    }
+
+                    content._bridgePhotos = refreshedPhotos || [];
+                    content._bridgePhotoIndex = 0;
+
+                    window.renderBridgePhoto(content);
+
+                    // Jika masih ada foto, perbarui panel editor.
+                    if (content._bridgePhotos.length > 0) {
+                        await window.openBridgePhotoEditor(content);
+                    } else {
+                        closeEditor();
+                    }
+
+                    console.log(
+                        'Dokumentasi foto berhasil dihapus:',
+                        photo.id
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        'Gagal menghapus dokumentasi foto:',
+                        error
+                    );
+
+                    itemStatus.textContent =
+                        'Gagal menghapus: ' +
+                        (error.message || 'Terjadi kesalahan.');
+
+                    itemStatus.style.color = '#b91c1c';
+
+                    deleteButton.disabled = false;
+                    deleteButton.textContent = 'Hapus';
+
+                }
+
+            });
+
+            // Susun elemen foto.
+            item.appendChild(preview);
+            item.appendChild(titleLabel);
+            item.appendChild(titleInput);
+            item.appendChild(urlLabel);
+            item.appendChild(urlInput);
+            item.appendChild(previewStatus);
+
+            actions.appendChild(updateButton);
+            actions.appendChild(deleteButton);
+
+            item.appendChild(actions);
+            item.appendChild(itemStatus);
+
+            editorList.appendChild(item);
+
+        });
+
+    }
+
+    // Tampilkan instruksi awal tanpa menampilkan semua foto.
+    renderSelectedGroup();
+
+    groupSelect.addEventListener('change', renderSelectedGroup);
+
+};
+
+/* =====================================================
+   RENDER GALERI DOKUMENTASI FOTO JEMBATAN
+   PERBAIKAN:
+   1. Form tambah foto dipertahankan saat render ulang.
+   2. Tombol + dan Edit tetap muncul meskipun foto kosong.
+===================================================== */
+
+window.renderBridgePhoto = function(content) {
+
+    if (!content) {
+        console.error(
+            'Area galeri dokumentasi foto tidak ditemukan.'
+        );
+        return;
+    }
+
+    const popup = content.closest('.bridge-popup');
+
+    if (!popup) {
+        console.error(
+            'Popup jembatan tidak ditemukan.'
+        );
+        return;
+    }
+
+    // ========================================
+    // PERIKSA HAK AKSES PENGELOLAAN FOTO
+    // ========================================
+
+    const province =
+        popup.dataset.bridgeProvince || '';
+
+    const canManage =
+        typeof canManageBridgePhotos === 'function'
+            ? canManageBridgePhotos(province)
+            : false;
+
+    console.log(
+        '[HAK AKSES FOTO]',
+        'Role:',
+        window.currentUserProfile?.role,
+        'Provinsi:',
+        province,
+        'Boleh mengelola:',
+        canManage
+    );
+
+    const photos = content._bridgePhotos || [];
+
+    // ========================================
+    // PERTAHANKAN REFERENSI FORM TAMBAH FOTO
+    // ========================================
+
+    /*
+       Formulir mungkin masih berada di popup,
+       atau sudah dilepas dari DOM oleh render sebelumnya.
+
+       Karena itu, simpan referensinya di content.
+    */
+
+    let management =
+        popup.querySelector('[data-bridge-photo-management]') ||
+        content._bridgePhotoManagement;
+
+    if (management) {
+        content._bridgePhotoManagement = management;
+    }
+
+    // Bersihkan tampilan galeri lama.
+    // Referensi management tetap tersimpan.
+    content.innerHTML = '';
+
+    // ========================================
+    // PEMBUNGKUS GALERI
+    // ========================================
+
+    const gallery = document.createElement('div');
+
+    gallery.style.cssText = `
+        display:flex;
+        flex-direction:column;
+        gap:16px;
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+        align-items:stretch;
+    `;
+
+    // ========================================
+    // BARIS TOMBOL DAN FORM TAMBAH FOTO
+    // ========================================
+
+    const toolbar = document.createElement('div');
+
+    toolbar.style.cssText = `
+        display:flex;
+        align-items:flex-start;
+        flex-wrap:wrap;
+        gap:6px;
+        width:100%;
+        box-sizing:border-box;
+    `;
+
+    // ========================================
+    // TOMBOL TAMBAH FOTO (+)
+    // ========================================
+
+    const addButton = document.createElement('button');
+
+    addButton.type = 'button';
+    addButton.textContent = '+';
+    addButton.title = 'Tambah dokumentasi foto';
+    addButton.setAttribute(
+        'aria-label',
+        'Tambah dokumentasi foto'
+    );
+
+    addButton.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex:0 0 28px;
+        width:28px;
+        height:28px;
+        padding:0;
+        border:none;
+        border-radius:6px;
+        background:#1f4e79;
+        color:#ffffff;
+        font-size:19px;
+        font-weight:600;
+        line-height:1;
+        cursor:pointer;
+    `;
+
+    // ========================================
+    // TOMBOL EDIT FOTO
+    // ========================================
+
+    const editButton = document.createElement('button');
+
+    editButton.type = 'button';
+    editButton.textContent = 'Edit';
+    editButton.title = 'Kelola dokumentasi foto';
+
+    editButton.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        min-height:28px;
+        padding:0 9px;
+        border:1px solid #cbd5e1;
+        border-radius:6px;
+        background:#1f4e79;
+        color:#ffffff;
+        font-size:10px;
+        font-weight:600;
+        cursor:pointer;
+    `;
+
+    editButton.addEventListener('click', function() {
+
+        if (
+            typeof window.openBridgePhotoEditor === 'function'
+        ) {
+            window.openBridgePhotoEditor(content);
+        } else {
+            console.warn(
+                'Panel edit foto belum dipasang.'
+            );
+        }
+
+    });
+
+    // Tampilkan tombol pengelolaan hanya untuk pengguna berwenang.
+    if (canManage) {
+        toolbar.appendChild(addButton);
+        toolbar.appendChild(editButton);
+    }
+
+    // ========================================
+    // PASANG FORM TAMBAH FOTO KE TOOLBAR
+    // ========================================
+
+    if (management) {
+
+        management.style.boxSizing = 'border-box';
+        management.style.width = 'min(100%, 340px)';
+        management.style.maxWidth = '100%';
+        management.style.flex = '1 1 260px';
+        management.style.marginTop = '0';
+
+        toolbar.appendChild(management);
+
+        management.style.display =
+            management.dataset.open === 'true'
+                ? 'block'
+                : 'none';
+
+    } else {
+
+        console.error(
+            'Elemen formulir data-bridge-photo-management tidak ditemukan pada popup ini.'
+        );
+
+    }
+
+    // ========================================
+    // AKSI TOMBOL TAMBAH
+    // ========================================
+
+    addButton.addEventListener('click', function() {
+
+        // Gunakan referensi yang sudah disimpan.
+        const form =
+            content._bridgePhotoManagement ||
+            popup.querySelector(
+                '[data-bridge-photo-management]'
+            );
+
+        if (!form) {
+            console.error(
+                'Form tambah dokumentasi foto tidak ditemukan.'
+            );
+            return;
+        }
+
+        if (form.dataset.canManage !== 'true') {
+            console.warn(
+                'Pengguna tidak memiliki izin mengelola foto.'
+            );
+            return;
+        }
+
+        const isOpen =
+            form.dataset.open === 'true';
+
+        if (isOpen) {
+
+            form.dataset.open = 'false';
+            form.style.display = 'none';
+
+        } else {
+
+            form.dataset.open = 'true';
+            form.style.display = 'block';
+
+            const titleSelect = form.querySelector(
+                '[data-bridge-photo-title-select]'
+            );
+
+            if (titleSelect) {
+                titleSelect.focus();
+            }
+
+        }
+
+    });
+
+    gallery.appendChild(toolbar);
+
+    // ========================================
+    // PESAN JIKA BELUM ADA FOTO
+    // ========================================
+
+    if (photos.length === 0) {
+
+        const emptyMessage = document.createElement('div');
+
+        emptyMessage.textContent =
+            'Belum ada dokumentasi foto untuk jembatan ini.';
+
+        emptyMessage.style.cssText = `
+            padding:18px 12px;
+            border:1px dashed #cbd5e1;
+            border-radius:8px;
+            color:#64748b;
+            font-size:12px;
+            text-align:center;
+            line-height:1.6;
+        `;
+
+        gallery.appendChild(emptyMessage);
+
+    } else {
+
+        // ========================================
+        // KELOMPOKKAN FOTO BERDASARKAN JUDUL
+        // ========================================
+
+        const groupedPhotos = new Map();
+
+        photos.forEach(function(photo, index) {
+
+            const caption =
+                String(
+                    photo.caption || 'Dokumentasi Umum'
+                ).trim() || 'Dokumentasi Umum';
+
+            const groupKey =
+                caption.toLocaleLowerCase('id-ID');
+
+            if (!groupedPhotos.has(groupKey)) {
+
+                groupedPhotos.set(groupKey, {
+                    caption: caption,
+                    photos: []
+                });
+
+            }
+
+            groupedPhotos.get(groupKey).photos.push({
+                photo: photo,
+                originalIndex: index
+            });
+
+        });
+
+        // ========================================
+        // TAMPILKAN SETIAP KELOMPOK
+        // ========================================
+
+        groupedPhotos.forEach(function(group) {
+
+            const section = document.createElement('div');
+
+            section.style.cssText = `
+                width:100%;
+                min-width:0;
+            `;
+
+            const heading = document.createElement('div');
+
+            heading.textContent = group.caption;
+
+            heading.style.cssText = `
+                width:100%;
+                box-sizing:border-box;
+                margin-bottom:10px;
+                padding-bottom:7px;
+                border-bottom:1px solid #d1d5db;
+                color:#334155;
+                font-size:13px;
+                font-weight:700;
+                overflow-wrap:anywhere;
+            `;
+
+            section.appendChild(heading);
+
+            const photoGrid = document.createElement('div');
+
+            photoGrid.style.cssText = `
+                display:grid;
+                grid-template-columns:repeat(3, minmax(0, 1fr));
+                gap:8px;
+                width:100%;
+            `;
+
+            group.photos.forEach(function(item) {
+
+                const photo = item.photo;
+
+                const photoButton =
+                    document.createElement('button');
+
+                photoButton.type = 'button';
+                photoButton.title = group.caption;
+
+                photoButton.style.cssText = `
+                    display:block;
+                    width:100%;
+                    aspect-ratio:1 / 1;
+                    min-width:0;
+                    padding:0;
+                    overflow:hidden;
+                    border:1px solid #e2e8f0;
+                    border-radius:8px;
+                    background:#f1f5f9;
+                    cursor:pointer;
+                `;
+
+                const image = document.createElement('img');
+
+                image.src = photo.photo_url;
+                image.alt = group.caption;
+                image.loading = 'lazy';
+
+                image.style.cssText = `
+                    display:block;
+                    width:100%;
+                    height:100%;
+                    object-fit:cover;
+                `;
+
+                image.onerror = function() {
+
+                    image.style.display = 'none';
+
+                    photoButton.textContent =
+                        'Gambar tidak dapat dimuat';
+
+                    photoButton.style.color = '#64748b';
+                    photoButton.style.fontSize = '10px';
+                    photoButton.style.padding = '6px';
+
+                };
+
+                photoButton.appendChild(image);
+
+                photoButton.addEventListener(
+                    'click',
+                    function() {
+
+                        window.openBridgePhotoDetail(
+                            content,
+                            item.originalIndex
+                        );
+
+                    }
+                );
+
+                photoGrid.appendChild(photoButton);
+
+            });
+
+            section.appendChild(photoGrid);
+            gallery.appendChild(section);
+
+        });
+
+    }
+
+    // ========================================
+    // TAMPILKAN GALERI
+    // ========================================
+
+    content.style.display = 'block';
+    content.style.minHeight = '0';
+    content.style.textAlign = 'left';
+    content.style.alignItems = 'stretch';
+    content.style.justifyContent = 'flex-start';
+    content.style.border = 'none';
+    content.style.padding = '0';
+    content.style.overflow = 'visible';
+
+    content.appendChild(gallery);
+
+};
+
+/* =====================================================
+   LIGHTBOX FOTO BESAR + NAVIGASI NEXT / PREVIOUS
+===================================================== */
+
+window.openBridgePhotoDetail = function(content, photoIndex) {
+
+    const photos = content._bridgePhotos || [];
+
+    if (!photos.length || !photos[photoIndex]) return;
+
+    // Hapus lightbox sebelumnya jika masih ada
+    const existing = document.getElementById(
+        'bridge-photo-lightbox'
+    );
+
+    if (existing) existing.remove();
+
+    let currentIndex = photoIndex;
+
+    // ================================================
+    // 1. OVERLAY
+    // ================================================
+
+    const overlay = document.createElement('div');
+
+    overlay.id = 'bridge-photo-lightbox';
+
+    Object.assign(overlay.style, {
+        position: 'fixed',
+        inset: '0',
+        width: '100vw',
+        height: '100vh',
+        zIndex: '2147483647',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxSizing: 'border-box',
+        padding: '55px 70px 25px',
+        background: 'rgba(2, 6, 23, 0.94)',
+        overflow: 'auto'
+    });
+
+    // ================================================
+    // 2. TOMBOL TUTUP
+    // ================================================
+
+    const close = document.createElement('button');
+
+    close.type = 'button';
+    close.textContent = '✕';
+    close.title = 'Tutup foto';
+
+    Object.assign(close.style, {
+        position: 'fixed',
+        top: '14px',
+        right: '14px',
+        zIndex: '10',
+        width: '24px',
+        height: '24px',
+        padding: '0',
+        border: '2px solid #ffffff',
+        borderRadius: '50%',
+        background: '#ffffff',
+        color: '#0f172a',
+        fontSize: '16px',
+        fontWeight: '700',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+    });
+
+    close.onclick = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        overlay.remove();
+    };
+
+    // ================================================
+    // 3. KONTENER FOTO
+    // ================================================
+
+    const photoContainer = document.createElement('div');
+
+    Object.assign(photoContainer.style, {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box'
+    });
+
+    // ================================================
+    // 4. GAMBAR BESAR
+    // ================================================
+
+    const image = document.createElement('img');
+
+    Object.assign(image.style, {
+        display: 'block',
+        width: 'auto',
+        height: 'auto',
+        maxWidth: '94vw',
+        maxHeight: '82vh',
+        objectFit: 'contain',
+        borderRadius: '4px',
+        boxShadow: '0 8px 35px rgba(0,0,0,0.45)'
+    });
+
+    image.onerror = function() {
+        image.alt = 'Foto gagal dimuat. Periksa URL gambar.';
+    };
+
+    // ================================================
+    // 5. JUDUL DAN NOMOR FOTO
+    // ================================================
+
+    const caption = document.createElement('div');
+
+    Object.assign(caption.style, {
+        maxWidth: '90vw',
+        fontSize: '14px',
+        lineHeight: '1.5',
+        fontWeight: '600',
+        color: '#ffffff',
+        textAlign: 'center',
+        overflowWrap: 'anywhere'
+    });
+
+    // Fungsi untuk memperbarui foto aktif
+    function updatePhoto() {
+
+        const photo = photos[currentIndex];
+
+        image.src = photo.photo_url;
+        image.alt = photo.caption || 'Dokumentasi jembatan';
+
+        caption.textContent =
+            `${photo.caption || 'Dokumentasi Jembatan'} — Foto ${currentIndex + 1} dari ${photos.length}`;
+    }
+
+    // ================================================
+    // 6. GAYA TOMBOL NEXT / PREVIOUS
+    // ================================================
+
+    function styleArrowButton(button, side) {
+
+        Object.assign(button.style, {
+            position: 'fixed',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            [side]: '16px',
+            zIndex: '10',
+            width: '42px',
+            height: '54px',
+            padding: '0',
+            border: '1px solid rgba(255,255,255,0.5)',
+            borderRadius: '12px',
+            background: 'rgba(255,255,255,0.92)',
+            color: '#0f172a',
+            fontSize: '32px',
+            fontWeight: '400',
+            lineHeight: '1',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 3px 12px rgba(0,0,0,0.3)'
+        });
+    }
+
+    // --------------------------------
+    // Tombol Previous: <
+    // --------------------------------
+
+    const previous = document.createElement('button');
+
+    previous.type = 'button';
+    previous.textContent = '‹';
+    previous.title = 'Foto sebelumnya';
+    previous.setAttribute('aria-label', 'Foto sebelumnya');
+
+    styleArrowButton(previous, 'left');
+
+    previous.onclick = function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (photos.length <= 1) return;
+
+        currentIndex =
+            (currentIndex - 1 + photos.length) % photos.length;
+
+        updatePhoto();
+    };
+
+    // --------------------------------
+    // Tombol Next: >
+    // --------------------------------
+
+    const next = document.createElement('button');
+
+    next.type = 'button';
+    next.textContent = '›';
+    next.title = 'Foto berikutnya';
+    next.setAttribute('aria-label', 'Foto berikutnya');
+
+    styleArrowButton(next, 'right');
+
+    next.onclick = function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (photos.length <= 1) return;
+
+        currentIndex =
+            (currentIndex + 1) % photos.length;
+
+        updatePhoto();
+    };
+
+    // Sembunyikan panah jika hanya ada satu foto
+    if (photos.length <= 1) {
+        previous.style.display = 'none';
+        next.style.display = 'none';
+    }
+
+    // ================================================
+    // 7. SUSUN LIGHTBOX
+    // ================================================
+
+    photoContainer.append(image, caption);
+
+    overlay.append(
+        photoContainer,
+        previous,
+        next,
+        close
+    );
+
+    // Klik area gelap untuk menutup lightbox
+    overlay.addEventListener('click', function(event) {
+        if (event.target === overlay) {
+            overlay.remove();
+        }
+    });
+
+    // Pasang langsung di atas dashboard
+    document.body.appendChild(overlay);
+
+    // Tampilkan foto pertama yang dipilih
+    updatePhoto();
+};
 
         /* ===================================== */
         /* 5. LOAD PROVINSI                     */
@@ -15131,28 +17661,69 @@ async function refreshOrganization(organization) {
 
                         layer.bindPopup(`
 
-                            <div
-                                class="bridge-popup"
-                            >
-
                                 <div
-                                    class="bridge-popup-header"
+                                    class="bridge-popup"
+                                    data-bridge-number="${feature.properties.No_Jbt_26 ?? ''}"
+                                    data-bridge-province="${feature.properties.PROVINSI ?? ''}"
                                 >
 
-                                    <div
-                                        class="bridge-popup-header-title"
-                                    >
+                                <!-- HALAMAN INFORMASI JEMBATAN -->
+                                <div
+                                    class="bridge-popup-page"
+                                    data-bridge-page="info"
+                                    style="display:block;"
+                                >
 
-                                        INFORMASI JEMBATAN
+                                    <div class="bridge-popup-header"
+                                        style="
+                                            display:flex;
+                                            align-items:center;
+                                            justify-content:space-between;
+                                            gap:10px;
+                                        ">
+
+                                        <div class="bridge-popup-header-title">
+                                            INFORMASI JEMBATAN
+                                        </div>
+
+                                        <!-- INDIKATOR FOTO JEMBATAN -->
+                                        <span
+                                            class="bridge-photo-indicator"
+                                            data-bridge-photo-indicator="${feature.properties.No_Jbt_26 ?? ''}"
+                                            title="Memeriksa dokumentasi foto..."
+                                            aria-label="Status dokumentasi foto"
+                                            style="
+                                                display:inline-flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                flex-shrink:0;
+                                                width:28px;
+                                                height:28px;
+                                                border-radius:50%;
+                                                background:#e5e7eb;
+                                            "
+                                        >
+                                            <svg
+                                                class="bridge-photo-lamp-icon"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="19"
+                                                height="19"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="#6b7280"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+                                                <path d="M9 18h6"/>
+                                                <path d="M10 22h4"/>
+                                                <path d="M15.09 14a6 6 0 1 0-6.18 0c.7.45 1.09 1.18 1.09 2h4c0-.82.39-1.55 1.09-2Z"/>
+                                            </svg>
+                                        </span>
 
                                     </div>
 
-                                </div>
-
-
-                                <div
-                                    class="bridge-popup-body"
-                                >
+                                    <div class="bridge-popup-body">
 
                                     <div
                                         class="bridge-section"
@@ -16154,29 +18725,327 @@ async function refreshOrganization(organization) {
 
                                             </div>
 
-                                            <div
-                                                class="bridge-value"
-                                            >
+                                            <div class="bridge-value">
 
                                                 ${feature.properties.Tgl_Ins_26 ?? '-'}
 
                                             </div>
 
                                         </div>
+                                        <!-- AKHIR BARIS TANGGAL INSPEKSI -->
+
+                                    </div>
+                                    <!-- AKHIR BAGIAN KOORDINAT -->
+                                            
+                                    <!-- NAVIGASI DOKUMENTASI FOTO -->
+                                    <div
+                                        style="
+                                            display:flex;
+                                            justify-content:flex-end;
+                                            margin-top:16px;
+                                            padding-top:12px;
+                                            border-top:1px solid #e5e7eb;
+                                        "
+                                    >
+                                        <button
+                                            type="button"
+                                            onclick=
+                                            "window.showBridgePopupPage(this, 'photos');
+                                                window.loadBridgePhotosForPopup(this);"
+
+                                            style="
+                                                padding:6px 9px;
+                                                border:0;
+                                                border-radius:6px;
+                                                background:#1f4e79;
+                                                color:white;
+                                                cursor:pointer;
+                                                font-size:11px;
+                                                font-weight:600;
+                                            "
+                                        >
+                                                Dokumentasi Foto ➜
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                    <!-- AKHIR PEMBUNGKUS bridge-popup-body -->
+
+                                </div>
+                                <!-- AKHIR HALAMAN INFORMASI -->
+
+                                <!-- HALAMAN DOKUMENTASI FOTO -->
+                                <div
+                                    class="bridge-popup-page"
+                                    data-bridge-page="photos"
+                                    style="display:none;"
+                                >
+
+                                    <div class="bridge-popup-header">
+                                        DOKUMENTASI FOTO
+                                    </div>
+
+                                    <div class="bridge-popup-body">
+
+                                        <div data-bridge-photo-content
+                                            style="
+                                                min-height:160px;
+                                                display:flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                text-align:center;
+                                                color:#64748b;
+                                                border:1px dashed #cbd5e1;
+                                                border-radius:8px;
+                                                padding:16px;
+                                            "
+                                        >
+                                            Dokumentasi foto akan ditampilkan di sini.
+                                        </div>
+                                        
+                                        <!-- =========================================
+                                            PENGELOLAAN DOKUMENTASI FOTO
+                                        ========================================= -->
+
+                                        <div
+                                            data-bridge-photo-management
+                                            data-open="false"
+                                            style="
+                                                display:none;
+                                                margin-top:16px;
+                                                padding:14px;
+                                                border:1px solid #e2e8f0;
+                                                border-radius:10px;
+                                                background:#f8fafc;
+                                            "
+                                        >
+                                            <div
+                                                style="
+                                                    font-size:14px;
+                                                    font-weight:700;
+                                                    color:#334155;
+                                                    margin-bottom:12px;
+                                                "
+                                            >
+                                                Tambah Dokumentasi Foto
+                                            </div>
+
+                                            <!-- 1. PILIH KELOMPOK FOTO -->
+                                            <div style="margin-bottom:12px;">
+                                                <label
+                                                    style="
+                                                        display:block;
+                                                        font-size:12px;
+                                                        font-weight:600;
+                                                        color:#475569;
+                                                        margin-bottom:6px;
+                                                    "
+                                                >
+                                                    Pilih Kelompok Foto
+                                                </label>
+
+                                                <select
+                                                    data-bridge-photo-title-select
+                                                    style="
+                                                        width:100%;
+                                                        padding:10px;
+                                                        border:1px solid #cbd5e1;
+                                                        border-radius:7px;
+                                                        box-sizing:border-box;
+                                                        background:#ffffff;
+                                                        font-size:12px;
+                                                    "
+                                                >
+                                                    <option value="">Memuat judul...</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- 2. JUDUL BARU -->
+                                            <div
+                                                data-bridge-photo-new-title-wrap
+                                                style="display:none; margin-bottom:12px;"
+                                            >
+                                                <label
+                                                    style="
+                                                        display:block;
+                                                        font-size:12px;
+                                                        font-weight:600;
+                                                        color:#475569;
+                                                        margin-bottom:6px;
+                                                    "
+                                                >
+                                                    Judul Kelompok Baru
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    data-bridge-photo-caption
+                                                    placeholder="Contoh: Kondisi Abutment"
+                                                    maxlength="500"
+                                                    style="
+                                                        width:100%;
+                                                        box-sizing:border-box;
+                                                        padding:10px;
+                                                        border:1px solid #cbd5e1;
+                                                        border-radius:7px;
+                                                        background:#ffffff;
+                                                        font-size:12px;
+                                                    "
+                                                >
+                                            </div>
+
+                                            <!-- 3. URL GAMBAR -->
+                                            <div style="margin-bottom:12px;">
+                                            <label style="display:block;margin-bottom:6px;font-weight:600;">
+                                                URL Gambar
+                                            </label>
+
+                                            <input
+                                                type="url"
+                                                data-bridge-photo-url
+                                                placeholder="https://alamat-gambar.jpg"
+                                                required
+                                                style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px;"
+                                            >
+
+                                            <!-- AREA PRATINJAU FOTO -->
+                                            <div
+                                                data-bridge-photo-preview
+                                                style="display:none;margin-top:12px;padding:10px;border:1px solid #e2e8f0;border-radius:8px;background:#ffffff;"
+                                            >
+                                                <div style="font-size:12px;font-weight:700;color:#475569;margin-bottom:8px;">
+                                                Pratinjau Foto
+                                                </div>
+
+                                                <img
+                                                data-bridge-photo-preview-image
+                                                alt="Pratinjau dokumentasi foto jembatan"
+                                                style="display:none;width:100%;max-height:220px;object-fit:contain;border-radius:6px;background:#f1f5f9;"
+                                                >
+
+                                                <div
+                                                data-bridge-photo-preview-status
+                                                role="status"
+                                                aria-live="polite"
+                                                style="font-size:12px;color:#64748b;margin-top:6px;overflow-wrap:anywhere;"
+                                                ></div>
+                                            </div>
+                                            </div>
+
+                                            <!-- TOMBOL SIMPAN -->
+                                            <button
+                                                type="button"
+                                                data-bridge-photo-save
+                                                style="
+                                                    width:100%;
+                                                    padding:11px;
+                                                    border:none;
+                                                    border-radius:7px;
+                                                    background:#1f4e79;
+                                                    color:#ffffff;
+                                                    font-size:10px;
+                                                    font-weight:600;
+                                                    cursor:pointer;
+                                                "
+                                            >
+                                                Simpan Dokumentasi Foto
+                                            </button>
+
+                                            <!-- PESAN STATUS -->
+                                            <div
+                                                data-bridge-photo-status
+                                                role="status"
+                                                aria-live="polite"
+                                                style="
+                                                    margin-top:10px;
+                                                    font-size:12px;
+                                                    line-height:1.5;
+                                                    color:#475569;
+                                                "
+                                            ></div>
+                                        </div>
+
+                                        <div
+                                            style="
+                                                display:flex;
+                                                justify-content:flex-start;
+                                                margin-top:16px;
+                                            "
+                                        >
+                                            <button
+                                                type="button"
+                                                onclick="showBridgePopupPage(this, 'info')"
+                                                style="
+                                                    padding:6px 9px;
+                                                    border:1px solid #cbd5e1;
+                                                    border-radius:6px;
+                                                    background:#1f4e79;
+                                                    color:white;
+                                                    cursor:pointer;
+                                                    font-size:11px;
+                                                    font-weight:600;
+                                                "
+                                            >
+                                                ← Informasi Jembatan
+                                            </button>
+                                        </div>
 
                                     </div>
 
                                 </div>
+                                <!-- AKHIR HALAMAN FOTO -->
 
                             </div>
+                            <!-- AKHIR POPUP UTAMA -->
 
+                        
                         `);
+
+                        // ========================================
+                        // PERBARUI INDIKATOR FOTO SAAT POPUP DIBUKA
+                        // ========================================
+
+                        layer.on('popupopen', async function (event) {
+
+                            console.log(
+                                '[POPUP FOTO] Popup jembatan dibuka:',
+                                feature.properties.No_Jbt_26
+                            );
+
+                            const popupElement =
+                                event.popup.getElement();
+
+                            if (!popupElement) {
+                                console.warn(
+                                    '[POPUP FOTO] Elemen popup tidak ditemukan.'
+                                );
+                                return;
+                            }
+
+                            const indicator =
+                                popupElement.querySelector(
+                                    '.bridge-photo-indicator'
+                                );
+
+                            if (!indicator) {
+                                console.warn(
+                                    '[POPUP FOTO] Indikator lampu tidak ditemukan di popup.'
+                                );
+                                return;
+                            }
+
+                            await updateBridgePhotoIndicator(
+                                feature.properties.No_Jbt_26
+                            );
+
+                        });
 
                     }
 
                 }
 
             ).addTo(map);
+
 
 
             // ========================================
@@ -18568,6 +21437,29 @@ async function refreshOrganization(organization) {
                         const title = document.createElement('div');
                         title.className = 'handling-card-title';
                         title.textContent = jenis;
+
+                        title.style.cssText = `
+                            margin-bottom: 9px;
+                            padding-bottom: 6px;
+                            border-bottom: 3px solid red;
+                            color: rgb(51, 65, 85);
+                            font-size: 13px;
+                            font-weight: 700;
+                            overflow-wrap: anywhere;
+                        `;
+
+                        title.style.borderBottom = '3px solid red';
+
+
+                        title.style.cssText = `
+                                margin-bottom: 9px;
+                                padding-bottom: 6px;
+                                border-bottom: 1px solid #d1d5db;
+                                color: rgb(51, 65, 85);
+                                font-size: 13px;
+                                font-weight: 700;
+                                overflow-wrap: anywhere;
+                        `;
 
                         const stats = document.createElement('div');
                         stats.className = 'handling-card-stats';
