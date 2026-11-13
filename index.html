@@ -8915,76 +8915,94 @@
         // berdasarkan role dan kewenangan wilayah.
         
         function canManageBridgePhotos(province) {
+        
             const profile = currentUserProfile;
-
+        
             console.log('[DEBUG HAK FOTO]', {
                 profileDitemukan: !!profile,
                 role: profile?.role,
                 access_scope: profile?.access_scope,
                 institution: profile?.institution,
-                provinceProfil: profile?.province,
+                provinceUtama: profile?.province,
+                daftarProvinsi: profile?.provinces,
                 provinceJembatan: province,
                 akunAktif: profile?.is_active
             });
-
-            // Pastikan pengguna sudah login dan akun aktif
+        
+            // 1. Pastikan profil tersedia dan akun aktif
             if (!profile || profile.is_active !== true) {
                 return false;
             }
-
+        
             const role = String(profile.role || '')
                 .trim()
                 .toLowerCase();
-
+        
             const accessScope = String(profile.access_scope || '')
                 .trim()
                 .toLowerCase();
-
+        
             const institution = String(profile.institution || '')
                 .trim()
                 .toLowerCase();
-
-            // Admin tetap memiliki hak pengelolaan foto
+        
+            // 2. Admin dapat mengelola foto semua provinsi
             if (role === 'admin') {
                 return true;
             }
-
-            // Selain admin, hanya operator yang dapat diproses
+        
+            // 3. Selain Admin, hanya akun operator yang diperiksa
             if (role !== 'operator') {
                 return false;
             }
-
-            // Operator Pusat hanya boleh melihat foto
+        
+            // 4. Operator Pusat tetap hanya dapat melihat foto
             if (
                 accessScope === 'all' &&
                 institution === 'pusat'
             ) {
                 return false;
             }
-
-            // Operator Balai harus memiliki cakupan provinsi
+        
+            // 5. Operator Balai harus menggunakan akses provinsi
             if (accessScope !== 'province') {
                 return false;
             }
-
-            // Pastikan provinsi jembatan tersedia
-            if (!province || !profile.province) {
+        
+            if (!province) {
                 return false;
             }
-
-            // Operator Balai hanya boleh mengelola foto
-            // pada provinsi yang menjadi kewenangannya
-            const authorizedProvince = normalizeBridgeText(
-                profile.province
+        
+            // 6. Ambil seluruh provinsi kewenangan akun.
+            // Province utama menjadi cadangan untuk akun lama
+            // yang belum mempunyai daftar provinsi.
+            const authorizedProvinces = Array.isArray(
+                profile.provinces
+            )
+                ? profile.provinces
+                : [profile.province];
+        
+            // 7. Samakan huruf besar/kecil dan spasi
+            const normalize = value =>
+                normalizeBridgeText(String(value || ''));
+        
+            const bridgeProvince = normalize(province);
+        
+            // 8. Izinkan pengelolaan jika provinsi jembatan
+            // cocok dengan salah satu provinsi kewenangan
+            const allowed = authorizedProvinces.some(
+                authorizedProvince =>
+                    normalize(authorizedProvince) === bridgeProvince
             );
-
-            const bridgeProvince = normalizeBridgeText(
-                province
-            );
-
-            return authorizedProvince === bridgeProvince;
+        
+            console.log('[HASIL HAK FOTO]', {
+                bridgeProvince,
+                authorizedProvinces,
+                allowed
+            });
+        
+            return allowed;
         }
-
 
         // Mengambil dokumentasi foto dari Supabase.
         async function getBridgePhotos(bridgeNumber) {
