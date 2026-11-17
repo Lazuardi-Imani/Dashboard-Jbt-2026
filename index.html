@@ -15602,8 +15602,13 @@ window.loadBridgePhotosForPopup = async function(button) {
                 '[data-bridge-photo-remove-url]'
             );
 
+            
             // Tambah baris URL.
             if (addButton) {
+                // Cegah klik diteruskan ke popup Leaflet.
+                event.preventDefault();
+                event.stopPropagation();
+
                 const rows = urlInput.querySelectorAll(
                     '[data-bridge-photo-url-row]'
                 );
@@ -15634,6 +15639,10 @@ window.loadBridgePhotosForPopup = async function(button) {
 
             // Hapus baris URL.
             if (removeButton) {
+                // Cegah klik diteruskan ke popup Leaflet.
+                event.preventDefault();
+                event.stopPropagation();
+
                 const row = removeButton.closest(
                     '[data-bridge-photo-url-row]'
                 );
