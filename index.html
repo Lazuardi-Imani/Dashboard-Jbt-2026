@@ -7723,6 +7723,17 @@
     transform: translateX(18px);
 }
 
+
+/* =========================================
+   PEMBATASAN TOMBOL UNTUK ROLE TAMU
+   ========================================= */
+
+body.role-tamu .rekap-download-wrapper,
+body.role-tamu .download-xlsx-button,
+body.role-tamu .berita-acara-button {
+    display: none !important;
+}
+
 </style>
 
 </head>
@@ -12266,65 +12277,28 @@
         /* ===================================== */
 
         function applyRoleAccess() {
-
-            // ====================================
-            // CEK PROFILE
-            // ====================================
-
             if (!currentUserProfile) {
-
                 console.warn(
-                    'Profile user belum tersedia.'
+                    'Profil pengguna belum tersedia.'
                 );
-
                 return;
-
             }
 
+            const role = currentUserProfile.role;
 
-            // ====================================
-            // AMBIL ELEMEN ADMIN
-            // ====================================
+            // Elemen khusus admin hanya terlihat oleh admin.
+            document.querySelectorAll('.admin-only').forEach(element => {
+                element.style.display =
+                    role === 'admin' ? '' : 'none';
+            });
 
-            const adminElements =
-                document.querySelectorAll(
-                    '.admin-only'
-                );
+            // Terapkan aturan tombol ekspor.
+            applyExportPermission();
 
-
-            // ====================================
-            // ADMIN
-            // ====================================
-
-            if (isAdmin()) {
-
-                adminElements.forEach(
-                    function (element) {
-
-                        element.style.display = '';
-
-                    }
-                );
-
-            }
-
-
-            // ====================================
-            // OPERATOR
-            // ====================================
-
-            else {
-
-                adminElements.forEach(
-                    function (element) {
-
-                        element.style.display = 'none';
-
-                    }
-                );
-
-            }
-
+            console.log(
+                'Hak akses role diterapkan:',
+                role
+            );
         }
 
         /* ===================================== */
@@ -27003,6 +26977,18 @@ window.openBridgePhotoDetail = function(content, photoIndex) {
 
         function downloadProvinceXLSX(button) {
 
+            // Cegah ekspor jika profil tidak tersedia
+            // atau pengguna memiliki role tamu.
+            if (
+                !currentUserProfile ||
+                currentUserProfile.role === 'tamu'
+            ) {
+                alert(
+                    'Akun tamu tidak diizinkan mengekspor data XLSX.'
+                );
+                return;
+            }
+
             // Cari kartu provinsi
             const summary =
                 button.closest('.province-summary');
@@ -27010,7 +26996,6 @@ window.openBridgePhotoDetail = function(content, photoIndex) {
             if (!summary) {
                 return;
             }
-
 
             // Cari tombol provinsi yang berada tepat sebelum kartu
             const provinceButton =
@@ -27249,6 +27234,17 @@ window.openBridgePhotoDetail = function(content, photoIndex) {
         // ========================================
 
         async function openBeritaAcara(button) {
+
+        // Cegah akun tamu membuka Berita Acara.
+        if (
+            !currentUserProfile ||
+            currentUserProfile.role === 'tamu'
+        ) {
+            alert(
+                'Akun tamu tidak diizinkan membuka Berita Acara.'
+            );
+            return;
+        }
 
     console.log(
         '📄 Membuka Berita Acara...'
@@ -28669,210 +28665,121 @@ document.addEventListener(
     // LOGIN DASHBOARD MENGGUNAKAN USERNAME
     // ========================================
 
-        async function loginDashboard() {
+async function loginDashboard() {
+    const username = document
+        .getElementById('login-username')
+        .value.trim().toLowerCase();
 
-            const username =
-                document.getElementById(
-                    'login-username'
-                ).value.trim().toLowerCase();
+    const password = document
+        .getElementById('login-password')
+        .value;
 
+    const message = document.getElementById('login-message');
 
-            const password =
-                document.getElementById(
-                    'login-password'
-                ).value;
-
-
-            const message =
-                document.getElementById(
-                    'login-message'
-                );
-
-
-    // ====================================
-    // CEK INPUT KOSONG
-    // ====================================
-
-    if (
-        username === '' ||
-        password === ''
-    ) {
-
+    if (!username || !password) {
         message.textContent =
             'Username dan password wajib diisi.';
-
         return;
-
     }
 
-
-    // ====================================
-    // PROSES LOGIN
-    // ====================================
-
-    message.textContent =
-        'Memproses login...';
-
+    message.textContent = 'Memproses login...';
 
     try {
-
         // ====================================
-        // CARI USERNAME DI PROFILE
+        // LOGIN MELALUI EDGE FUNCTION
         // ====================================
 
-        const {
-            data: profileData,
-            error: profileError
-        } = await supabaseClient
-            .from('profiles')
-            .select('email, username, is_active')
-            .eq('username', username)
-            .maybeSingle();
+        const response = await fetch(
+            `${SUPABASE_URL}/functions/v1/login-by-username`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_PUBLISHABLE_KEY
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            }
+        );
 
-
-        // ====================================
-        // USERNAME TIDAK DITEMUKAN
-        // ====================================
+        const result = await response.json();
 
         if (
-            profileError ||
-            !profileData
+            !response.ok ||
+            !result.session ||
+            !result.session.access_token ||
+            !result.session.refresh_token
         ) {
-
             console.error(
-                'Username tidak ditemukan:',
-                profileError
+                'Login melalui Edge Function gagal:',
+                response.status,
+                result.error || 'Respons login tidak valid.'
             );
 
             message.textContent =
-                'Username atau password salah.';
+                response.status === 401
+                    ? 'Username atau password salah, atau akun tidak aktif.'
+                    : 'Login gagal. Periksa konfigurasi autentikasi.';
 
             return;
-
         }
 
-
         // ====================================
-        // CEK USER AKTIF
-        // ====================================
-
-        if (
-            profileData.is_active === false
-        ) {
-
-            message.textContent =
-                'Akun Anda tidak aktif.';
-
-            return;
-
-        }
-
-
-        console.log(
-            '✅ Username ditemukan:',
-            profileData.username
-        );
-
-
-        // ====================================
-        // LOGIN SUPABASE AUTH
+        // SIMPAN SESI KE SUPABASE CLIENT
         // ====================================
 
         const {
-            data,
-            error
-        } =
-            await supabaseClient.auth.signInWithPassword({
+            data: sessionData,
+            error: sessionError
+        } = await supabaseClient.auth.setSession({
+            access_token: result.session.access_token,
+            refresh_token: result.session.refresh_token
+        });
 
-                email: profileData.email,
-
-                password: password
-
-            });
-
-
-        // ====================================
-        // CEK HASIL LOGIN
-        // ====================================
-
-        if (error) {
-
+        if (sessionError || !sessionData.session) {
             console.error(
-                'Login Supabase gagal:',
-                error
+                'Gagal menyimpan sesi Supabase:',
+                sessionError
             );
 
             message.textContent =
-                'Username atau password salah.';
+                'Sesi login gagal dibuat. Silakan coba lagi.';
 
             return;
-
         }
-
-
-        // ====================================
-        // LOGIN BERHASIL
-        // ====================================
-
-        console.log(
-            '✅ Login Supabase berhasil:',
-            data.user
-        );
-
 
         // ====================================
         // LOAD PROFILE USER
         // ====================================
 
-        const profile =
-            await loadUserProfile();
+        const profile = await loadUserProfile();
 
+        if (!profile) {
+            await supabaseClient.auth.signOut();
 
-            if (!profile) {
+            message.textContent =
+                'Profil pengguna tidak ditemukan atau tidak dapat diakses.';
 
-                await supabaseClient.auth.signOut();
-
-                message.textContent =
-                    'Profile user tidak ditemukan.';
-
-                return;
-
-            }
-
+            return;
+        }
 
         // ====================================
-        // TERAPKAN HAK AKSES EXPORT
+        // TERAPKAN HAK AKSES
         // ====================================
 
         applyExportPermission();
-
-
-        // ====================================
-        // TERAPKAN HAK AKSES USER
-        // ====================================
-
         applyRoleAccess();
-
-
-        // ====================================
-        // TERAPKAN HAK AKSES PROVINSI
-        // ====================================
-
         applyProvinceAccess();
 
-
         // ====================================
-        // SEMBUNYIKAN LOGIN
+        // TAMPILKAN HALAMAN KATEGORI JEMBATAN
         // ====================================
 
         document.getElementById(
             'login-screen'
         ).style.display = 'none';
-
-
-        // ====================================
-        // SETELAH LOGIN, TAMPILKAN LANDING PAGE
-        // ====================================
 
         document.getElementById(
             'dashboard'
@@ -28890,130 +28797,98 @@ document.addEventListener(
 
         message.textContent = '';
 
-
         // ====================================
         // TERAPKAN ULANG HAK AKSES EXPORT
         // ====================================
 
         setTimeout(function () {
-
             applyExportPermission();
-
         }, 300);
 
-
         // ====================================
-        // UPDATE UKURAN MAP
+        // UPDATE UKURAN PETA
         // ====================================
 
         setTimeout(function () {
-
             map.invalidateSize();
-
         }, 200);
 
-
-        // ====================================
-        // HAPUS PESAN LOGIN
-        // ====================================
-
-        message.textContent = '';
-
-
     } catch (error) {
-
         console.error(
-            '❌ Terjadi kesalahan login:',
+            'Terjadi kesalahan login:',
             error
         );
 
         message.textContent =
-            'Terjadi kesalahan saat login.';
-
+            'Terjadi kesalahan saat login. Periksa koneksi dan konfigurasi.';
     }
-
 }
-
-
-    // ========================================
-    // HAK AKSES TOMBOL DOWNLOAD REKAP
-    // ========================================
+    
+ // ========================================
+ // HAK AKSES TOMBOL DOWNLOAD REKAP
+ // ========================================
 
 function applyExportPermission() {
+    const profile = currentUserProfile;
 
-    const exportButton =
-        document.querySelector('.rekap-download-button');
+    const role = profile?.role;
+    const scope = profile?.access_scope;
 
-    // Jika tombol belum ditemukan
-    if (!exportButton) {
+    const isGuest = role === 'tamu';
+    const profileAvailable = Boolean(profile);
 
-        console.warn(
-            '⚠️ Tombol download rekap belum ditemukan'
-        );
+    // Tandai halaman agar tombol dinamis juga mengikuti role.
+    document.body.classList.toggle('role-tamu', isGuest);
 
-        return;
+    // ========================================
+    // 1. TOMBOL DOWNLOAD REKAP
+    // ========================================
 
-    }
-
-
-    // ====================================
-    // CEK PROFILE USER
-    // ====================================
-
-    if (!currentUserProfile) {
-
-        console.warn(
-            '⚠️ Profile user belum tersedia'
-        );
-
-        return;
-
-    }
-
-
-    console.log(
-        '🔐 Cek hak akses download rekap:',
-        currentUserProfile.role,
-        currentUserProfile.access_scope
+    const rekapButton = document.querySelector(
+        '.rekap-download-button'
     );
 
+    const rekapMenu = document.querySelector(
+        '.rekap-download-menu'
+    );
 
-    // ====================================
-    // ROLE YANG BOLEH DOWNLOAD REKAP
-    // ====================================
-
-    const allowed =
-        currentUserProfile.role === 'admin' ||
+    const canDownloadRekap =
+        profileAvailable &&
         (
-            currentUserProfile.role === 'operator' &&
-            currentUserProfile.access_scope === 'all'
+            role === 'admin' ||
+            (role === 'operator' && scope === 'all')
         );
 
-
-    // ====================================
-    // TAMPILKAN / SEMBUNYIKAN
-    // ====================================
-
-    if (allowed) {
-
-        exportButton.style.display = '';
-
-        console.log(
-            '✅ Download rekap DIIZINKAN'
-        );
-
-    } else {
-
-        exportButton.style.display = 'none';
-
-        console.log(
-            '🚫 Download rekap DISEMBUNYIKAN'
-        );
-
+    if (rekapButton) {
+        rekapButton.style.display =
+            canDownloadRekap ? '' : 'none';
     }
 
-}
+    if (!canDownloadRekap && rekapMenu) {
+        rekapMenu.classList.remove('show');
+    }
 
+    // ========================================
+    // 2. EXPORT DATA XLSX DAN BERITA ACARA
+    // ========================================
+
+    const canUseProvinceActions =
+        profileAvailable && !isGuest;
+
+    document.querySelectorAll(
+        '.download-xlsx-button, .berita-acara-button'
+    ).forEach(button => {
+        button.style.display =
+            canUseProvinceActions ? '' : 'none';
+    });
+
+    console.log('🔐 Hak akses ekspor diterapkan:', {
+        role,
+        scope,
+        canDownloadRekap,
+        canUseProvinceActions
+    });
+}
 
     // ========================================
     // CEK STATUS LOGIN SUPABASE SAAT HALAMAN DIBUKA
